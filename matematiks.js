@@ -1,8 +1,9 @@
 function buatkanvas(tempatKanvas,namaKanvas='canvas',lebar='200',tinggi='200'){
   document.getElementById(tempatKanvas).innerHTML="<canvas id="+namaKanvas+" width="+lebar+" height="+tinggi+"></canvas>";
+	this.namakanvas=namaKanvas;
 };
-function persegi(idCanvas,titikAwal,panjangSisi){
-	var kanvas = document.getElementById(idCanvas);
+function persegi(kanv,titikAwal,panjangSisi){
+	var kanvas = document.getElementById(kanv.namakanvas);
 	var konteks = kanvas.getContext("2d");
   if (panjangSisi==0) return;
   konteks.beginPath();
