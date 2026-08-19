@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kuis Rebutan: Bentuk Akar</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="text/javascript" async
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            /* Slate 900 - Latar belakang gelap agar fokus ke tengah */
+            background-color: #0f172a; /* Slate 900 - Latar belakang gelap agar fokus ke tengah */
             color: #f8fafc;
         }
 
@@ -23,51 +20,39 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         /* Styling spesifik untuk MathJax di dalam soal agar lebih besar */
         .math-text .MathJax {
-            font-size: 1.25em !important;
+            font-size: 1.25em !important; 
         }
     </style>
 </head>
-
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
     <div class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col text-slate-800">
-
+        
         <!-- Header -->
         <div class="bg-blue-600 text-white p-6 text-center relative shadow-md">
-            <h1 class="text-3xl font-extrabold uppercase tracking-widest text-yellow-300 drop-shadow-md">Kuis Cerdas
-                Cermat</h1>
+            <h1 class="text-3xl font-extrabold uppercase tracking-widest text-yellow-300 drop-shadow-md">Kuis Cerdas Cermat</h1>
             <h2 class="text-xl font-semibold mt-1">Materi: Bentuk Akar (Kelas X)</h2>
-
+            
             <!-- Indikator Soal -->
-            <div
-                class="absolute top-1/2 right-6 transform -translate-y-1/2 bg-blue-800 px-4 py-2 rounded-full font-bold border-2 border-blue-400">
+            <div class="absolute top-1/2 right-6 transform -translate-y-1/2 bg-blue-800 px-4 py-2 rounded-full font-bold border-2 border-blue-400">
                 Soal <span id="current-number">1</span> / 20
             </div>
         </div>
 
         <!-- Progress Bar -->
         <div class="w-full bg-gray-200 h-2">
-            <div id="progress-bar" class="bg-yellow-400 h-2 transition-all duration-300 ease-out" style="width: 5%;">
-            </div>
+            <div id="progress-bar" class="bg-yellow-400 h-2 transition-all duration-300 ease-out" style="width: 5%;"></div>
         </div>
 
         <!-- Area Konten Utama -->
-        <div class="p-8 md:p-12 flex-grow flex flex-col justify-center items-center text-center min-h-[400px]"
-            id="quiz-area">
-
+        <div class="p-8 md:p-12 flex-grow flex flex-col justify-center items-center text-center min-h-[400px]" id="quiz-area">
+            
             <!-- Pertanyaan -->
             <div class="mb-8 w-full fade-in" id="question-container">
                 <p class="text-gray-500 font-semibold mb-4 uppercase tracking-widest text-sm">Pertanyaan:</p>
@@ -77,8 +62,7 @@
             </div>
 
             <!-- Jawaban (Awalnya tersembunyi) -->
-            <div id="answer-container"
-                class="hidden w-full fade-in bg-green-50 border-4 border-green-400 rounded-2xl p-6 mt-4 shadow-inner">
+            <div id="answer-container" class="hidden w-full fade-in bg-green-50 border-4 border-green-400 rounded-2xl p-6 mt-4 shadow-inner">
                 <p class="text-green-700 font-semibold mb-2 uppercase tracking-widest text-sm">Jawaban Benar:</p>
                 <h4 id="answer-text" class="text-3xl md:text-5xl font-extrabold text-green-700 math-text">
                     <!-- Teks jawaban akan dimuat di sini -->
@@ -89,18 +73,15 @@
 
         <!-- Kontrol Tombol -->
         <div class="bg-slate-50 border-t border-slate-200 p-6 flex justify-between items-center">
-            <button id="btn-prev" onclick="prevQuestion()"
-                class="px-6 py-3 bg-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <button id="btn-prev" onclick="prevQuestion()" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 &larr; Sebelumnya
             </button>
 
-            <button id="btn-toggle-answer" onclick="toggleAnswer()"
-                class="px-8 py-4 bg-yellow-400 text-yellow-900 rounded-xl font-extrabold text-xl shadow-[0_4px_0_0_#ca8a04] hover:bg-yellow-300 hover:translate-y-1 hover:shadow-[0_0px_0_0_#ca8a04] transition-all">
+            <button id="btn-toggle-answer" onclick="toggleAnswer()" class="px-8 py-4 bg-yellow-400 text-yellow-900 rounded-xl font-extrabold text-xl shadow-[0_4px_0_0_#ca8a04] hover:bg-yellow-300 hover:translate-y-1 hover:shadow-[0_0px_0_0_#ca8a04] transition-all">
                 👁️ TAMPILKAN JAWABAN
             </button>
 
-            <button id="btn-next" onclick="nextQuestion()"
-                class="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+            <button id="btn-next" onclick="nextQuestion()" class="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
                 Selanjutnya &rarr;
             </button>
         </div>
@@ -110,84 +91,84 @@
         // Database 20 Soal berdasarkan materi
         const quizData = [
             {
-                q: "Bentuk akar dari \\(5^{\\frac{2}{3}}\\) adalah...",
-                a: "\\(\\sqrt[3]{5^2}\\) atau \\(\\sqrt[3]{25}\\)"
+                q: "Bentuk akar dari \\(7^{\\frac{3}{4}}\\) adalah...",
+                a: "\\(\\sqrt[4]{7^3}\\) atau \\(\\sqrt[4]{343}\\)"
             },
             {
-                q: "Bentuk pangkat pecahan dari \\(\\sqrt[4]{x^5}\\) adalah...",
-                a: "\\(x^{\\frac{5}{4}}\\)"
+                q: "Bentuk pangkat pecahan dari \\(\\sqrt[5]{y^2}\\) adalah...",
+                a: "\\(y^{\\frac{2}{5}}\\)"
             },
             {
-                q: "Nilai perhitungan akhir dari \\(8^{\\frac{2}{3}}\\) adalah...",
-                a: "4"
+                q: "Nilai perhitungan akhir dari \\(27^{\\frac{2}{3}}\\) adalah...",
+                a: "9"
             },
             {
-                q: "Hasil dari akar kuadrat sempurna \\(\\sqrt{144}\\) adalah...",
-                a: "12"
+                q: "Hasil dari akar kuadrat sempurna \\(\\sqrt{196}\\) adalah...",
+                a: "14"
             },
             {
-                q: "Hasil dari \\(\\sqrt{225}\\) adalah...",
-                a: "15"
-            },
-            {
-                q: "Berapakah hasil dari \\(\\sqrt{625}\\)?",
-                a: "25"
-            },
-            {
-                q: "Hitunglah hasil dari operasi: \\(\\sqrt{144} + \\sqrt{25}\\) = ...",
+                q: "Berapakah hasil dari \\(\\sqrt{289}\\)?",
                 a: "17"
             },
             {
-                q: "Hitunglah hasil dari: \\(\\sqrt{9 + 16}\\) = ...",
-                a: "5"
+                q: "Hitunglah hasil dari operasi: \\(\\sqrt{100} + \\sqrt{64}\\) = ...",
+                a: "18"
             },
             {
-                q: "Bentuk paling sederhana dari \\(\\sqrt{50}\\) adalah...",
-                a: "\\(5\\sqrt{2}\\)"
+                q: "Hitunglah hasil dari: \\(\\sqrt{36 + 64}\\) = ...",
+                a: "10"
             },
             {
-                q: "Bentuk paling sederhana dari \\(\\sqrt{48}\\) adalah...",
+                q: "Bentuk paling sederhana dari \\(\\sqrt{72}\\) adalah...",
+                a: "\\(6\\sqrt{2}\\)"
+            },
+            {
+                q: "Bentuk paling sederhana dari \\(\\sqrt{75}\\) adalah...",
+                a: "\\(5\\sqrt{3}\\)"
+            },
+            {
+                q: "Bentuk paling sederhana dari \\(2\\sqrt{27}\\) adalah...",
+                a: "\\(6\\sqrt{3}\\)"
+            },
+            {
+                q: "Hasil penjumlahan dari \\(7\\sqrt{5} + 6\\sqrt{5}\\) adalah...",
+                a: "\\(13\\sqrt{5}\\)"
+            },
+            {
+                q: "Hasil pengurangan dari \\(12\\sqrt{2} - 5\\sqrt{2}\\) adalah...",
+                a: "\\(7\\sqrt{2}\\)"
+            },
+            {
+                q: "Hasil dari operasi \\(3\\sqrt{2} + \\sqrt{18}\\) adalah...",
+                a: "\\(6\\sqrt{2}\\)"
+            },
+            {
+                q: "Hasil perkalian bentuk akar \\(4\\sqrt{3} \\times 2\\sqrt{7}\\) adalah...",
+                a: "\\(8\\sqrt{21}\\)"
+            },
+            {
+                q: "Hasil perkalian dari \\(3\\sqrt{2} \\times 5\\sqrt{2}\\) jika dihitung adalah...",
+                a: "30"
+            },
+            {
+                q: "Bentuk rasional (setelah merasionalkan penyebut) dari \\(\\frac{10}{\\sqrt{5}}\\) adalah...",
+                a: "\\(2\\sqrt{5}\\)"
+            },
+            {
+                q: "Bentuk rasional dari \\(\\frac{5}{\\sqrt{2}}\\) adalah...",
+                a: "\\(\\frac{5}{2}\\sqrt{2}\\)"
+            },
+            {
+                q: "Bilangan seperti 1, 4, 9, 16, 25 yang akar kuadratnya menghasilkan bilangan bulat positif disebut bilangan...",
+                a: "Bilangan Kuadrat (Kuadrat Sempurna)"
+            },
+            {
+                q: "Hasil perkalian dari \\(\\sqrt{6} \\times \\sqrt{8}\\) setelah disederhanakan adalah...",
                 a: "\\(4\\sqrt{3}\\)"
             },
             {
-                q: "Bentuk paling sederhana dari \\(3\\sqrt{50}\\) adalah...",
-                a: "\\(15\\sqrt{2}\\)"
-            },
-            {
-                q: "Hasil penjumlahan dari \\(5\\sqrt{3} + 4\\sqrt{3}\\) adalah...",
-                a: "\\(9\\sqrt{3}\\)"
-            },
-            {
-                q: "Hasil pengurangan dari \\(8\\sqrt{6} - 2\\sqrt{6}\\) adalah...",
-                a: "\\(6\\sqrt{6}\\)"
-            },
-            {
-                q: "Hasil perkalian bentuk akar \\(3\\sqrt{2} \\times 5\\sqrt{5}\\) adalah...",
-                a: "\\(15\\sqrt{10}\\)"
-            },
-            {
-                q: "Hasil perkalian dari \\(4\\sqrt{3} \\times 4\\sqrt{3}\\) jika dihitung adalah...",
-                a: "48"
-            },
-            {
-                q: "Bentuk rasional (setelah merasionalkan penyebut) dari \\(\\frac{6}{\\sqrt{2}}\\) adalah...",
-                a: "\\(3\\sqrt{2}\\)"
-            },
-            {
-                q: "Bentuk rasional dari \\(\\frac{7}{\\sqrt{3}}\\) adalah...",
-                a: "\\(\\frac{7}{3}\\sqrt{3}\\)"
-            },
-            {
-                q: "Pada persamaan \\(a^{\\frac{m}{n}} = \\sqrt[n]{a^m}\\), huruf <strong>a</strong> disebut sebagai...",
-                a: "Bilangan pokok (basis)"
-            },
-            {
-                q: "Syarat utama agar dua bentuk akar dapat dijumlahkan atau dikurangkan adalah harus memiliki...",
-                a: "Bentuk akar yang sejenis (angka di dalam akar sama)"
-            },
-            {
-                q: "Hitunglah hasil operasi pengurangan berikut: \\(\\sqrt{400} - \\sqrt{121}\\) = ...",
-                a: "9"
+                q: "Hitunglah hasil operasi berikut: \\(\\sqrt{900} - \\sqrt{169}\\) = ...",
+                a: "17"
             }
         ];
 
@@ -207,11 +188,11 @@
         function loadQuestion(index) {
             // Sembunyikan jawaban saat berpindah soal
             hideAnswer();
-
+            
             // Set teks soal dan jawaban
             elQuestionText.innerHTML = quizData[index].q;
             elAnswerText.innerHTML = quizData[index].a;
-
+            
             // Update indikator nomor dan progress
             elCurrentNum.innerText = index + 1;
             elProgressBar.style.width = ((index + 1) / quizData.length) * 100 + "%";
@@ -267,10 +248,9 @@
         }
 
         // Jalankan saat halaman pertama kali dimuat
-        window.onload = function () {
+        window.onload = function() {
             loadQuestion(0);
         };
     </script>
 </body>
-
 </html>
