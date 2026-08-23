@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Pembelajaran: Anuitas (Matematika Kelas 11)</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .math-block {
+            overflow-x: auto;
+            padding: 1rem 0;
+        }
+        /* Custom scrollbar for math equations on mobile */
+        ::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c7d2fe; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #818cf8; 
+        }
+    </style>
+
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+</head>
+<body class="antialiased pb-12">
+
+    <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg">
+        <div class="max-w-5xl mx-auto px-6 py-12 text-center">
+            <span class="bg-blue-800 text-blue-100 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Matematika SMA Kelas 11</span>
+            <h1 class="text-4xl font-extrabold mt-4 mb-2 tracking-tight">Memahami Sistem Anuitas</h1>
+            <p class="text-lg text-blue-100 max-w-2xl mx-auto">Pelajari definisi, rumus-rumus inti, hingga penerapan perhitungan anuitas secara sistematis.</p>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 -mt-8 relative z-10 space-y-8">
+        
+        <section id="definisi" class="bg-white rounded-2xl shadow-md p-6 sm:p-8 border-t-4 border-indigo-500">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-lg">1</span>
+                Definisi Anuitas
+            </h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                <strong>Anuitas</strong> adalah sejumlah pembayaran pinjaman (cicilan) yang <strong>sama besarnya</strong> yang dibayarkan setiap jangka waktu tertentu (periode). 
+            </p>
+            <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-gray-700">
+                <p>Dalam sistem anuitas, setiap kali kita membayar cicilan, pembayaran tersebut selalu terdiri dari dua komponen utama:</p>
+                <ul class="list-disc list-inside mt-2 space-y-1 font-semibold">
+                    <li>Bagian Angsuran Pokok (yang mengurangi sisa utang)</li>
+                    <li>Bagian Bunga (biaya atas pinjaman)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="contoh-nyata" class="bg-white rounded-2xl shadow-md p-6 sm:p-8 border-t-4 border-teal-500">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-teal-100 text-teal-700 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </span>
+                Contoh Anuitas di Kehidupan Nyata
+            </h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                Sistem anuitas sangat sering kita jumpai dalam transaksi keuangan sehari-hari, terutama yang berkaitan dengan pembiayaan atau pinjaman bank. Beberapa contohnya antara lain:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-teal-50 rounded-xl p-4 border border-teal-100">
+                    <h4 class="font-bold text-teal-800 flex items-center mb-2">🏠 KPR (Kredit Pemilikan Rumah)</h4>
+                    <p class="text-sm text-teal-900">Cicilan rumah bulanan ke bank yang jumlahnya tetap (selama periode <i>fixed rate</i>). Pembayaran ini mencakup cicilan harga rumah beserta bunganya.</p>
+                </div>
+                <div class="bg-teal-50 rounded-xl p-4 border border-teal-100">
+                    <h4 class="font-bold text-teal-800 flex items-center mb-2">🚗 Kredit Kendaraan Bermotor</h4>
+                    <p class="text-sm text-teal-900">Membeli motor atau mobil melalui <i>leasing</i> dengan jumlah angsuran yang tetap setiap bulan hingga masa tenor habis.</p>
+                </div>
+                <div class="bg-teal-50 rounded-xl p-4 border border-teal-100">
+                    <h4 class="font-bold text-teal-800 flex items-center mb-2">💼 Kredit Usaha Rakyat (KUR)</h4>
+                    <p class="text-sm text-teal-900">Pinjaman modal usaha dari bank pemerintah atau swasta dengan skema pengembalian yang dicicil per bulan dengan nominal konstan.</p>
+                </div>
+                <div class="bg-teal-50 rounded-xl p-4 border border-teal-100">
+                    <h4 class="font-bold text-teal-800 flex items-center mb-2">🛡️ Pembayaran Asuransi / Pensiun</h4>
+                    <p class="text-sm text-teal-900">Membayar premi asuransi atau menerima dana pensiun dengan nominal yang sama setiap jangka waktu tertentu.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="manfaat" class="bg-white rounded-2xl shadow-md p-6 sm:p-8 border-t-4 border-rose-500">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-rose-100 text-rose-700 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                </span>
+                Mengapa Kita Perlu Belajar Anuitas?
+            </h2>
+            <div class="space-y-4 text-gray-700">
+                <p>Memahami anuitas bukan hanya untuk mendapatkan nilai bagus saat ujian, tetapi merupakan dasar yang sangat penting untuk <strong>Literasi Keuangan (Financial Literacy)</strong> di masa dewasa nanti. Berikut manfaat utamanya:</p>
+                <ul class="space-y-3 mt-2">
+                    <li class="flex items-start">
+                        <svg class="w-6 h-6 text-rose-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span><strong>Cerdas Mengevaluasi Utang:</strong> Kamu tidak akan mudah terjebak oleh "jebakan cicilan ringan", karena kamu tahu persis berapa proporsi utang pokok dan bunga asli yang sedang dibayarkan ke bank.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-6 h-6 text-rose-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span><strong>Perencanaan Masa Depan:</strong> Membantu merencanakan keuangan saat nanti ingin membeli aset besar (rumah/mobil). Kamu bisa melakukan simulasi KPR sendiri untuk mengukur kemampuan finansialmu.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-6 h-6 text-rose-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span><strong>Pengambilan Keputusan:</strong> Mampu membandingkan skema pinjaman dari berbagai lembaga keuangan untuk mencari opsi mana yang beban bunganya paling rendah dan paling menguntungkan bagi dirimu.</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="bg-amber-50 border border-amber-200 rounded-2xl shadow-sm p-6 sm:p-8">
+            <h3 class="text-lg font-bold text-amber-800 mb-2 flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                Skenario Soal Acuan
+            </h3>
+            <p class="text-amber-900 text-sm md:text-base leading-relaxed">
+                Untuk mempermudah pemahaman antar rumus, kita akan menggunakan skenario yang saling berhubungan pada contoh-contoh di bawah ini:<br>
+                <strong>"Pak Budi memiliki pinjaman awal (Modal/$M$) sebesar Rp 10.000.000 dengan suku bunga ($i$) sebesar 3% per bulan. Pak Budi sepakat melunasinya dengan sistem anuitas bulanan sebesar ($A$) Rp 500.000."</strong>
+            </p>
+        </section>
+
+        <section id="rumus-anuitas" class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-lg">2</span>
+                Rumus Anuitas ($A$)
+            </h2>
+            <p class="text-gray-600 mb-4">Rumus ini digunakan untuk mencari berapa besar cicilan tetap (Anuitas) yang harus dibayarkan setiap periodenya jika diketahui Modal, Suku Bunga, dan Lama Pinjaman.</p>
+            
+            <div class="math-block bg-gray-50 rounded-xl px-4 text-center border border-gray-200">
+                $$ A = \frac{M \cdot i}{1 - (1 + i)^{-n}} $$
+            </div>
+            
+            <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
+                <div><strong>Keterangan:</strong><br>
+                $A$ = Besar Anuitas<br>
+                $M$ = Modal / Pinjaman Awal<br>
+                </div>
+                <div><br>
+                $i$ = Suku bunga per periode<br>
+                $n$ = Banyaknya periode (jangka waktu)
+                </div>
+            </div>
+
+            <div class="mt-6 bg-slate-50 border-l-4 border-slate-400 p-4 rounded-r-xl">
+                <h4 class="font-bold text-slate-700 mb-2">Contoh Soal (Khusus Mencari Anuitas):</h4>
+                <p class="text-sm text-slate-600">Sebuah pinjaman sebesar Rp 5.000.000 akan dilunasi dalam waktu 3 bulan dengan suku bunga 5% per bulan. Berapa besar anuitasnya?</p>
+                <div class="text-sm text-slate-700 mt-2">
+                    <p>Diketahui: $M = 5.000.000$, $i = 0,05$, $n = 3$</p>
+                    <div class="math-block">
+                        $$ A = \frac{5.000.000 \cdot 0,05}{1 - (1 + 0,05)^{-3}} = \frac{250.000}{1 - (1,05)^{-3}} $$
+                        $$ A = \frac{250.000}{1 - 0,8638} = \frac{250.000}{0,1362} \approx Rp 1.835.535 $$
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="bunga-1" class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-lg">3</span>
+                Rumus Bunga Pertama ($b_1$)
+            </h2>
+            <p class="text-gray-600 mb-4">Bunga pertama selalu dihitung dari total pinjaman awal (Modal) dikalikan dengan persentase suku bunga.</p>
+            
+            <div class="math-block bg-gray-50 rounded-xl px-4 text-center border border-gray-200">
+                $$ b_1 = M \cdot i $$
+            </div>
+
+            <div class="mt-6 bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-xl">
+                <h4 class="font-bold text-indigo-800 mb-2">Contoh Penerapan (Dari Skenario):</h4>
+                <p class="text-sm text-indigo-700">Pak Budi meminjam Rp 10.000.000 ($M$) dengan bunga 3% ($0,03$) per bulan. Berapa bunga pada bulan pertama?</p>
+                <div class="text-sm text-indigo-800 mt-2">
+                    <div class="math-block">
+                        $$ b_1 = 10.000.000 \cdot 0,03 = Rp 300.000 $$
+                    </div>
+                    <p class="mt-1 font-semibold">Jadi, besarnya bunga pertama adalah Rp 300.000.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="angsuran-1" class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-lg">4</span>
+                Rumus Angsuran Pokok Pertama ($a_1$)
+            </h2>
+            <p class="text-gray-600 mb-4">Angsuran pokok pertama adalah bagian dari anuitas bulan pertama yang benar-benar digunakan untuk mengurangi utang awal.</p>
+            
+            <div class="math-block bg-gray-50 rounded-xl px-4 text-center border border-gray-200">
+                $$ a_1 = A - b_1 $$
+            </div>
+            
+            <p class="text-sm text-gray-500 mt-2 italic">*Catatan: Untuk menghitung $a_1$, kita harus mengetahui Bunga Pertama ($b_1$) terlebih dahulu (lihat poin ke-3).</p>
+
+            <div class="mt-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
+                <h4 class="font-bold text-blue-800 mb-2">Contoh Penerapan (Dari Skenario):</h4>
+                <p class="text-sm text-blue-700">Diketahui Anuitas ($A$) = Rp 500.000. Jika Bunga Pertama ($b_1$) telah dihitung dan hasilnya adalah Rp 300.000, berapakah Angsuran Pokok Pertamanya?</p>
+                <div class="text-sm text-blue-800 mt-2">
+                    <div class="math-block">
+                        $$ a_1 = A - b_1 $$
+                        $$ a_1 = 500.000 - 300.000 = Rp 200.000 $$
+                    </div>
+                    <p class="mt-1 font-semibold">Jadi, angsuran pokok pertamanya adalah Rp 200.000.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="angsuran-n" class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-lg">5</span>
+                Rumus Angsuran Pokok ke-n ($a_n$)
+            </h2>
+            <p class="text-gray-600 mb-4">Seiring berjalannya waktu, porsi angsuran pokok akan semakin <strong>besar</strong> karena sisa utang mengecil. Rumus ini membentuk deret geometri.</p>
+            
+            <div class="math-block bg-gray-50 rounded-xl px-4 text-center border border-gray-200">
+                $$ a_n = a_1 \cdot (1 + i)^{n-1} $$
+            </div>
+
+            <div class="mt-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
+                <h4 class="font-bold text-blue-800 mb-2">Contoh Penerapan (Dari Skenario):</h4>
+                <p class="text-sm text-blue-700">Berdasarkan perhitungan sebelumnya, $a_1$ = Rp 200.000 dan bunga $i = 3\%$ ($0,03$). Berapakah besar angsuran pokok pada bulan ke-3 ($a_3$)?</p>
+                <div class="text-sm text-blue-800 mt-2">
+                    <p>Diketahui: $a_1 = 200.000$, $i = 0,03$, $n = 3$</p>
+                    <div class="math-block">
+                        $$ a_3 = 200.000 \cdot (1 + 0,03)^{3-1} $$
+                        $$ a_3 = 200.000 \cdot (1,03)^2 $$
+                        $$ a_3 = 200.000 \cdot 1,0609 = Rp 212.180 $$
+                    </div>
+                    <p class="mt-1 font-semibold">Jadi, angsuran pokok pada bulan ke-3 adalah Rp 212.180.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="bunga-n" class="bg-white rounded-2xl shadow-md p-6 sm:p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-lg">6</span>
+                Rumus Bunga ke-n ($b_n$)
+            </h2>
+            <p class="text-gray-600 mb-4">Seiring berjalannya waktu, karena utang terus berkurang, maka porsi bunga yang dibayarkan akan semakin <strong>kecil</strong>. Bunga ke-n bisa dicari dengan mengurangkan Anuitas dengan Angsuran Pokok ke-n.</p>
+            
+            <div class="math-block bg-gray-50 rounded-xl px-4 text-center border border-gray-200">
+                $$ b_n = A - a_n $$
+            </div>
+
+            <div class="mt-6 bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-xl">
+                <h4 class="font-bold text-indigo-800 mb-2">Contoh Penerapan (Dari Skenario):</h4>
+                <p class="text-sm text-indigo-700">Diketahui Anuitas ($A$) = Rp 500.000 dan Angsuran Pokok ke-3 ($a_3$) = Rp 212.180 (dari poin 5). Berapakah bunga pada bulan ke-3?</p>
+                <div class="text-sm text-indigo-800 mt-2">
+                    <div class="math-block">
+                        $$ b_3 = A - a_3 $$
+                        $$ b_3 = 500.000 - 212.180 = Rp 287.820 $$
+                    </div>
+                    <p class="mt-1 font-semibold">Jadi, bunga pada bulan ke-3 adalah Rp 287.820.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="latihan-soal" class="bg-white rounded-2xl shadow-md p-6 sm:p-8 border-t-4 border-fuchsia-500">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                <span class="bg-fuchsia-100 text-fuchsia-700 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                </span>
+                Latihan Soal & Pembahasan
+            </h2>
+            
+            <div class="bg-fuchsia-50 rounded-xl p-5 border border-fuchsia-100 text-gray-800 mb-6 shadow-sm">
+                <p class="font-medium text-lg leading-relaxed italic text-fuchsia-900">
+                    "Budi meminjam uang sebesar Rp10.000.000 dengan bunga 12% per tahun. Jika anuitasnya sebesar Rp2.773.925, maka besar angsuran pokok pertamanya adalah ...."
+                </p>
+                <p class="text-sm text-fuchsia-700 mt-2 font-bold">— PSAS 2025</p>
+            </div>
+
+            <div class="border border-gray-200 rounded-xl overflow-hidden">
+                <div class="bg-gray-50 px-5 py-3 border-b border-gray-200 font-bold text-gray-700 flex items-center">
+                    <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    Pembahasan Langkah demi Langkah:
+                </div>
+                <div class="p-5 text-gray-700 space-y-5">
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <strong class="text-gray-800 block mb-2">Diketahui:</strong>
+                        <ul class="list-disc list-inside ml-2 space-y-1 text-gray-600">
+                            <li>Pinjaman Awal / Modal ($M$) = <span class="font-semibold text-gray-800">Rp 10.000.000</span></li>
+                            <li>Suku Bunga ($i$) = <span class="font-semibold text-gray-800">12% per tahun = 0,12</span></li>
+                            <li>Anuitas ($A$) = <span class="font-semibold text-gray-800">Rp 2.773.925</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <strong class="text-gray-800">Ditanya:</strong> Angsuran pokok pertama ($a_1$) ?
+                    </div>
+                    
+                    <div>
+                        <strong class="text-gray-800">Jawab:</strong>
+                        <div class="mt-3">
+                            <p class="text-sm font-semibold text-indigo-700 mb-1">Langkah 1: Cari Bunga Pertama ($b_1$) dahulu</p>
+                            <p class="text-sm text-gray-500 mb-2">Gunakan rumus Bunga Pertama ($b_1 = M \cdot i$)</p>
+                            <div class="math-block bg-indigo-50 border border-indigo-100 rounded-lg p-3 text-sm">
+                                $$ b_1 = 10.000.000 \times 0,12 $$
+                                $$ b_1 = 1.200.000 $$
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5">
+                            <p class="text-sm font-semibold text-blue-700 mb-1">Langkah 2: Hitung Angsuran Pokok Pertama ($a_1$)</p>
+                            <p class="text-sm text-gray-500 mb-2">Gunakan rumus Angsuran Pokok ($a_1 = A - b_1$)</p>
+                            <div class="math-block bg-blue-50 border border-blue-100 rounded-lg p-3 text-sm">
+                                $$ a_1 = 2.773.925 - 1.200.000 $$
+                                $$ a_1 = 1.573.925 $$
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 text-green-800 p-4 rounded-lg border border-green-200 mt-4 text-center">
+                        Jadi, besar angsuran pokok pertamanya adalah <strong class="text-lg">Rp 1.573.925</strong>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-16 bg-gray-800 text-gray-400 py-8 text-center text-sm">
+        <p>Media Pembelajaran Matematika Interaktif &copy; 2026</p>
+        <p class="mt-1">Materi: Bunga Majemuk dan Anuitas - Kelas 11 SMA/SMK</p>
+    </footer>
+
+</body>
+</html>
