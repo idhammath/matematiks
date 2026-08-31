@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis MTK - Penjumlahan & Pengurangan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .correct-btn {
+            background-color: #22c55e !important;
+            /* Hijau */
+            color: white !important;
+            border-color: #22c55e !important;
+        }
+
+        .wrong-btn {
+            background-color: #ef4444 !important;
+            /* Merah */
+            color: white !important;
+            border-color: #ef4444 !important;
+        }
+
+        /* Mencegah klik ganda saat tombol disabled */
+        .disabled-option {
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body class="bg-blue-50 min-h-screen flex items-center justify-center p-4 font-sans text-gray-800">
+
+    <div id="screen-awal" class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md fade-in">
+        <h1 class="text-2xl font-bold text-center text-blue-700 mb-6">Kuis Matematika</h1>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold mb-2">Pilih Kelas</label>
+            <select id="select-kelas"
+                class="w-full border-2 border-gray-300 rounded-lg p-3 outline-none focus:border-blue-500 transition">
+                <option value="" disabled selected>-- Pilih Kelas --</option>
+            </select>
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700 font-semibold mb-2">Pilih Nama Siswa</label>
+            <select id="select-nama"
+                class="w-full border-2 border-gray-300 rounded-lg p-3 outline-none focus:border-blue-500 transition"
+                disabled>
+                <option value="" disabled selected>-- Pilih Nama --</option>
+            </select>
+        </div>
+        <button id="btn-mulai"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-md transition transform hover:scale-[1.02] hidden">
+            MULAI
+        </button>
+    </div>
+
+    <div id="screen-kuis" class="bg-white p-6 md:p-8 rounded-2xl shadow-lg w-full max-w-2xl hidden fade-in">
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+            <div class="text-lg font-bold text-gray-600">Soal <span id="soal-ke" class="text-blue-600">1</span>/15</div>
+            <div class="flex items-center gap-2 bg-red-100 text-red-600 px-4 py-2 rounded-full font-bold">
+                ⏱️ <span id="timer-display">02:30</span>
+            </div>
+        </div>
+
+        <div class="mb-8 min-h-[100px] flex items-center justify-center bg-gray-50 rounded-xl border border-gray-200">
+            <h2 id="teks-soal" class="text-3xl md:text-4xl font-bold text-center text-gray-800 tracking-wider"></h2>
+        </div>
+
+        <div id="opsi-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        </div>
+    </div>
+
+    <div id="screen-akhir" class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md hidden fade-in text-center">
+        <h1 class="text-3xl font-bold text-blue-700 mb-2">Kuis Selesai!</h1>
+        <p class="text-gray-500 mb-6">Berikut adalah hasil pengerjaanmu.</p>
+
+        <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-200 text-left">
+            <p class="mb-2"><span class="font-bold text-gray-700">Nama:</span> <span id="hasil-nama"
+                    class="text-blue-600 font-semibold"></span></p>
+            <p class="mb-2"><span class="font-bold text-gray-700">Kelas:</span> <span id="hasil-kelas"
+                    class="text-blue-600 font-semibold"></span></p>
+            <hr class="my-3">
+            <div class="flex justify-between items-center">
+                <p class="text-green-600 font-bold">✅ Benar: <span id="hasil-benar"></span></p>
+                <p class="text-red-500 font-bold">❌ Salah: <span id="hasil-salah"></span></p>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <p class="text-gray-600 font-bold uppercase tracking-widest text-sm mb-1">NILAI AKHIR</p>
+            <div id="hasil-nilai" class="text-5xl font-black text-blue-600">100</div>
+        </div>
+
+        <div id="status-sheet" class="text-sm font-semibold text-yellow-600 bg-yellow-50 py-2 rounded-lg mb-4">
+            ⏳ Menyimpan nilai ke sistem...
+        </div>
+
+        <button onclick="location.reload()"
+            class="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-bold py-2 rounded-lg transition">
+            Kembali ke Awal
+        </button>
+    </div>
+
+    <script>
+        // ================= DATA SISWA DARI EXCEL =================
+        const dataSiswa = {
+            "10 AKC 1": ["Adila Zeinistin", "Anggi Ariyanti Putri", "Aprlyza Ratu Zatmika", "Asya Hayatunnazila", "Atika Yulianah", "Aulia Syafira", "Azkiya Maula Febrianti", "Chalista Chika Anatasya", "Desi Ameliani", "Dinia Maulida", "Diyah Ayu Pitaloka", "Dwi Fitriani", "Elvira Ayudia Putri", "Fifit Nur Arrapah", "Gibran Maulana Wibisono", "Hasna Zhafirah", "Jihan Nur Zharifah", "Kenez Nirmalasari", "Keola Najla Kaili Putri", "Lulu Qutrunnada Ramadhani", "Maura Chantiqa Nayandra", "Mutiara Khasanah", "Nadya Asyifa Irawan", "Naila Rahadatul Husna Sasongko", "Nasyabilla Azzahra Meladien", "Novita Indriyanti", "Nya Anggi Safinda Hulu", "Putra Sofyan Ibnu Adzim", "Putri Anjani Wibowo", "Rakhuelia Febriana", "Riska Maryati", "Seny Maulida Nurhidayat", "Sherrin Nesya Ramadani", "Tifani Ameira", "Tio Pakusadewo", "Woro Niken Herdiah Ningsih"],
+            "10 AKC 2": ["Adilla Nur Syafatilah", "Aliqa Hana Bahita", "Aqila Hana Bahita", "Aryanti Dwi Aprilianing Tias", "Ashifa Mayda Putri", "Asifa Azka Thabita", "Chika Meilieza Primansyah", "Dianah Siti Nur Azizah", "Fatimah Hastagina Arrizaal", "Feliyna Atha Dwi Putri", "Hayatul Muthmainah", "Julistia Walandari", "Keyla Nurhanifah Wiguna", "Maulida Fitriyya Sujaen", "Melisa Retina Putri", "Michelle Alisia Cristiani", "Nessa Nur Ardelina Ritonga", "Nova Arini", "Nurhayati Nufrah Putri", "Nyiayu Nazwa Khalaya Hasan", "Putri Ayu Kumala Sari", "Qori Nurlita", "Riska Maysyah", "Rizkha Fathonah", "Rojwa Jihan", "Salsabillah", "Sani Aghnia Syakira", "Shanaz Andara Armandini", "Siti Aisah", "Siti Hafnah", "Siti Rania Rabyusani", "Ulan Cahya", "Wulan Sari", "Yunira Olivia", "Zahira Maulia Bilqis", "Zahra Anggraina"],
+            "10 DKV 2": ["Adelia Paramita", "Ahmad Yazid Bustomi", "Ainur Syifa Ramadhani", "Ali Syibro Milisy", "Ammar Abdul Rauf", "Asshad Yusuf Alfarizzi", "Astri Ananda", "Bintang Haris", "Callysta Tri Azzahra", "Falahul Evan Maulana", "Farzana Asytar Kenkyona", "Hanun Bassamah", "Hasya Awwalan Ghassany", "Jabbar Marli", "Kalia Nazwa Ailsya", "Kanza Riswani Ahmad", "Keysya Oktafiana", "M. Ari Oktoviansyah", "Maharani Shifa Olivia", "Meisa Putri", "Muhamad Andika Saputra", "Muhammad Adil Nurjaman", "Muhammad Habib Ibrahim", "Muhammad Yusuf Irawan", "Nafa Salsabila Octavia", "Nurul Aulia", "Panji Prakasa", "Putri Fika Fauzia", "Ragel Oktovio Pamungkas", "Rayhaj Hikmal Ramadhan", "Ria Rizky Marsila", "Siti Nurholipah", "Sri Rahmah Nurhati", "Sri Surya Ningsih", "Syifa Aulia Putri", "Yanuar Putri Andini"],
+            "11 MP 1": ["AFIFA AZZAHRA IKRAM", "AHMAD AGIL PRATAMA", "AILEEN ARGYA PUTRI", "AISYAH SALSABILA NUR", "ANDHINI DWI LARASATI", "ANGELINA DARA PUSPITA", "ANGGUN ANDRILIA OKTAVIA", "ANISA ANGIE SHALSABILLA", "ANNISA NUR HAKIM", "APRILYA MEI SHIN", "ARFARA ANINDYA RAMADANI", "BAGAS FERDIANSYAH", "BAYU ISWANDI", "DEVIA ANDRIANI YUSUF", "DHEA PRIYANTI", "ERDA PUTRI", "FITRIA RAHMA DEWI", "HELSHA CHERISSA", "IKLIMA AINUL HAWA", "INNA ROTUL KHASANAH", "JIHAN RAMADHANI", "KHEISYA ADINDA SANSABILA", "LIFATUN ATIYAH", "MOHAMAD FEBRI ADI FIRMANSYAH", "MUHAMAD PATUH ARAHMAN", "MUHAMAD RAFA FIRMANSYAH", "NADIA ZAHWA SETIAWAN", "NAIRA ALMIRA PUTRI", "NURASIAH", "SAFA MAY PUTRI AZHAR", "SITI SARAH AULIA", "SYAFA AULIA RAMADHANI", "THERESIA FEBRIANA", "TRI UTAMI ASMARA DEWI", "TRI YULIA PRATOMO", "WINDA PRATIWI"],
+            "11 MP 2": ["ADHWA ISTIQOMAH", "ADINDA ANATASYA", "ALBANI BELVA RAHADIAN", "ANAFRESELLA OCHTAVIA", "ANGGRE IKA SALWA VALITA", "ARINDA NOVIATUN NURKHOLIPAH", "ARNELITA OKTAVIANA", "AULIA PUTRI EFENDI", "AZURA ZAHWA AULIA", "CALISTA PUTRI NURCAHYANI", "DEWI SEKAR MELATI", "ELVIRA YUANITA", "FARAZ INTAN TITIAN", "FIRMANSYAH", "JIHAN PUSPA RAMADHANI", "KEYLA RAHMADANI HUMAYUN", "LIDYA SARI", "MERSIA KORISA", "MICHELLE YUMIKO", "MUHAMMAD AFIF FATURRAHMAN", "NABILA PUTRI", "NABILA SHIFA AZZAHRA", "NAYLA ANDRIANI BASRI", "NAZMI SAFIRA", "NAZWA ZAHRA AULIA", "NUR AZIZAH", "NURRAISSA KASIH MAHARANI", "REVALINA MAHARANI WIJAYA", "SALLYZA DEFHANY FATIHA", "SITI SOFIAH", "SYIFA MAY PUTRI AZHAR", "TABITHA SHERLY PUTI", "TEUNGKU AZRIEL ILHAM YUSUP", "VANYA PUTRI BALQIS", "ZAHRA YULIYANTI", "ZASKIA FEBRI MAULIDA"]
+        };
+
+        // ================= URL GOOGLE APPS SCRIPT =================
+        // PASTE URL WEB APP ANDA DI SINI
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5NgZ5c0Ef4PU8geWLCcOZD08TtA4eVEVoTVBabIpQjDRz6g1a1WG-qNtQyKtzdrZo/exec';
+
+        // ================= VARIABEL GLOBAL =================
+        let currentUser = { kelas: "", nama: "" };
+        let questions = [];
+        let currentQIndex = 0;
+        let scoreBenar = 0;
+        let scoreSalah = 0;
+
+        let timerInterval;
+        let timeLeft = 150; // 2 menit 30 detik
+
+        // ================= INISIALISASI HALAMAN AWAL =================
+        const selectKelas = document.getElementById('select-kelas');
+        const selectNama = document.getElementById('select-nama');
+        const btnMulai = document.getElementById('btn-mulai');
+
+        // Populate Kelas
+        Object.keys(dataSiswa).forEach(kelas => {
+            let option = document.createElement('option');
+            option.value = kelas;
+            option.textContent = kelas;
+            selectKelas.appendChild(option);
+        });
+
+        selectKelas.addEventListener('change', function () {
+            selectNama.innerHTML = '<option value="" disabled selected>-- Pilih Nama --</option>';
+            let kelasTerpilih = this.value;
+
+            if (kelasTerpilih) {
+                selectNama.disabled = false;
+                dataSiswa[kelasTerpilih].forEach(nama => {
+                    let option = document.createElement('option');
+                    option.value = nama;
+                    option.textContent = nama;
+                    selectNama.appendChild(option);
+                });
+            }
+            btnMulai.classList.add('hidden');
+        });
+
+        selectNama.addEventListener('change', function () {
+            if (this.value) {
+                btnMulai.classList.remove('hidden');
+            }
+        });
+
+        btnMulai.addEventListener('click', function () {
+            currentUser.kelas = selectKelas.value;
+            currentUser.nama = selectNama.value;
+
+            document.getElementById('screen-awal').classList.add('hidden');
+            document.getElementById('screen-kuis').classList.remove('hidden');
+
+            generateQuestions();
+            startTimer();
+            renderQuestion();
+        });
+
+        // ================= LOGIKA PEMBUATAN SOAL =================
+        function generateQuestions() {
+            // Generate a dan b (1 - 9) SEKALI SAJA di awal agar sama untuk 15 soal
+            let a, b;
+            do {
+                a = Math.floor(Math.random() * 9) + 1;
+                b = Math.floor(Math.random() * 9) + 1;
+            } while (a === b); // Memastikan a dan b adalah bilangan yang berbeda
+
+            // 15 Format soal sesuai permintaan
+            const polaSoal = [
+                (a, b) => ({ text: `${a} + ${b} = ....`, ans: a + b }),
+                (a, b) => ({ text: `${a} - ${b} = ....`, ans: a - b }),
+                (a, b) => ({ text: `${b} - ${a} = ....`, ans: b - a }),
+                (a, b) => ({ text: `-${a} + ${b} = ....`, ans: -a + b }),
+                (a, b) => ({ text: `-${b} + ${a} = ....`, ans: -b + a }),
+                (a, b) => ({ text: `-${a} - ${b} = ....`, ans: -a - b }),
+                (a, b) => ({ text: `-${b} - ${a} = ....`, ans: -b - a }),
+                (a, b) => ({ text: `${a} + (-${b}) = ....`, ans: a + (-b) }),
+                (a, b) => ({ text: `${b} + (-${a}) = ....`, ans: b + (-a) }),
+                (a, b) => ({ text: `${a} - (-${b}) = ....`, ans: a - (-b) }),
+                (a, b) => ({ text: `${b} - (-${a}) = ....`, ans: b - (-a) }),
+                (a, b) => ({ text: `-${a} + (-${b}) = ....`, ans: -a + (-b) }),
+                (a, b) => ({ text: `-${b} + (-${a}) = ....`, ans: -b + (-a) }),
+                (a, b) => ({ text: `-${a} - (-${b}) = ....`, ans: -a - (-b) }),
+                (a, b) => ({ text: `-${b} - (-${a}) = ....`, ans: -b - (-a) })
+            ];
+
+            // Acak urutan 15 pola soal tersebut
+            polaSoal.sort(() => Math.random() - 0.5);
+
+            // Buat daftar pertanyaan berdasarkan pola yang sudah diacak menggunakan a dan b yang fix
+            questions = polaSoal.map(polaFn => {
+                const dataSoal = polaFn(a, b);
+
+                // Opsi jawaban selalu: a+b, a-b, b-a, -a-b
+                let options = [a + b, a - b, b - a, -a - b];
+
+                // Acak posisi opsi jawaban A, B, C, D
+                options.sort(() => Math.random() - 0.5);
+
+                return {
+                    question: dataSoal.text,
+                    correct: dataSoal.ans,
+                    options: options
+                };
+            });
+        }
+
+        // ================= TIMER =================
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz(); // Waktu habis, langsung ke hasil
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            let m = Math.floor(timeLeft / 60);
+            let s = timeLeft % 60;
+            document.getElementById('timer-display').textContent =
+                (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+        }
+
+        // ================= RENDER SOAL & JAWABAN =================
+        function renderQuestion() {
+            if (currentQIndex >= questions.length) {
+                clearInterval(timerInterval);
+                finishQuiz();
+                return;
+            }
+
+            const q = questions[currentQIndex];
+            document.getElementById('soal-ke').textContent = (currentQIndex + 1);
+            document.getElementById('teks-soal').textContent = q.question;
+
+            const opsiContainer = document.getElementById('opsi-container');
+            opsiContainer.innerHTML = ''; // bersihkan opsi sblmnya
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.textContent = opt;
+                btn.className = "opsi-btn border-2 border-gray-300 text-xl font-bold py-4 rounded-xl hover:bg-gray-100 hover:border-blue-400 transition bg-white text-gray-700 shadow-sm";
+
+                btn.addEventListener('click', function () {
+                    cekJawaban(btn, opt, q.correct);
+                });
+
+                opsiContainer.appendChild(btn);
+            });
+        }
+
+        function cekJawaban(clickedBtn, selectedValue, correctValue) {
+            // Disable semua tombol agar tidak bisa diklik berulang kali
+            const buttons = document.querySelectorAll('.opsi-btn');
+            buttons.forEach(b => b.classList.add('disabled-option'));
+
+            if (selectedValue === correctValue) {
+                // Benar
+                clickedBtn.classList.add('correct-btn');
+                scoreBenar++;
+            } else {
+                // Salah
+                clickedBtn.classList.add('wrong-btn');
+                scoreSalah++;
+                // Tunjukkan mana yang benar
+                buttons.forEach(b => {
+                    if (parseInt(b.textContent) === correctValue) {
+                        b.classList.add('correct-btn');
+                    }
+                });
+            }
+
+            // Tunggu 1 detik lalu pindah soal
+            setTimeout(() => {
+                currentQIndex++;
+                renderQuestion();
+            }, 1000);
+        }
+
+        // ================= SELESAI & KIRIM KE SHEETS =================
+        function finishQuiz() {
+            document.getElementById('screen-kuis').classList.add('hidden');
+            document.getElementById('screen-akhir').classList.remove('hidden');
+
+            let nilaiAkhir = Math.round((scoreBenar / 15) * 100);
+
+            document.getElementById('hasil-nama').textContent = currentUser.nama;
+            document.getElementById('hasil-kelas').textContent = currentUser.kelas;
+            document.getElementById('hasil-benar').textContent = scoreBenar;
+            document.getElementById('hasil-salah').textContent = scoreSalah;
+            document.getElementById('hasil-nilai').textContent = nilaiAkhir;
+
+            // Kirim Data ke Google Sheets
+            kirimKeGoogleSheets(currentUser.nama, currentUser.kelas, scoreBenar, scoreSalah, nilaiAkhir);
+        }
+
+        function kirimKeGoogleSheets(nama, kelas, benar, salah, nilai) {
+            const statusText = document.getElementById('status-sheet');
+
+            const payload = {
+                nama: nama,
+                kelas: kelas,
+                benar: benar,
+                salah: salah,
+                nilai: nilai
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "sukses") {
+                        statusText.className = "text-sm font-semibold text-green-700 bg-green-100 py-2 rounded-lg mb-4";
+                        statusText.innerHTML = "✅ Nilai berhasil disimpan!";
+                    } else {
+                        throw new Error("Gagal menyimpan");
+                    }
+                })
+                .catch(err => {
+                    statusText.className = "text-sm font-semibold text-red-700 bg-red-100 py-2 rounded-lg mb-4";
+                    statusText.innerHTML = "⚠️ Gagal menyimpan nilai. Pastikan link Apps Script sudah benar.";
+                    console.error(err);
+                });
+        }
+    </script>
+</body>
+
+</html>
