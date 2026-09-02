@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian Matematika Sederhana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Mencegah seleksi teks (copy-paste) */
+        body {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
+        /* Custom modal untuk peringatan */
+        #warning-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(220, 38, 38, 0.9);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center font-sans">
+
+    <!-- 1. START SCREEN -->
+    <div id="start-screen" class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md text-center">
+        <h1 class="text-2xl font-bold mb-4 text-blue-600">Ujian Matematika</h1>
+        <p class="mb-6 text-gray-600">Terdiri dari 3 soal pilihan ganda. Waktu 1 Menit. <br><span
+                class="text-red-500 font-semibold">Dilarang keluar dari layar penuh atau pindah aplikasi!</span></p>
+
+        <input type="text" id="student-name" placeholder="Masukkan Nama Anda"
+            class="w-full px-4 py-2 border rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required>
+
+        <button onclick="startExam()"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded transition duration-200">
+            MULAI UJIAN
+        </button>
+    </div>
+
+    <!-- 2. EXAM SCREEN -->
+    <div id="exam-screen" class="hidden w-full h-full min-h-screen bg-gray-50 flex flex-col">
+        <!-- Header / Timer -->
+        <div class="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
+            <h2 class="text-lg font-bold text-gray-700" id="display-name">Nama Peserta</h2>
+            <div class="text-xl font-bold text-red-600 bg-red-100 px-4 py-1 rounded-full" id="timer">01:00</div>
+        </div>
+
+        <!-- Soal Container -->
+        <div class="flex-grow p-4 md:p-8 overflow-y-auto w-full max-w-3xl mx-auto" id="questions-container">
+            <!-- Soal akan di-generate oleh JavaScript di sini -->
+        </div>
+
+        <!-- Footer / Submit -->
+        <div class="bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-4 flex justify-center sticky bottom-0 z-10">
+            <button onclick="submitExam()"
+                class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-12 rounded shadow-lg text-lg transition duration-200">
+                SELESAI
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. RESULT SCREEN -->
+    <div id="result-screen" class="hidden bg-white p-8 rounded-lg shadow-lg w-full max-w-md text-center">
+        <h1 class="text-3xl font-bold mb-2 text-green-600">Ujian Selesai!</h1>
+        <div class="my-6">
+            <p class="text-gray-500 uppercase tracking-wide text-sm">Nama Peserta</p>
+            <p class="text-2xl font-bold text-gray-800 mb-4" id="result-name">-</p>
+
+            <p class="text-gray-500 uppercase tracking-wide text-sm">Nilai Anda</p>
+            <p class="text-5xl font-extrabold text-blue-600" id="result-score">0</p>
+        </div>
+        <p class="text-sm text-gray-500 mb-4" id="upload-status">Menyimpan data...</p>
+    </div>
+
+    <!-- WARNING MODAL (Anti-Cheat) -->
+    <div id="warning-modal" class="flex flex-col items-center justify-center text-white">
+        <svg class="w-24 h-24 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+            </path>
+        </svg>
+        <h2 class="text-3xl font-bold mb-2">PERINGATAN!</h2>
+        <p class="text-lg text-center max-w-md px-4 mb-6">Anda terdeteksi keluar dari layar penuh atau berpindah
+            aplikasi.<br><strong>Soal dan angka telah diacak kembali!</strong></p>
+        <button onclick="closeWarning()"
+            class="bg-white text-red-600 font-bold py-2 px-6 rounded hover:bg-gray-200">Saya Mengerti</button>
+    </div>
+
+    <script>
+        // ==========================================
+        // KONFIGURASI GOOGLE APP SCRIPT
+        // Ganti URL di bawah ini dengan URL Web App dari Google App Script Anda!
+        // ==========================================
+        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwH4ks9JsL_5TDUX357309E8DuMvs7aUfB7ejgs17QQ7aaP_ztXemVbv8Fh1kTKxT3c/exec';
+
+        // State Ujian
+        let userName = "";
+        let timeLeft = 60; // 1 Menit
+        let timerInterval;
+        let isExamActive = false;
+        let currentQuestions = [];
+
+        // Referensi elemen DOM
+        const startScreen = document.getElementById('start-screen');
+        const examScreen = document.getElementById('exam-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const nameInput = document.getElementById('student-name');
+        const timerDisplay = document.getElementById('timer');
+        const container = document.getElementById('questions-container');
+        const warningModal = document.getElementById('warning-modal');
+
+        // Fungsi Memulai Ujian
+        function startExam() {
+            userName = nameInput.value.trim();
+            if (!userName) {
+                alert("Silakan masukkan nama Anda terlebih dahulu!");
+                return;
+            }
+
+            document.getElementById('display-name').innerText = userName;
+
+            // Masuk Fullscreen
+            requestFullScreen();
+
+            // Sembunyikan layar awal, tampilkan layar ujian
+            startScreen.classList.add('hidden');
+            examScreen.classList.remove('hidden');
+
+            isExamActive = true;
+            generateQuestions();
+            startTimer();
+        }
+
+        // Fungsi Meminta Fullscreen
+        function requestFullScreen() {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Fungsi Keluar Fullscreen
+        function exitFullScreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+
+        // Fungsi Generate Angka Acak
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Fungsi Mengacak Array (Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Fungsi Membuat Soal
+        function generateQuestions() {
+            currentQuestions = [];
+            container.innerHTML = ''; // Kosongkan kontainer
+
+            for (let i = 0; i < 3; i++) {
+                // Generate bilangan antara -50 dan 50
+                let num1 = getRandomInt(-50, 50);
+                let num2 = getRandomInt(-50, 50);
+                let isAddition = Math.random() > 0.5;
+
+                let operatorStr = isAddition ? '+' : '-';
+                let displayNum2 = num2 < 0 ? `(${num2})` : num2;
+                let questionText = `Hasil dari ${num1} ${operatorStr} ${displayNum2} adalah...`;
+
+                let correctAnswer = isAddition ? (num1 + num2) : (num1 - num2);
+
+                // Generate Pengecoh (Distractors)
+                let options = [correctAnswer];
+                while (options.length < 5) {
+                    let offset = getRandomInt(-15, 15);
+                    if (offset === 0) offset = 5;
+                    let wrongAnswer = correctAnswer + offset;
+                    // Pastikan tidak ada opsi kembar
+                    if (!options.includes(wrongAnswer)) {
+                        options.push(wrongAnswer);
+                    }
+                }
+
+                // Acak opsi A, B, C, D, E
+                shuffleArray(options);
+
+                // Simpan data soal
+                currentQuestions.push({
+                    correct: correctAnswer,
+                    options: options
+                });
+
+                // Render ke HTML
+                let questionHTML = `
+                    <div class="bg-white p-6 rounded-lg shadow mb-6 border border-gray-200">
+                        <p class="text-lg font-semibold mb-4 text-gray-800">${i + 1}. ${questionText}</p>
+                        <div class="space-y-2">
+                `;
+
+                const labels = ['A', 'B', 'C', 'D', 'E'];
+                options.forEach((opt, index) => {
+                    questionHTML += `
+                        <label class="flex items-center p-3 border rounded hover:bg-blue-50 cursor-pointer transition">
+                            <input type="radio" name="q${i}" value="${opt}" class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <span class="ml-3 text-gray-700 font-medium">${labels[index]}. ${opt}</span>
+                        </label>
+                    `;
+                });
+
+                questionHTML += `</div></div>`;
+                container.innerHTML += questionHTML;
+            }
+        }
+
+        // Fungsi Timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+
+                let m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                let s = (timeLeft % 60).toString().padStart(2, '0');
+                timerDisplay.innerText = `${m}:${s}`;
+
+                if (timeLeft <= 10) {
+                    timerDisplay.classList.remove('text-red-600', 'bg-red-100');
+                    timerDisplay.classList.add('text-white', 'bg-red-600', 'animate-pulse');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("WAKTU HABIS!");
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        // Fungsi Sistem Anti-Kecurangan
+        function handleCheatEvent() {
+            if (!isExamActive) return;
+
+            // Tampilkan layar peringatan
+            warningModal.style.display = 'flex';
+
+            // Acak soal ulang!
+            generateQuestions();
+
+            // Catatan: Waktu tetap berjalan
+        }
+
+        function closeWarning() {
+            warningModal.style.display = 'none';
+            // Coba kembalikan ke fullscreen (mungkin diblokir browser jika tidak dipicu gesture, tapi dicoba)
+            requestFullScreen();
+        }
+
+        // Event Listener untuk Anti-Cheat
+        // 1. Deteksi keluar Fullscreen (Tekan ESC)
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && isExamActive) handleCheatEvent();
+        });
+        document.addEventListener('webkitfullscreenchange', () => {
+            if (!document.webkitFullscreenElement && isExamActive) handleCheatEvent();
+        });
+
+        // 2. Deteksi pindah tab / minimize aplikasi (Visibility Change)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isExamActive) handleCheatEvent();
+        });
+
+        // 3. Deteksi hilang fokus (Tekan Start Windows, Buka aplikasi lain di atas browser)
+        window.addEventListener('blur', () => {
+            if (isExamActive) handleCheatEvent();
+        });
+
+        // Fungsi Submit Ujian
+        function submitExam() {
+            isExamActive = false;
+            clearInterval(timerInterval);
+
+            let score = 0;
+            // Evaluasi jawaban
+            for (let i = 0; i < 3; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected && parseInt(selected.value) === currentQuestions[i].correct) {
+                    // Masing-masing soal bernilai 100/3, agar bulat kita gunakan hitungan sederhana
+                    // 3 Benar = 100, 2 Benar = 67, 1 Benar = 33, 0 Benar = 0
+                    score += (100 / 3);
+                }
+            }
+            score = Math.round(score);
+
+            // Keluar fullscreen
+            exitFullScreen();
+
+            // Pindah layar
+            examScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            // Tampilkan hasil
+            document.getElementById('result-name').innerText = userName;
+            document.getElementById('result-score').innerText = score;
+
+            // Kirim ke Google Sheets
+            sendToGoogleSheets(userName, score);
+        }
+
+        // Fungsi Kirim Data via Webhook / App Script
+        function sendToGoogleSheets(name, score) {
+            const statusText = document.getElementById('upload-status');
+
+            // Jika URL belum diatur, batalkan pengiriman
+            if (GOOGLE_APP_SCRIPT_URL === 'URL_WEB_APP_GOOGLE_SCRIPT_ANDA_DI_SINI') {
+                statusText.innerText = "Data tidak dikirim (URL Google Script belum diatur).";
+                statusText.classList.add("text-red-500");
+                return;
+            }
+
+            statusText.innerText = "Sedang menyimpan nilai...";
+
+            // Membuat Form Data (biasa digunakan untuk google script web app)
+            const formData = new FormData();
+            formData.append('nama', name);
+            formData.append('nilai', score);
+
+            fetch(GOOGLE_APP_SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    statusText.innerText = "Nilai berhasil disimpan!";
+                    statusText.classList.remove("text-gray-500");
+                    statusText.classList.add("text-green-500");
+                })
+                .catch(error => {
+                    // Seringkali fetch ke GAS tanpa No-CORS menghasilkan error CORS meski data masuk.
+                    // Pendekatan No-CORS memblokir pembacaan response, jadi kita asumsikan sukses jika fetch jalan.
+                    statusText.innerText = "Permintaan terkirim. (Cek Google Sheets Anda)";
+                });
+        }
+
+        // Cegah back button
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function () {
+            window.history.pushState(null, "", window.location.href);
+        };
+    </script>
+</body>
+
+</html>
