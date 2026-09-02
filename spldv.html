@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materi Lengkap SPLDV - SMK Kelas 10</title>
+    
+    <!-- Tailwind CSS untuk Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Konfigurasi Tailwind untuk Font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax Konfigurasi -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                packages: {'[+]': ['cases']}
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <!-- MathJax Script -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .math-box { overflow-x: auto; overflow-y: hidden; padding-bottom: 10px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 leading-relaxed">
+
+    <!-- Header Section -->
+    <header class="bg-blue-600 text-white py-16 shadow-lg relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9Im5vbmUiLz4KPHBhdGggZD0iTTAgMTBoNDBNMTAgMHY0ME0wIDIwaDQwTTIwIDB2NDBNMCAzMGg0ME0zMCAwdjQwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4=')]"></div>
+        <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 tracking-tight">Sistem Persamaan Linear Dua Variabel (SPLDV)</h1>
+            <p class="text-xl text-blue-100 font-light">Matematika SMK Kelas 10 &bull; Modul Pembelajaran Interaktif</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-6 py-12 space-y-16">
+
+        <!-- Pendahuluan -->
+        <section class="bg-white rounded-2xl shadow-sm p-8 md:p-10 border border-slate-100">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6 border-b-4 border-blue-500 pb-2 inline-block">1. Mengapa Kita Harus Belajar SPLDV?</h2>
+            <p class="text-lg mb-6 text-slate-600">
+                Pernahkah kamu berbelanja di kantin dan mencoba menebak harga satuan gorengan dan es teh yang kamu beli secara paketan? Tanpa kamu sadari, kamu sedang mencoba memecahkan masalah <strong>Sistem Persamaan Linear Dua Variabel (SPLDV)</strong>. Di jenjang SMK, matematika bukan sekadar angka di atas kertas, tapi alat yang sangat berguna di dunia nyata.
+            </p>
+            
+            <div class="grid md:grid-cols-3 gap-6 mt-8">
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 transition hover:-translate-y-1 hover:shadow-md">
+                    <div class="text-blue-600 mb-3"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div>
+                    <h3 class="font-bold text-lg mb-2 text-slate-800">Kehidupan Sehari-hari</h3>
+                    <p class="text-sm text-slate-600">Membantu menghitung pengeluaran belanja, merencanakan tabungan bulanan, dan mencari harga satuan dari sebuah paket barang.</p>
+                </div>
+                <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-100 transition hover:-translate-y-1 hover:shadow-md">
+                    <div class="text-emerald-600 mb-3"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg></div>
+                    <h3 class="font-bold text-lg mb-2 text-slate-800">Sebagai Pekerja (Profesional)</h3>
+                    <p class="text-sm text-slate-600">Penting untuk menghitung stok barang, mencampur bahan kimia atau resep makanan dengan proporsi yang tepat, dan menghitung upah lembur.</p>
+                </div>
+                <div class="bg-amber-50 p-6 rounded-xl border border-amber-100 transition hover:-translate-y-1 hover:shadow-md">
+                    <div class="text-amber-600 mb-3"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg></div>
+                    <h3 class="font-bold text-lg mb-2 text-slate-800">Bagi Calon Pengusaha</h3>
+                    <p class="text-sm text-slate-600">Membantu menentukan target penjualan, menganalisis titik impas (Break-Even Point), dan memaksimalkan keuntungan dari dua jenis produk.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Definisi -->
+        <section class="bg-white rounded-2xl shadow-sm p-8 md:p-10 border border-slate-100">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6 border-b-4 border-indigo-500 pb-2 inline-block">2. Apa itu SPLDV?</h2>
+            
+            <p class="text-lg text-slate-700 mb-4">Mari kita bedah namanya secara perlahan:</p>
+            <ul class="list-disc list-inside space-y-2 text-slate-700 mb-6 ml-4">
+                <li><strong>Persamaan:</strong> Terdapat tanda sama dengan ($=$).</li>
+                <li><strong>Linear:</strong> Pangkat tertinggi dari variabelnya adalah 1 (bukan $x^2$ atau $y^3$). Jika digambar, bentuknya berupa garis lurus.</li>
+                <li><strong>Dua Variabel:</strong> Menggunakan dua huruf yang belum diketahui nilainya (biasanya $x$ dan $y$).</li>
+                <li><strong>Sistem:</strong> Ada <em>lebih dari satu</em> persamaan yang saling berkaitan untuk mencari satu solusi yang sama.</li>
+            </ul>
+
+            <div class="bg-indigo-50 border-l-4 border-indigo-500 p-6 rounded-r-lg mb-8">
+                <h3 class="font-bold text-indigo-900 mb-2">Bentuk Umum SPLDV</h3>
+                <div class="math-box text-xl text-center my-4">
+                    $$ \begin{cases} a_1x + b_1y = c_1 \quad \text{... (Persamaan 1)} \\ a_2x + b_2y = c_2 \quad \text{... (Persamaan 2)} \end{cases} $$
+                </div>
+                <p class="text-sm text-indigo-800 mt-2">Keterangan:<br>
+                $x$ dan $y$ = Variabel (yang mau dicari nilainya)<br>
+                $a, b$ = Koefisien (angka yang menempel pada variabel)<br>
+                $c$ = Konstanta (angka yang berdiri sendiri)</p>
+            </div>
+
+            <h3 class="text-xl font-bold text-slate-800 mb-4">Contoh Bentuk SPLDV</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="border border-slate-200 p-4 rounded-lg bg-slate-50">
+                    <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded font-bold mb-2">Ini SPLDV &#10004;</span>
+                    <div class="math-box">
+                        $$ \begin{cases} 2x + 3y = 8 \\ x - y = 1 \end{cases} $$
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">Dua persamaan, dua variabel ($x, y$), berpangkat 1.</p>
+                </div>
+                <div class="border border-slate-200 p-4 rounded-lg bg-slate-50">
+                    <span class="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded font-bold mb-2">Bukan SPLDV &#10008;</span>
+                    <div class="math-box">
+                        $$ \begin{cases} x^2 + y = 5 \\ 2x - 3y = 4 \end{cases} $$
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">Bukan linear karena ada variabel $x$ yang berpangkat 2 ($x^2$).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metode Penyelesaian -->
+        <section class="bg-white rounded-2xl shadow-sm p-8 md:p-10 border border-slate-100">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6 border-b-4 border-violet-500 pb-2 inline-block">3. Cara Menentukan Nilai x dan y</h2>
+            <p class="text-lg text-slate-700 mb-8">
+                Tujuan utama kita memecahkan SPLDV adalah mencari berapa sih nilai $x$ dan $y$ yang pas, sehingga <strong>kedua</strong> persamaan tersebut bernilai benar. Ada dua metode utama yang paling sering dipakai: <strong>Substitusi</strong> dan <strong>Eliminasi</strong>.
+            </p>
+
+            <!-- Metode Substitusi -->
+            <div class="mb-12">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-violet-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">A</div>
+                    <h3 class="text-2xl font-bold text-slate-800">Metode Substitusi (Mengganti)</h3>
+                </div>
+                <p class="text-slate-700 mb-4">Inti dari metode ini adalah <strong>menyatakan salah satu variabel ke dalam variabel lain</strong>, lalu "memasukkannya" (mensubstitusikan) ke persamaan yang satunya.</p>
+                
+                <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-4 text-lg">Contoh Soal:</h4>
+                    <p class="mb-2">Carilah nilai $x$ dan $y$ dari sistem persamaan berikut:</p>
+                    <div class="math-box bg-white p-4 rounded shadow-sm mb-4 inline-block">
+                        $$ \begin{cases} 2x + y = 7 \quad \text{... (1)} \\ x + 3y = 11 \quad \text{... (2)} \end{cases} $$
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="border-l-2 border-violet-400 pl-4">
+                            <h5 class="font-bold text-violet-700">Langkah 1: Ubah salah satu persamaan</h5>
+                            <p class="text-sm text-slate-600 mb-2">Pilih persamaan yang paling mudah. Persamaan (1) memiliki $y$ yang koefisiennya 1. Mari kita ubah persamaan (1) menjadi $y = ...$</p>
+                            <div class="math-box text-sm">
+                                $$ 2x + y = 7 \implies y = 7 - 2x \quad \text{... (Persamaan 3)} $$
+                            </div>
+                        </div>
+
+                        <div class="border-l-2 border-violet-400 pl-4">
+                            <h5 class="font-bold text-violet-700">Langkah 2: Substitusi (masukkan) ke persamaan lain</h5>
+                            <p class="text-sm text-slate-600 mb-2">Masukkan nilai $y$ (yaitu $7 - 2x$) ke dalam Persamaan (2).</p>
+                            <div class="math-box text-sm">
+                                $$ \begin{aligned} x + 3y &= 11 \\ x + 3(7 - 2x) &= 11 \\ x + 21 - 6x &= 11 \\ -5x + 21 &= 11 \end{aligned} $$
+                            </div>
+                        </div>
+
+                        <div class="border-l-2 border-violet-400 pl-4">
+                            <h5 class="font-bold text-violet-700">Langkah 3: Selesaikan untuk mencari x</h5>
+                            <div class="math-box text-sm">
+                                $$ \begin{aligned} -5x &= 11 - 21 \\ -5x &= -10 \\ x &= \frac{-10}{-5} \\ x &= 2 \end{aligned} $$
+                            </div>
+                        </div>
+
+                        <div class="border-l-2 border-violet-400 pl-4">
+                            <h5 class="font-bold text-violet-700">Langkah 4: Cari nilai y</h5>
+                            <p class="text-sm text-slate-600 mb-2">Masukkan nilai $x = 2$ ke Persamaan (3) yang kita buat di awal.</p>
+                            <div class="math-box text-sm">
+                                $$ \begin{aligned} y &= 7 - 2x \\ y &= 7 - 2(2) \\ y &= 7 - 4 \\ y &= 3 \end{aligned} $$
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-violet-100 text-violet-800 rounded font-bold text-center">
+                        Jadi, penyelesaiannya adalah $x = 2$ dan $y = 3$. Himpunan Penyelesaian = $\{(2, 3)\}$.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metode Eliminasi -->
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-rose-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl">B</div>
+                    <h3 class="text-2xl font-bold text-slate-800">Metode Eliminasi (Menghilangkan)</h3>
+                </div>
+                <p class="text-slate-700 mb-4">Inti dari metode ini adalah <strong>menghilangkan salah satu variabel</strong> dengan cara menjumlahkan atau mengurangkan kedua persamaan. Syaratnya: koefisien variabel yang mau dihilangkan harus disamakan terlebih dahulu.</p>
+                
+                <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-4 text-lg">Contoh Soal (Soal yang sama):</h4>
+                    <div class="math-box bg-white p-4 rounded shadow-sm mb-4 inline-block">
+                        $$ \begin{cases} 2x + y = 7 \\ x + 3y = 11 \end{cases} $$
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="border-l-2 border-rose-400 pl-4">
+                            <h5 class="font-bold text-rose-700">Langkah 1: Eliminasi (hilangkan) variabel x untuk mencari y</h5>
+                            <p class="text-sm text-slate-600 mb-2">Agar $x$ hilang saat dikurangkan, angka di depan $x$ harus sama. Persamaan atas punya $2x$, bawah punya $1x$. Kita kalikan persamaan bawah dengan 2.</p>
+                            <div class="math-box text-sm overflow-x-auto">
+                                $$ 
+                                \begin{matrix} 
+                                2x + y = 7 & |\times 1| & \Rightarrow & 2x + y = 7 \\ 
+                                x + 3y = 11 & |\times 2| & \Rightarrow & 2x + 6y = 22 
+                                \end{matrix} 
+                                $$
+                                $$
+                                \begin{matrix} 
+                                & \overline{\quad \quad \quad -5y = -15 \quad} & (-) \text{ Kurangkan} \\
+                                & y = \frac{-15}{-5} \\
+                                & y = 3
+                                \end{matrix}
+                                $$
+                            </div>
+                        </div>
+
+                        <div class="border-l-2 border-rose-400 pl-4">
+                            <h5 class="font-bold text-rose-700">Langkah 2: Eliminasi variabel y untuk mencari x</h5>
+                            <p class="text-sm text-slate-600 mb-2">Sekarang samakan angka di depan $y$. Atas punya $1y$, bawah punya $3y$. Kalikan persamaan atas dengan 3.</p>
+                            <div class="math-box text-sm overflow-x-auto">
+                                $$ 
+                                \begin{matrix} 
+                                2x + y = 7 & |\times 3| & \Rightarrow & 6x + 3y = 21 \\ 
+                                x + 3y = 11 & |\times 1| & \Rightarrow & x + 3y = 11 
+                                \end{matrix} 
+                                $$
+                                $$
+                                \begin{matrix} 
+                                & \overline{\quad \quad 5x \quad \quad = 10 \quad \quad} & (-) \text{ Kurangkan} \\
+                                & x = \frac{10}{5} \\
+                                & x = 2
+                                \end{matrix}
+                                $$
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-rose-100 text-rose-800 rounded font-bold text-center">
+                        Hasilnya sama! Penyelesaiannya adalah $x = 2$ dan $y = 3$.
+                    </div>
+                    <p class="text-sm text-slate-500 mt-3 text-center italic">*Di sekolah, seringkali kita menggabungkan keduanya (Metode Campuran). Kita eliminasi untuk mencari satu variabel, lalu kita substitusi hasil tersebut ke persamaan awal untuk mencari variabel kedua. Ini cara yang paling cepat!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contoh Kehidupan Sehari-hari -->
+        <section class="bg-white rounded-2xl shadow-sm p-8 md:p-10 border border-slate-100">
+            <h2 class="text-3xl font-bold text-slate-900 mb-6 border-b-4 border-teal-500 pb-2 inline-block">4. Contoh Penggunaan dalam Kehidupan Sehari-hari</h2>
+            
+            <div class="flex flex-col md:flex-row gap-6 items-start mt-6">
+                <div class="flex-1">
+                    <div class="bg-teal-50 p-6 rounded-xl border border-teal-200">
+                        <h3 class="font-bold text-xl text-teal-900 mb-3">Studi Kasus: Belanja Peralatan Sekolah</h3>
+                        <p class="text-slate-700 mb-4">
+                            Budi membeli <strong>3 buku tulis</strong> dan <strong>2 pulpen</strong> di koperasi sekolah seharga <strong>Rp 17.000</strong>. Di koperasi yang sama, Andi membeli <strong>4 buku tulis</strong> dan <strong>1 pulpen</strong> seharga <strong>Rp 16.000</strong>. Berapakah harga 1 buku tulis dan 1 pulpen?
+                        </p>
+                        
+                        <h4 class="font-bold text-teal-800 mt-6 mb-2">Penyelesaian:</h4>
+                        <ol class="list-decimal list-inside space-y-3 text-slate-700 text-sm">
+                            <li><strong>Model Matematika:</strong><br>
+                                Misalkan: $x$ = harga 1 buku, $y$ = harga 1 pulpen.<br>
+                                Budi: $3x + 2y = 17.000$<br>
+                                Andi: $4x + y = 16.000$
+                            </li>
+                            <li><strong>Gunakan Substitusi:</strong><br>
+                                Dari pers. Andi, ubah jadi $y$:<br>
+                                $y = 16.000 - 4x$<br>
+                                Masukkan ke pers. Budi:<br>
+                                $3x + 2(16.000 - 4x) = 17.000$<br>
+                                $3x + 32.000 - 8x = 17.000$<br>
+                                $-5x = 17.000 - 32.000$<br>
+                                $-5x = -15.000$<br>
+                                $x = 3.000$ (Harga 1 buku adalah Rp 3.000)
+                            </li>
+                            <li><strong>Cari $y$:</strong><br>
+                                $y = 16.000 - 4(3.000)$<br>
+                                $y = 16.000 - 12.000$<br>
+                                $y = 4.000$ (Harga 1 pulpen adalah Rp 4.000)
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contoh Calon Pengusaha -->
+        <section class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl shadow-sm p-8 md:p-10 border border-amber-200 mb-12">
+            <h2 class="text-3xl font-bold text-amber-900 mb-6 border-b-4 border-amber-500 pb-2 inline-block">5. Contoh Kasus untuk Calon Pengusaha (Anak SMK)</h2>
+            
+            <div class="mt-4">
+                <h3 class="font-bold text-2xl text-amber-900 mb-3">Studi Kasus: Bisnis Kopi Susu Kekinian</h3>
+                <p class="text-amber-800 mb-4 leading-relaxed">
+                    Siti (siswi SMK Tata Boga) membuka usaha minuman. Ia menjual dua jenis minuman: <strong>Es Kopi Susu (K)</strong> dan <strong>Es Matcha (M)</strong>. 
+                </p>
+                <ul class="list-disc list-inside text-amber-800 mb-6 ml-4 space-y-1">
+                    <li>Satu gelas Es Kopi Susu butuh <strong>200 ml susu</strong>.</li>
+                    <li>Satu gelas Es Matcha butuh <strong>150 ml susu</strong>.</li>
+                    <li>Hari ini, Siti menghabiskan persediaan susu sebanyak <strong>6.000 ml (6 liter)</strong>.</li>
+                    <li>Total minuman yang terjual hari ini adalah <strong>35 gelas</strong>.</li>
+                </ul>
+                <p class="font-semibold text-amber-900 mb-4">Pertanyaan sebagai Pemilik Bisnis: Berapa banyak Es Kopi Susu dan Es Matcha yang berhasil terjual hari ini agar Siti bisa merekap pembukuannya?</p>
+
+                <div class="bg-white/80 p-6 rounded-xl border border-amber-100">
+                    <h4 class="font-bold text-amber-800 mb-4">Penyelesaian (Metode Campuran):</h4>
+                    
+                    <div class="space-y-4 text-sm text-slate-800">
+                        <div>
+                            <span class="font-bold text-amber-700">Tahap 1: Buat Persamaan</span><br>
+                            $K$ = jumlah gelas Kopi, $M$ = jumlah gelas Matcha.<br>
+                            Persamaan Total Gelas: $K + M = 35$<br>
+                            Persamaan Total Susu: $200K + 150M = 6000$ 
+                            <span class="italic text-slate-500">(Sederhanakan dengan dibagi 50 &rightarrow; $4K + 3M = 120$)</span>
+                        </div>
+
+                        <div>
+                            <span class="font-bold text-amber-700">Tahap 2: Eliminasi $M$</span><br>
+                            <div class="math-box">
+                                $$
+                                \begin{matrix} 
+                                K + M = 35 & |\times 3| & \Rightarrow & 3K + 3M = 105 \\ 
+                                4K + 3M = 120 & |\times 1| & \Rightarrow & 4K + 3M = 120 
+                                \end{matrix} 
+                                $$
+                                $$
+                                \begin{matrix} 
+                                & \overline{\quad \quad \quad \quad \quad \quad -1K = -15 \quad} & (-) \\
+                                & K = 15
+                                \end{matrix}
+                                $$
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="font-bold text-amber-700">Tahap 3: Substitusi nilai K</span><br>
+                            Karena total jualan 35 gelas, dan kopi laku 15 gelas:<br>
+                            $K + M = 35$<br>
+                            $15 + M = 35$<br>
+                            $M = 35 - 15 = 20$
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-amber-500 text-white rounded-lg font-bold">
+                        Kesimpulan Bisnis: Hari ini Siti berhasil menjual 15 gelas Kopi Susu dan 20 gelas Es Matcha. Dari data ini, besok Siti bisa memutuskan apakah perlu memperbanyak stok bahan Matcha karena ternyata lebih laris!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Penutup -->
+        <div class="text-center pb-8 text-slate-500">
+            <p>Terus berlatih, karena matematika adalah kunci untuk berpikir logis dan sistematis.<br> <strong>SMK Bisa! SMK Hebat!</strong></p>
+        </div>
+
+    </main>
+
+</body>
+</html>
