@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Evaluasi Matriks</title>
+
+    <!-- Konfigurasi MathJax v4 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                packages: {'[+]': ['bm', 'ams']}
+            }
+        };
+    </script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --bg-color: #f3f4f6;
+            --text-main: #1f2937;
+            --card-bg: #ffffff;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            background-color: #e5e7eb;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-main);
+            transition: 0.3s;
+        }
+
+        .tab-btn:hover {
+            background-color: #d1d5db;
+        }
+
+        .tab-btn.active {
+            background-color: var(--card-bg);
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        /* Content Area */
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Kuis Styles */
+        .quiz-container {
+            text-align: center;
+        }
+
+        .question-number {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            min-height: 80px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            max-width: 300px;
+            border: 2px solid var(--border);
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            transition: 0.2s;
+            margin: 5px;
+        }
+
+        .btn-show { background-color: var(--secondary); }
+        .btn-show:hover { background-color: var(--secondary-dark); }
+        
+        .btn-next { background-color: var(--primary); }
+        .btn-next:hover { background-color: var(--primary-dark); }
+        .btn-next:disabled { background-color: #9ca3af; cursor: not-allowed; }
+
+        .answer-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ecfdf5;
+            border: 1px solid #10b981;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .answer-box.visible {
+            display: block;
+        }
+
+        /* Ujian Styles */
+        .essay-item {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .essay-question {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .btn-pembahasan {
+            background-color: #4b5563;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .btn-pembahasan:hover {
+            background-color: #374151;
+        }
+
+        .pembahasan-box {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary);
+            display: none;
+        }
+
+        .pembahasan-box.visible {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        /* Math Display Helper */
+        .math-scroll {
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h2>Evaluasi Interaktif: Matriks</h2>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('kuis')">Kuis Rebutan</button>
+        <button class="tab-btn" onclick="openTab('ujian')">Ujian Essay</button>
+    </div>
+
+    <!-- TAB KUIS -->
+    <div id="kuis" class="tab-content active">
+        <div class="quiz-container">
+            <div class="question-number" id="q-number">Soal 1 / 10</div>
+            <div class="question-text" id="q-text">Memuat pertanyaan...</div>
+            
+            <div class="input-group">
+                <input type="text" id="student-answer" placeholder="Ketik jawabanmu di sini..." autocomplete="off">
+            </div>
+
+            <div>
+                <button class="btn btn-show" onclick="showAnswer()">Tampilkan Jawaban Benar</button>
+                <button class="btn btn-next" id="btn-next" onclick="nextQuestion()">Soal Berikutnya ➔</button>
+            </div>
+
+            <div class="answer-box" id="answer-box">
+                <strong>Jawaban Benar:</strong> <span id="correct-answer"></span>
+                <p style="margin-top: 5px; font-size: 14px; color: #4b5563;" id="answer-explanation"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB UJIAN -->
+    <div id="ujian" class="tab-content">
+        <p style="margin-bottom: 20px; color: #4b5563;">Kerjakan kelima soal essay di bawah ini di buku latihanmu. Jika sudah selesai, kamu dapat membuka pembahasan untuk mencocokkan langkah penyelesaianmu.</p>
+        
+        <div id="essay-container">
+            <!-- Soal Essay dirender via JS agar rapi -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- DATA KUIS REBUTAN ---
+    const quizData = [
+        {
+            q: "Matriks $A$ memiliki 3 baris dan 4 kolom. Ordo dari matriks $A$ ditulis sebagai?",
+            a: "3 x 4",
+            ex: "Ordo ditulis dengan format baris $\\times$ kolom."
+        },
+        {
+            q: "Elemen yang terletak pada baris ke-2 dan kolom ke-1 pada suatu matriks dilambangkan dengan huruf kecil berindeks?",
+            a: "a21",
+            ex: "Indeks pertama adalah baris (2), indeks kedua adalah kolom (1)."
+        },
+        {
+            q: "Matriks yang semua elemennya bernilai nol disebut matriks?",
+            a: "Matriks Nol",
+            ex: "Sesuai dengan namanya, matriks nol dilambangkan dengan huruf $O$."
+        },
+        {
+            q: "Jika matriks $B$ berordo $2 \\times 5$, maka ordo matriks Transpose-nya ($B^T$) adalah?",
+            a: "5 x 2",
+            ex: "Transpose menukar posisi baris menjadi kolom dan kolom menjadi baris."
+        },
+        {
+            q: "Elemen pada diagonal utama matriks identitas ($I$) selalu bernilai?",
+            a: "1",
+            ex: "Sementara itu, seluruh elemen di luar diagonal utama bernilai 0."
+        },
+        {
+            q: "Diketahui matriks $P = \\begin{bmatrix} 7 & -3 \\\\ 1 & 9 \\end{bmatrix}$. Berapakah nilai dari elemen $p_{22}$?",
+            a: "9",
+            ex: "Elemen baris ke-2 dan kolom ke-2 adalah angka 9."
+        },
+        {
+            q: "Matriks $C = \\begin{bmatrix} 4 \\\\ -1 \\\\ 5 \\end{bmatrix}$ termasuk ke dalam jenis matriks?",
+            a: "Matriks Kolom",
+            ex: "Karena matriks ini hanya memiliki tepat 1 kolom."
+        },
+        {
+            q: "Diketahui kesamaan matriks: $[x+2 \\quad 5] = [8 \\quad 5]$. Berapakah nilai $x$?",
+            a: "6",
+            ex: "Elemen yang seletak harus sama. $x + 2 = 8$, sehingga $x = 6$."
+        },
+        {
+            q: "Jika baris pertama suatu matriks adalah $4 \\quad 1$, maka pada bentuk matriks Transposenya, angka-angka tersebut akan menempati posisi?",
+            a: "Kolom pertama",
+            ex: "Prinsip transpose: Baris $i$ berubah menjadi Kolom $i$."
+        },
+        {
+            q: "Jika dua matriks dikatakan sama ($A = B$), maka syarat pertamanya adalah kedua matriks tersebut harus memiliki .... yang sama.",
+            a: "Ordo",
+            ex: "Selain ordo yang sama, elemen-elemen yang seletak juga harus bernilai sama."
+        }
+    ];
+
+    // --- DATA UJIAN ESSAY ---
+    const essayData = [
+        {
+            q: "Jelaskan dengan bahasamu sendiri, apa perbedaan mendasar antara <strong>Baris</strong> dan <strong>Kolom</strong> pada sebuah matriks!",
+            pembahasan: "<strong>Baris</strong> adalah susunan angka atau elemen yang arahnya mendatar (horizontal) dari kiri ke kanan. Sedangkan <strong>Kolom</strong> adalah susunan angka atau elemen yang arahnya tegak lurus (vertikal) dari atas ke bawah."
+        },
+        {
+            q: "Diketahui matriks $A = \\begin{bmatrix} 3 & -1 & 5 \\\\ 0 & 2 & 8 \\end{bmatrix}$. Tentukan:<br>a) Ordo matriks $A$<br>b) Nilai elemen $a_{13}$ dan $a_{21}$<br>c) Matriks transpose $A^T$",
+            pembahasan: "<div class='math-scroll'>a) Matriks $A$ memiliki 2 baris dan 3 kolom, maka ordonya adalah <strong>$2 \\times 3$</strong>.<br>b) $a_{13}$ (Baris 1 Kolom 3) = <strong>$5$</strong>. <br> $a_{21}$ (Baris 2 Kolom 1) = <strong>$0$</strong>.<br>c) $A^T = \\begin{bmatrix} 3 & 0 \\\\ -1 & 2 \\\\ 5 & 8 \\end{bmatrix}$ (Baris diubah menjadi kolom).</div>"
+        },
+        {
+            q: "Apa yang dimaksud dengan matriks identitas? Berikan satu contoh matriks identitas yang berordo $3 \\times 3$!",
+            pembahasan: "<div class='math-scroll'>Matriks identitas adalah matriks persegi yang semua elemen pada diagonal utamanya bernilai 1, sedangkan elemen lainnya bernilai 0.<br>Contoh ordo $3 \\times 3$:<br>$$ I = \\begin{bmatrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 1 \\end{bmatrix} $$</div>"
+        },
+        {
+            q: "Diketahui persamaan dua matriks berikut: <br>$$ \\begin{bmatrix} 2x & 5 \\\\ -1 & y+3 \\end{bmatrix} = \\begin{bmatrix} 10 & 5 \\\\ -1 & 7 \\end{bmatrix} $$<br>Tentukan nilai $x$ dan $y$ yang memenuhi persamaan tersebut!",
+            pembahasan: "<div class='math-scroll'>Gunakan prinsip kesamaan matriks (elemen seletak bernilai sama).<br><strong>Mencari $x$:</strong><br>$2x = 10$<br>$x = 5$<br><br><strong>Mencari $y$:</strong><br>$y + 3 = 7$<br>$y = 7 - 3$<br>$y = 4$<br><br>Jadi, nilai <strong>$x = 5$</strong> dan <strong>$y = 4$</strong>.</div>"
+        },
+        {
+            q: "Sebuah toko elektronik memiliki dua cabang. Cabang A menjual 10 TV dan 5 Kulkas. Cabang B menjual 8 TV dan 7 Kulkas. Buatlah matriks yang merepresentasikan data penjualan tersebut (baris menunjukkan cabang, kolom menunjukkan jenis barang) dan tentukan ordo matriksnya!",
+            pembahasan: "<div class='math-scroll'>Berdasarkan deskripsi, kita susun data sebagai berikut:<br>- Baris 1 (Cabang A): 10 TV, 5 Kulkas $\\rightarrow 10 \\quad 5$<br>- Baris 2 (Cabang B): 8 TV, 7 Kulkas $\\rightarrow 8 \\quad 7$<br><br>Matriks Penjualan ($M$):<br>$$ M = \\begin{bmatrix} 10 & 5 \\\\ 8 & 7 \\end{bmatrix} $$<br>Karena memiliki 2 baris dan 2 kolom, <strong>ordo matriksnya adalah $2 \\times 2$</strong>.</div>"
+        }
+    ];
+
+    // --- LOGIC TAB ---
+    function openTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(tabName).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    // --- LOGIC KUIS ---
+    let currentQuizIndex = 0;
+
+    function renderQuiz() {
+        const q = quizData[currentQuizIndex];
+        document.getElementById('q-number').innerText = `Soal Rebutan ${currentQuizIndex + 1} dari ${quizData.length}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        document.getElementById('student-answer').value = '';
+        document.getElementById('answer-box').classList.remove('visible');
+        
+        document.getElementById('btn-next').disabled = (currentQuizIndex === quizData.length - 1);
+
+        // Memicu MathJax untuk me-render ulang equation yang baru di-inject ke HTML
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            MathJax.typesetPromise([document.getElementById('q-text')]).catch((err) => console.log(err.message));
+        }
+    }
+
+    function showAnswer() {
+        const q = quizData[currentQuizIndex];
+        document.getElementById('correct-answer').innerText = q.a;
+        document.getElementById('answer-explanation').innerText = "Penjelasan: " + q.ex;
+        document.getElementById('answer-box').classList.add('visible');
+    }
+
+    function nextQuestion() {
+        if (currentQuizIndex < quizData.length - 1) {
+            currentQuizIndex++;
+            renderQuiz();
+        }
+    }
+
+    // --- LOGIC UJIAN ESSAY ---
+    function renderEssay() {
+        const container = document.getElementById('essay-container');
+        let html = '';
+        
+        essayData.forEach((item, index) => {
+            html += `
+                <div class="essay-item">
+                    <div class="essay-question"><strong>${index + 1}.</strong> ${item.q}</div>
+                    <button class="btn-pembahasan" onclick="togglePembahasan(${index})">👁️ Lihat / Tutup Pembahasan</button>
+                    <div class="pembahasan-box" id="pembahasan-${index}">
+                        <strong>Pembahasan:</strong><br>
+                        ${item.pembahasan}
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
+
+    function togglePembahasan(index) {
+        const box = document.getElementById(`pembahasan-${index}`);
+        box.classList.toggle('visible');
+    }
+
+    // --- INITIALIZATION ---
+    window.onload = () => {
+        renderQuiz();
+        renderEssay();
+    };
+
+</script>
+
+<!-- Skrip MathJax diletakkan di akhir body agar memastikan DOM dirender terlebih dahulu -->
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0-beta.4/tex-mml-chtml.js"></script>
+
+</body>
+</html>

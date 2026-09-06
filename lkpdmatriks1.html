@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Matriks (9 Paket)</title>
+
+<!-- Konfigurasi MathJax v4 -->
+<script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            packages: {'[+]': ['bm', 'ams']}
+        }
+    };
+</script>
+
+<style>
+    :root {
+            --primary-color: #1e40af;
+            --border-color: #000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #f0f2f5;
+            color: #000;
+            line-height: 1.5;
+        }
+
+        /* Tombol Cetak (Sembunyi saat diprint) */
+        .print-controls {
+            text-align: center;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .btn-print {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .btn-print:hover { background-color: #1e3a8a; }
+
+        /* Container Kertas A4 */
+        .lkpd-page {
+            background-color: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            page-break-after: always;
+        }
+
+        /* Header LKPD */
+        .header-lkpd {
+            text-align: center;
+            border-bottom: 3px double var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header-lkpd h1 {
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+        
+        .paket-badge {
+            position: absolute;
+            top: 20mm;
+            right: 20mm;
+            border: 2px solid var(--border-color);
+            padding: 5px 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Identitas Kelompok */
+        .identitas-box {
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .identitas-box table {
+            width: 100%;
+        }
+
+        .identitas-box td {
+            padding: 5px 0;
+            vertical-align: top;
+        }
+
+        .member-list {
+            list-style-type: decimal;
+            margin-left: 20px;
+        }
+        .member-list li {
+            border-bottom: 1px dotted #ccc;
+            width: 80%;
+            height: 25px;
+            margin-bottom: 5px;
+        }
+
+        /* Konten Soal */
+        .section-title {
+            background-color: #f3f4f6;
+            padding: 5px 10px;
+            border-left: 5px solid var(--primary-color);
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+        }
+
+        .narasi {
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+
+        .soal-item {
+            margin-bottom: 15px;
+        }
+
+        /* Tempat Menulis (Garis-garis) */
+        .answer-lines {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .line {
+            border-bottom: 1px dashed #999;
+            height: 25px;
+            width: 100%;
+        }
+
+        /* Pengaturan Cetak */
+        @media print {
+            body {
+                background-color: white;
+            }
+            .print-controls {
+                display: none !important;
+            }
+            .lkpd-page {
+                margin: 0;
+                box-shadow: none;
+                width: 100%;
+                min-height: auto;
+                padding: 15mm;
+            }
+            /* Hilangkan margin default browser saat print */
+            @page {
+                margin: 0; 
+                size: A4 portrait;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="print-controls">
+        <p style="margin-bottom: 10px;">9 Paket LKPD telah dibuat (Angka berbeda untuk setiap kelompok).</p>
+        <button class="btn-print" onclick="window.print()">🖨️ Cetak Semua Paket (A4)</button>
+    </div>
+
+    <div id="lkpd-container"></div>
+
+    <script>
+        // Data unik untuk 9 paket LKPD agar siswa tidak bisa menyontek antar kelompok
+        const dataPaket = [
+            { id: 1, a: 12, b: 8, c: 15, d: 20, e: 10, f: 14, g: 18, h: 22, i: 11, p: 40, q: 60, r: 35, s: 50, k: 12, l: 5 },
+            { id: 2, a: 15, b: 10, c: 12, d: 18, e: 22, f: 15, g: 20, h: 14, i: 16, p: 45, q: 75, r: 40, s: 55, k: 15, l: 8 },
+            { id: 3, a: 20, b: 15, c: 10, d: 12, e: 25, f: 18, g: 14, h: 20, i: 22, p: 50, q: 80, r: 45, s: 60, k: 20, l: 10 },
+            { id: 4, a: 10, b: 12, c: 14, d: 22, e: 18, f: 10, g: 15, h: 16, i: 20, p: 35, q: 55, r: 30, s: 45, k: 10, l: 4 },
+            { id: 5, a: 18, b: 14, c: 20, d: 15, e: 12, f: 22, g: 10, h: 18, i: 15, p: 60, q: 90, r: 50, s: 70, k: 25, l: 15 },
+            { id: 6, a: 14, b: 20, c: 18, d: 10, e: 15, f: 12, g: 25, h: 10, i: 14, p: 55, q: 85, r: 60, s: 65, k: 30, l: 12 },
+            { id: 7, a: 22, b: 18, c: 16, d: 14, e: 20, f: 15, g: 12, h: 25, i: 10, p: 70, q: 100, r: 55, s: 80, k: 40, l: 20 },
+            { id: 8, a: 11, b: 15, c: 19, d: 16, e: 14, f: 21, g: 13, h: 17, i: 25, p: 65, q: 95, r: 70, s: 75, k: 35, l: 18 },
+            { id: 9, a: 25, b: 22, c: 14, d: 19, e: 11, f: 16, g: 21, h: 15, i: 18, p: 80, q: 110, r: 65, s: 90, k: 50, l: 25 }
+        ];
+
+        function generateLKPD() {
+            const container = document.getElementById('lkpd-container');
+            let htmlContent = '';
+
+            dataPaket.forEach(data => {
+                htmlContent += `
+                <div class="lkpd-page">
+                    <div class="paket-badge">Paket ${data.id}</div>
+                    
+                    <div class="header-lkpd">
+                        <h1>Lembar Kerja Peserta Didik (LKPD)</h1>
+                        <h2>Materi: Pengantar Matriks</h2>
+                    </div>
+
+                    <div class="identitas-box">
+                        <table>
+                            <tr>
+                                <td width="15%"><strong>Kelompok</strong></td>
+                                <td width="5%">:</td>
+                                <td width="80%">___________________________</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kelas</strong></td>
+                                <td>:</td>
+                                <td>___________________________</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Anggota</strong></td>
+                                <td>:</td>
+                                <td>
+                                    <ul class="member-list">
+                                        <li></li><li></li><li></li><li></li><li></li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <p><strong>Petunjuk:</strong> Diskusikan permasalahan di bawah ini bersama anggota kelompokmu. Tuliskan jawaban dengan rapi pada tempat yang telah disediakan. Pastikan setiap anggota memahami proses penyelesaiannya!</p>
+
+                    <!-- Kegiatan 1 -->
+                    <div class="section-title">Kegiatan 1: Literasi Data ke Bentuk Matriks</div>
+                    <div class="narasi">
+                        Sebuah perpustakaan sekolah sedang menata ulang koleksi bukunya pada tiga rak utama. 
+                        Pustakawan mencatat rinciannya sebagai berikut: 
+                        Rak pertama (paling atas) berisi <strong>${data.a}</strong> buku fiksi, <strong>${data.b}</strong> buku non-fiksi, dan <strong>${data.c}</strong> ensiklopedia. 
+                        Rak kedua (tengah) berisi <strong>${data.d}</strong> buku fiksi, <strong>${data.e}</strong> buku non-fiksi, dan <strong>${data.f}</strong> ensiklopedia. 
+                        Sedangkan rak ketiga (paling bawah) berisi <strong>${data.g}</strong> buku fiksi, <strong>${data.h}</strong> buku non-fiksi, dan <strong>${data.i}</strong> ensiklopedia.
+                    </div>
+
+                    <div class="soal-item">
+                        <strong>1.1</strong> Berdasarkan narasi di atas, modelkan informasi tersebut ke dalam bentuk matriks. Beri nama matriks tersebut dengan Matriks $M$, di mana baris mewakili posisi rak dan kolom mewakili jenis buku.
+                        <div class="answer-lines">
+                            <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+                        </div>
+                    </div>
+
+                    <div class="soal-item">
+                        <strong>1.2</strong> Berapakah ordo dari Matriks $M$ yang telah kalian buat? Tuliskan beserta alasan logisnya berdasarkan informasi pada teks!
+                        <div class="answer-lines">
+                            <div class="line"></div><div class="line"></div><div class="line"></div>
+                        </div>
+                    </div>
+
+                    <div class="soal-item">
+                        <strong>1.3</strong> Kepala perpustakaan ingin memastikan jumlah buku non-fiksi di rak ketiga. Jika dinyatakan dalam notasi elemen matriks $m_{ij}$, sebutkan posisi indeks $(i, j)$ yang tepat dan berapakah nilainya?
+                        <div class="answer-lines">
+                            <div class="line"></div><div class="line"></div><div class="line"></div>
+                        </div>
+                    </div>
+
+                    <div class="soal-item">
+                        <strong>1.4</strong> Tuliskan Transpose dari Matriks $M$ tersebut ($M^T$)! Apa makna dari baris pertama pada matriks transpose tersebut dikaitkan dengan narasi perpustakaan?
+                        <div class="answer-lines">
+                            <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+                        </div>
+                    </div>
+
+                    <!-- Kegiatan 2 -->
+                    <div class="section-title">Kegiatan 2: Analisis Kesalahan Data (Kesamaan Matriks)</div>
+                    <div class="narasi">
+                        Sebuah perusahaan konveksi memiliki dua pabrik, yaitu Pabrik A dan Pabrik B. Manajer perusahaan menetapkan bahwa target produksi mingguan untuk kemeja dan celana pada dua mesin jahit di kedua pabrik harus <strong>identik (sama persis)</strong>.
+                        Target produksi Pabrik A disajikan dalam Matriks $A$ dan Pabrik B dalam Matriks $B$ sebagai berikut:
+                        <br><br>
+                        <div style="display: flex; justify-content: space-around;">
+                            <div>$$ A = \\begin{bmatrix} ${data.p} & ${data.q} \\\\ ${data.r} & ${data.s} \\end{bmatrix} $$</div>
+                            <div>$$ B = \\begin{bmatrix} ${data.p} & x + ${data.k} \\\\ y - ${data.l} & ${data.s} \\end{bmatrix} $$</div>
+                        </div>
+                        <br>
+                        Karena kesalahan sistem komputer, sebagian data target pada Matriks $B$ berubah menjadi variabel $x$ dan $y$.
+                    </div>
+
+                    <div class="soal-item">
+                        <strong>2.1</strong> Berdasarkan syarat kesamaan dua matriks, buatlah model persamaan aljabar untuk menemukan nilai $x$ (berkaitan dengan target kemeja di mesin kedua)!
+                        <div class="answer-lines">
+                            <div class="line"></div><div class="line"></div><div class="line"></div>
+                        </div>
+                    </div>
+
+                    <div class="soal-item">
+                        <strong>2.2</strong> Lakukan hal yang sama untuk menemukan nilai $y$ (berkaitan dengan target celana di mesin pertama)! Selesaikan persamaannya.
+                        <div class="answer-lines">
+                            <div class="line"></div><div class="line"></div><div class="line"></div>
+                        </div>
+                    </div>
+
+                    <div class="soal-item">
+                        <strong>2.3</strong> Kesimpulan: Berapakah nilai akhir $x$ dan $y$ agar target kedua pabrik benar-benar identik?
+                        <div class="answer-lines">
+                            <div class="line"></div><div class="line"></div>
+                        </div>
+                    </div>
+
+                </div>`;
+        });
+
+        container.innerHTML = htmlContent;
+    }
+
+    // Jalankan fungsi secara langsung untuk men-generate HTML
+    generateLKPD();
+</script>
+
+<!-- Pindahkan skrip pemuat MathJax ke sini, SETELAH seluruh konten LKPD terbuat di DOM -->
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0-beta.4/tex-mml-chtml.js"></script>
+</body>
+</html>
