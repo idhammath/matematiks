@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: { '[+]': [['$', '$']] },
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                typeset: false // Nonaktifkan render otomatis saat halaman dimuat
+            }
+        };
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #isimath {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            min-height: 50px;
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-weight: bold;
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="btnTampilkan">TAMPILKAN</button>
+    <div id="status" class="status"></div>
+    <div id="isimath"></div>
+
+    <script>
+        document.getElementById('btnTampilkan').addEventListener('click', function () {
+            const divIsiMath = document.getElementById('isimath');
+            const statusDiv = document.getElementById('status');
+
+            // Perhatikan penggunaan \\ untuk meng-escape karakter \ (backslash) di JavaScript string,
+            // dan \\\\ untuk membuat karakter ganti baris LaTeX (\\)
+            const kodeLaTeX = `
+$\\dfrac12$ $\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$ \\begin{aligned}a&=bbbbb\\\\cccc&=d\\end{aligned} <br><br>
+<div class="notranslate" translate="no">$\\dfrac12$ $\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}$
+\\begin{aligned}a&=bbbbb\\\\cccc&=d\\end{aligned}</div>
+            `;
+
+            // 1. Masukkan kode ke dalam div
+            divIsiMath.innerHTML = kodeLaTeX;
+            statusDiv.innerHTML = "Memeriksa dukungan typesetPromise...";
+
+            // 2. Cek apakah MathJax dan typesetPromise tersedia
+            if (typeof MathJax !== 'undefined' && typeof MathJax.typesetPromise === 'function') {
+                // 3. Render matematika menggunakan typesetPromise
+                MathJax.typesetPromise([divIsiMath]).then(() => {
+                    statusDiv.innerHTML = "✅ Berhasil! Browser mendukung MathJax.typesetPromise dan render selesai.";
+                    statusDiv.style.color = "green";
+                }).catch((err) => {
+                    statusDiv.innerHTML = "❌ Terjadi error saat merender: " + err.message;
+                    statusDiv.style.color = "red";
+                });
+            } else {
+                statusDiv.innerHTML = "❌ Gagal! MathJax belum dimuat sepenuhnya atau browser/versi ini tidak mendukung typesetPromise.";
+                statusDiv.style.color = "red";
+            }
+        });
+    </script>
+</body>
+
+</html>
