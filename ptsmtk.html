@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Konfigurasi dan Library MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/matematika-indonesia/matematikin@2.0/matematikin.js"></script>
+    <style>
+        /* Mencegah seleksi teks (mencegah copy-paste soal) */
+        body { user-select: none; -webkit-user-select: none; overscroll-behavior: none;}
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans text-gray-800">
+
+    <!-- Container Utama -->
+    <div id="app" class="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8 mt-4 sm:mt-10 bg-white shadow-xl rounded-lg">
+        
+        <!-- Layar Peringatan Waktu -->
+        <div id="time-screen" class="text-center py-10">
+            <h1 class="text-2xl font-bold text-red-600 mb-4" id="time-message">Memeriksa jadwal ujian...</h1>
+        </div>
+
+        <!-- Layar Login -->
+        <div id="login-screen" class="hidden">
+            <h2 class="text-2xl font-bold text-center text-blue-600">Penilaian Tengah Semester Matematika</h2>
+            <h3 class="text-lg font-semibold mb-4 text-center">Kelas 11 SMKN 9 Kabupaten Tangerang</h3>
+            <div class="mb-4">
+                <label class="block mb-2 font-semibold">Pilih Kelas</label>
+                <select id="kelas" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="loadStudents()">
+                    <option value="">-- Pilih Kelas --</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label class="block mb-2 font-semibold">Pilih Nama</label>
+                <select id="nama" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
+                    <option value="">-- Pilih Nama --</option>
+                </select>
+            </div>
+            <button onclick="startExam()" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded hover:bg-blue-700 transition">MULAI UJIAN</button>
+            <h4 class="text-sm text-gray-500 mt-4 flex justify-center items-center">Idham Muqoddas</h4>
+        </div>
+
+        <!-- Layar Ujian -->
+        <div id="exam-screen" class="hidden">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <p class="font-bold text-lg" id="display-nama"></p>
+                    <p class="text-sm text-gray-500" id="display-kelas"></p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-gray-500">Sisa Waktu</p>
+                    <p class="font-bold text-xl text-red-600" id="timer">--:--</p>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-6">
+                <p class="font-semibold mb-4 text-lg"><span id="q-num"></span>. <span id="q-text"></span></p>
+                <div id="options-container" class="space-y-3"></div>
+            </div>
+
+            <div class="flex justify-between mt-8">
+                <button onclick="prevQuestion()" id="btn-prev" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 disabled:opacity-50">Sebelumnya</button>
+                <button onclick="nextQuestion()" id="btn-next" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Selanjutnya</button>
+                <button onclick="confirmSubmit()" id="btn-submit" class="hidden bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Selesai</button>
+            </div>
+        </div>
+
+        <!-- Layar Hasil -->
+        <div id="result-screen" class="hidden text-center py-10">
+            <h2 class="text-3xl font-bold text-green-600 mb-6">Ujian Selesai</h2>
+            <div class="bg-gray-50 p-6 rounded-lg shadow-inner text-left max-w-sm mx-auto space-y-3">
+                <p><strong>Nama:</strong> <span id="res-nama"></span></p>
+                <p><strong>Kelas:</strong> <span id="res-kelas"></span></p>
+                <hr>
+                <p><strong>Banyak Benar:</strong> <span id="res-benar" class="text-green-600 font-bold"></span></p>
+                <p><strong>Banyak Salah:</strong> <span id="res-salah" class="text-red-600 font-bold"></span></p>
+                <p><strong>Tidak Dijawab:</strong> <span id="res-kosong" class="text-gray-500 font-bold"></span></p>
+                <hr>
+                <p class="text-xl"><strong>NILAI AKHIR:</strong> <span id="res-nilai" class="text-blue-600 font-bold text-2xl"></span></p>
+            </div>
+        </div>
+
+    </div>
+<!-- Modal Konfirmasi Selesai -->
+        <div id="submit-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-11/12 text-center">
+                <h3 class="text-xl font-bold mb-4 text-gray-800">Konfirmasi</h3>
+                <p class="mb-6 text-gray-600">Apakah Anda yakin ingin mengumpulkan jawaban sekarang? Anda tidak bisa mengubahnya lagi.</p>
+                <div class="flex justify-center space-x-4">
+                    <button onclick="closeModal()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 font-semibold transition">Batal</button>
+                    <button onclick="executeSubmit()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-semibold transition">Ya, Kumpulkan</button>
+                </div>
+            </div>
+        </div>
+    <script>
+        window.addEventListener('beforeunload', function (e) {
+            if (isExamActive) {
+                // Menampilkan dialog peringatan bawaan browser
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+        // ================= ANTI SWIPE BACK / TOMBOL KEMBALI =================
+        // Mendorong state kosong ke dalam riwayat saat halaman dimuat
+        history.pushState(null, null, location.href);
+        
+        // Mendengarkan jika user mencoba kembali (lewat tombol Back atau gestur swipe dari pinggir)
+        window.addEventListener('popstate', function () {
+            if (isExamActive) {
+                // Jika sedang ujian, paksa browser tetap di halaman ini (jebak state)
+                history.pushState(null, null, location.href);
+                console.log("Gestur kembali diblokir.");
+            }
+        });
+        // ================= PENGATURAN UTAMA =================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz8yqsy3E9tkd8aR8bwLRNdLqGm2LZpuv48l5rPKOP4M1JdinoCnimoTjLomM7rJuS4gA/exec';
+        const START_TIME = new Date('2026-09-16T09:50:00+07:00').getTime(); // WIB
+        const END_TIME = new Date('2026-09-16T23:50:00+07:00').getTime();   // WIB
+        
+        // Template Data Siswa (Bisa diekstrak dari Excel/JSON)
+        const dataSiswa = {
+            "X RPL 1": ["Ahmad Surya", "Budi Santoso", "Citra Lestari"],
+            "X TKJ 1": ["Dewi Anggraini", "Eko Prasetyo", "Fajar Nugraha"]
+        };
+
+        // 1. Acak angka soal
+        // --- PERHITUNGAN UNTUK SOAL ANUITAS BARU ---
+const M_anuitas = acakAntara(1, 9) * 10000000; // Modal pinjaman (10 - 90 Juta)
+const i_anuitas = acakAntara(1, 5); // Suku bunga per bulan (%)
+const n_anuitas = acakAntara(12, 36); // Periode (12 - 36 bulan)
+const i_desimal = i_anuitas / 100;
+
+// Anuitas = (M * i) / (1 - (1+i)^-n)
+const Anuitas = (M_anuitas * i_desimal) / (1 - Math.pow(1 + i_desimal, -n_anuitas));
+
+// Angsuran pokok dan bunga bulan ke-4
+const a1 = Anuitas - (M_anuitas * i_desimal); // Angsuran pokok bulan 1
+const a4 = Math.round(a1 * Math.pow(1 + i_desimal, 3)); // Angsuran pokok bulan 4
+const b4 = Math.round(Anuitas - a4); // Bunga bulan 4
+const totalAngsuran = Math.round(Anuitas * n_anuitas);
+
+// Mencari maksimal n agar total angsuran <= 2M
+let maxN = 1;
+while(true) {
+    let test_Anuitas = (M_anuitas * i_desimal) / (1 - Math.pow(1 + i_desimal, -maxN));
+    if (maxN * test_Anuitas > 2 * M_anuitas) {
+        maxN--; // Mundur 1 langkah karena sudah melebihi 2M
+        break;
+    }
+    maxN++;
+}
+
+// Generate Opsi untuk soal hitungan Anuitas baru
+const opsiAcakBaru = [
+    buatOpsiGanda(a4, 10000, 5),          // [0] Angsuran pokok bln 4
+    buatOpsiGanda(b4, 10000, 5),          // [1] Bunga bln 4
+    buatOpsiGanda(totalAngsuran, 100000, 5), // [2] Total Angsuran
+    buatOpsiGanda(maxN, 1, 5)             // [3] Maksimal n
+];
+
+// --- PERHITUNGAN UNTUK SOAL MATRIKS ---
+// Menggunakan Vanilla JS untuk membuat matriks random (Bisa disesuaikan dengan fungsi matematikin.js jika ada)
+const baris = acakAntara(2, 4);
+const kolom = acakAntara(2, 5);
+
+// Generate isi matriks
+let matriks = [];
+for (let i = 0; i < baris; i++) {
+    let row = [];
+    for (let j = 0; j < kolom; j++) {
+        row.push(acakAntara(-9, 15));
+    }
+    matriks.push(row);
+}
+
+// Render string matriks (misal menggunakan format LaTeX agar rapi jika menggunakan MathJax/KaTeX)
+const strMatriks = `\\begin{pmatrix} ` + matriks.map(r => r.join(' & ')).join(' \\\\ ') + ` \\end{pmatrix}`;
+
+// Soal Ordo
+const ordoBenar = `${baris} \\times ${kolom}`;
+const opsiOrdo = [`${baris} &times; ${kolom}`, `${kolom} &times; ${baris}`, `${baris} &times; ${baris}`, `${kolom} &times; ${kolom}`, `${baris+1} &times; ${kolom-1}`];
+// Acak opsi ordo (opsional, ditaruh di jawaban langsung juga bisa jika front-end yang mengacak)
+
+// Soal Elemen Acak
+const randI = acakAntara(1, baris); // 1-based index
+const randJ = acakAntara(1, kolom);
+const elemenBenar = matriks[randI - 1][randJ - 1];
+const opsiElemen = buatOpsiGanda(elemenBenar, 1, 5);
+
+// Soal Jumlah 2 Elemen
+const randI2 = acakAntara(1, baris);
+const randJ2 = acakAntara(1, kolom);
+const jumlahElemen = elemenBenar + matriks[randI2 - 1][randJ2 - 1];
+const opsiJumlahElemen = buatOpsiGanda(jumlahElemen, 1, 5);
+
+// Soal Transpose
+let matriksT = [];
+for (let j = 0; j < kolom; j++) {
+    let row = [];
+    for (let i = 0; i < baris; i++) {
+        row.push(matriks[i][j]);
+    }
+    matriksT.push(row);
+}
+const strMatriksT = `$\\begin{pmatrix} ` + matriksT.map(r => r.join(' & ')).join(' \\\\ ') + ` \\end{pmatrix}$`;
+// Membuat pengecoh transpose
+const fakeMatriksT1 = `$\\begin{pmatrix} ` + matriks.map(r => r.slice().reverse().join(' & ')).join(' \\\\ ') + ` \\end{pmatrix}$`; // baris dibalik
+const fakeMatriksT2 = `$\\begin{pmatrix} ` + matriksT.map(r => r.slice().reverse().join(' & ')).join(' \\\\ ') + ` \\end{pmatrix}$`;
+const opsiTranspose = [strMatriksT, fakeMatriksT1, fakeMatriksT2, `$${strMatriks}$`, `$\\begin{pmatrix} 0 \\end{pmatrix}$`];
+
+const aa = [acakAntara(2, 9)*100000000,
+acakAntara(3,9),
+acakAntara(4, 7)*100000000,
+acakAntara(11,19),
+acakAntara(1, 9)*100000000,
+acakAntara(21, 29),
+acakAntara(1, 9)*100000000,
+acakAntara(31,39),
+acakAntara(1, 9)*100000000,
+acakAntara(4,9),
+acakAntara(-9, 9),
+acakAntara(-9, 9),
+acakAntara(-9, 9),
+acakAntara(-9, 9),
+acakAntara(2, 9),
+acakAntara(2, 9),
+acakAntara(-9, 9),
+acakAntara(-9, 9),
+acakAntara(2, 9),
+acakAntara(2, 9),
+acakAntara(-9, 9),
+acakAntara(-9, 9),
+acakAntara(2, 9),
+acakAntara(2, 9)];
+const bb = [Math.round(aa[2] * Math.pow(1+aa[3]/100, 3),0),
+Math.round(aa[4] * Math.pow(1+aa[5]/100, 3),0),
+Math.round(aa[6] * Math.pow(1+aa[7]/100, 2),0)];
+const bnr = [Math.round(aa[0] * Math.pow(1+aa[1]/100, 3),0),
+Math.round((aa[8]*aa[9]/100)/(1-Math.pow(1+aa[9]/100, -24)),0),
+Math.round(aa[8]*aa[9]/100),
+Math.round((aa[8]*aa[9]/100)/(1-Math.pow(1+aa[9]/100, -24)),0)-Math.round(aa[8]*aa[9]/100),
+aa[10]+aa[11],
+aa[12]*aa[14]+aa[13]*aa[15],
+aa[16]*aa[18]+aa[17]*aa[19],
+aa[20]*aa[22]+aa[21]*aa[23]
+];
+
+// 2. Generate 5 opsi acak dengan toleransi selisih 1
+const opsiAcak = [buatOpsiGanda(bnr[0], 10000000, 5),
+buatOpsiGanda(aa[2], 50000000, 5),
+buatOpsiGanda(aa[5], 1, 5),
+buatOpsiGanda(bnr[1], 100000, 5),
+buatOpsiGanda(bnr[2], 100000, 5),
+buatOpsiGanda(bnr[3], 100000, 5),
+buatOpsiGanda(bnr[4], 1, 5),
+buatOpsiGanda(bnr[5], 3, 5),
+buatOpsiGanda(bnr[6], 3, 5),
+buatOpsiGanda(bnr[7], 3, 5)
+];
+
+        // Template Bank Soal
+        const bankSoal = [
+            // Tambahkan soal hingga 20 soal...
+            // Template kosong:
+            // { text: ``, options: ["", "", "", "", ""], answer: 0 },
+            {
+                text: `Budi menyimpan uang sebesar ${formatRupiah(aa[0])} ke bank dengan suku bunga ${aa[1]}% per tahun. Berapa tabungan Budi setelah 3 tahun?`,
+                options: opsiAcak[0].map(item => formatRupiah(item.nilai)),
+                answer: opsiAcak[0].findIndex(item => item.isBenar)
+            },
+            {
+                text: `Dudi menyimpan uang ke bank dengan suku bunga ${aa[3]}% per tahun. setelah 3 tahun, tabungan Dudi menjadi ${formatRupiah(bb[0])}. Simpanan awal Dudi adalah ....`,
+                options: opsiAcak[1].map(item => formatRupiah(item.nilai)),
+                answer: opsiAcak[1].findIndex(item => item.isBenar)
+            },
+            {
+                text: `Caca menyimpan uang ke bank sebesar ${formatRupiah(aa[4])}. setelah 3 tahun, tabungan Caca menjadi ${formatRupiah(bb[1])}. Suku bunga yang diberikan adalah ....% per tahun`,
+                options: opsiAcak[2].map(item => item.nilai),
+                answer: opsiAcak[2].findIndex(item => item.isBenar)
+            },
+            {
+                text: `Udin menyimpan uang ke bank sebesar ${formatRupiah(aa[6])} dengan suku bunga ${aa[7]}% per tahun. Tabungan Udin menjadi ${formatRupiah(bb[2])} setelah .... tahun.`,
+                options: [1,2,3,4,5],
+                answer: 1
+            },
+            {
+                text: `Pak Ridwan meminjam uang sebesar ${formatRupiah(aa[8])} dengan suku bunga ${aa[9]}% per bulan. Pinjaman akan dilunasi dalam waktu 2 tahun. Anuitas yang harus dibayar setiap bulan adalah ....`,
+                options: opsiAcak[3].map(item => formatRupiah(item.nilai)),
+                answer: opsiAcak[3].findIndex(item => item.isBenar)
+            },
+            {
+                text: `Pak Aan meminjam uang sebesar ${formatRupiah(aa[8])} dengan suku bunga ${aa[9]}% per bulan. Pinjaman akan dilunasi dalam waktu 2 tahun. Besar bunga pada bulan pertama adalah ....`,
+                options: opsiAcak[4].map(item => formatRupiah(item.nilai)),
+                answer: opsiAcak[4].findIndex(item => item.isBenar)
+            },
+            {
+                text: `Pak Aan meminjam uang sebesar ${formatRupiah(aa[8])} dengan suku bunga ${aa[9]}% per bulan. Pinjaman akan dilunasi dalam waktu 2 tahun. Besar angsuran pokok pada bulan pertama adalah ....`,
+                options: opsiAcak[5].map(item => formatRupiah(item.nilai)),
+                answer: opsiAcak[5].findIndex(item => item.isBenar)
+            },
+            {
+                text: `Pak Aan meminjam uang sebesar ${formatRupiah(aa[8])} dengan suku bunga ${aa[9]}% per bulan. Pinjaman akan dilunasi dalam waktu 2 tahun. Besar angsuran pokok pada bulan ke-4 adalah ....`,
+                options: opsiAcak[5].map(item => formatRupiah(item.nilai)),
+                answer: opsiAcak[5].findIndex(item => item.isBenar)
+            },
+            // (Lanjutan dari bankSoal Anda sebelumnya...)
+
+    {
+        text: `Diketahui pinjaman sebesar ${formatRupiah(M_anuitas)} dengan suku bunga ${i_anuitas}% per bulan dan akan dilunasi dengan anuitas selama ${n_anuitas} bulan. Besar angsuran pokok pada bulan ke-4 adalah ....`,
+        options: opsiAcakBaru[0].map(item => formatRupiah(item.nilai)),
+        answer: opsiAcakBaru[0].findIndex(item => item.isBenar)
+    },
+    {
+        text: `Suatu pinjaman sebesar ${formatRupiah(M_anuitas)} akan dilunasi dengan sistem anuitas selama ${n_anuitas} bulan. Jika suku bunga yang ditetapkan adalah ${i_anuitas}% per bulan, maka besar bunga pada bulan ke-4 adalah ....`,
+        options: opsiAcakBaru[1].map(item => formatRupiah(item.nilai)),
+        answer: opsiAcakBaru[1].findIndex(item => item.isBenar)
+    },
+    {
+        text: `Pak Anton meminjam uang di bank sebesar ${formatRupiah(M_anuitas)} dengan suku bunga anuitas ${i_anuitas}% per bulan. Jika ia berencana melunasi pinjaman tersebut dalam ${n_anuitas} bulan, total angsuran (termasuk pokok dan bunga) yang ia bayarkan ke bank adalah ....`,
+        options: opsiAcakBaru[2].map(item => formatRupiah(item.nilai)),
+        answer: opsiAcakBaru[2].findIndex(item => item.isBenar)
+    },
+    {
+        text: `Diketahui modal pinjaman sebesar ${formatRupiah(M_anuitas)} dengan suku bunga ${i_anuitas}% per bulan. Agar total uang yang dibayarkan ke bank selama masa pelunasan tidak melebihi dua kali lipat dari modal pinjaman (2M), jangka waktu pelunasan (n) maksimal yang diizinkan adalah .... bulan.`,
+        options: opsiAcakBaru[3].map(item => item.nilai),
+        answer: opsiAcakBaru[3].findIndex(item => item.isBenar)
+    },
+    {
+        text: `Diketahui matriks $A = ${strMatriks}$. Ordo dari matriks A adalah ....`,
+        options: opsiOrdo, // Asumsi opsi statis, jika sistem mengacak opsi secara otomatis
+        answer: 0 // Index 0 (baris x kolom) selalu dibuat sebagai jawaban benar di array opsiOrdo
+    },
+    {
+        text: `Diketahui matriks $B = ${strMatriks}$. Nilai dari elemen $b_{${randI}${randJ}}$ (baris ke-${randI}, kolom ke-${randJ}) adalah ....`,
+        options: opsiElemen.map(item => item.nilai),
+        answer: opsiElemen.findIndex(item => item.isBenar)
+    },
+    {
+        text: `Diketahui matriks $C = ${strMatriks}$. Hasil penjumlahan elemen $c_{${randI}${randJ}} + c_{${randI2}${randJ2}}$ adalah ....`,
+        options: opsiJumlahElemen.map(item => item.nilai),
+        answer: opsiJumlahElemen.findIndex(item => item.isBenar)
+    },
+    {
+        text: `Diketahui matriks $D = ${strMatriks}$. Transpose dari matriks D dinotasikan sebagai $D^T$. Bentuk matriks $D^T$ adalah ....`,
+        options: opsiTranspose,
+        answer: 0 // Index 0 sudah diset menjadi matriks transpose yang benar
+    },
+    {
+        text: `$$\\begin{pmatrix} x+5 & y+6 \\\\ 3 & 4 \\end{pmatrix} = \\begin{pmatrix} ${aa[10]+5} & ${aa[11]+6} \\\\ 3 & 4 \\end{pmatrix}$$
+        Nilai dari $x+y$ adalah ....`,
+        options: opsiAcak[6].map(item => item.nilai),
+        answer: opsiAcak[6].findIndex(item => item.isBenar)
+    },
+    {
+        text: `$$\\begin{pmatrix} 2x+3 & 3 \\\\ 4y+5 & 4 \\end{pmatrix} = \\begin{pmatrix} ${2*aa[12]+3} & 3 \\\\ ${4*aa[13]+5} & 4 \\end{pmatrix}$$
+        Nilai dari $${aa[14]}x+${aa[15]}y$ adalah ....`,
+        options: opsiAcak[7].map(item => item.nilai),
+        answer: opsiAcak[7].findIndex(item => item.isBenar)
+    },
+    {
+        text: `$$\\begin{pmatrix} 3x+5y & ${aa[10]} \\\\ ${aa[11]} & 6y-1 \\end{pmatrix} = \\begin{pmatrix} ${3*aa[16]+5*aa[17]} & ${aa[10]} \\\\ ${aa[11]} & ${6*aa[17]-1} \\end{pmatrix}$$
+        Nilai dari $${aa[18]}x+${aa[19]}y$ adalah ....`,
+        options: opsiAcak[8].map(item => item.nilai),
+        answer: opsiAcak[8].findIndex(item => item.isBenar)
+    },
+    {
+        text: `$$\\begin{pmatrix} ${aa[12]} & 3x+5y \\\\ ${aa[13]} & 2x+3y \\end{pmatrix} = \\begin{pmatrix} ${aa[12]} &${3*aa[20]+5*aa[21]} \\\\ ${aa[13]} & ${2*aa[20]+3*aa[21]} \\end{pmatrix}$$
+        Nilai dari $${aa[22]}x+${aa[23]}y$ adalah ....`,
+        options: opsiAcak[8].map(item => item.nilai),
+        answer: opsiAcak[8].findIndex(item => item.isBenar)
+    }
+        ];
+
+        // Variabel State Ujian
+        let shuffledQuestions = [];
+        let userAnswers = new Array(20).fill(null);
+        let currentIndex = 0;
+        let wakeLock = null;
+        let isExamActive = false;
+        let timerInterval;
+
+        // Inisialisasi awal
+        window.onload = () => {
+            initLogin();
+            checkTimeStatus();
+            setInterval(checkTimeStatus, 1000); // Cek waktu tiap detik
+        };
+
+        function checkTimeStatus() {
+            if(isExamActive) return; 
+            
+            const now = new Date().getTime();
+            const timeScreen = document.getElementById('time-screen');
+            const loginScreen = document.getElementById('login-screen');
+            const msg = document.getElementById('time-message');
+            const resultScreen = document.getElementById('result-screen');
+            
+            // INI BARIS YANG HILANG: Membuat variabel isResultVisible
+            const isResultVisible = !resultScreen.classList.contains('hidden');
+
+            if (now < START_TIME) {
+                timeScreen.classList.remove('hidden');
+                loginScreen.classList.add('hidden');
+                msg.textContent = "Ujian belum dibuka. Dimulai pada 21 September 2026 pukul 07.40 WIB.";
+            } else if (now > END_TIME) {
+                const btnRetake = document.getElementById('btn-retake');
+                if (btnRetake) btnRetake.classList.add('hidden');
+                
+                if (!isResultVisible) {
+                    timeScreen.classList.remove('hidden');
+                    loginScreen.classList.add('hidden');
+                    msg.textContent = "Ujian sudah ditutup.";
+                }
+            } else {
+                if (!isResultVisible) {
+                    timeScreen.classList.add('hidden');
+                    loginScreen.classList.remove('hidden');
+                } else {
+                    // PENGAMAN GANDA: Pastikan login screen terkunci
+                    loginScreen.classList.add('hidden');
+                }
+            }
+        }
+
+        // Setup Dropdown Kelas & Nama
+        function initLogin() {
+            const selectKelas = document.getElementById('kelas');
+            for (const kelas in dataSiswa) {
+                let opt = document.createElement('option');
+                opt.value = kelas;
+                opt.innerHTML = kelas;
+                selectKelas.appendChild(opt);
+            }
+        }
+
+        function loadStudents() {
+            const kelas = document.getElementById('kelas').value;
+            const selectNama = document.getElementById('nama');
+            selectNama.innerHTML = '<option value="">-- Pilih Nama --</option>';
+            
+            if (kelas) {
+                dataSiswa[kelas].forEach(nama => {
+                    let opt = document.createElement('option');
+                    opt.value = nama;
+                    opt.innerHTML = nama;
+                    selectNama.appendChild(opt);
+                });
+                selectNama.disabled = false;
+            } else {
+                selectNama.disabled = true;
+            }
+        }
+
+        // Utilitas Acak Array (Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // API Penahan Layar Tetap Menyala
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (err) {
+                console.log('Wake Lock API tidak didukung.');
+            }
+        }
+
+        async function startExam(isReset = false) {
+            const kelas = document.getElementById('kelas').value;
+            const nama = document.getElementById('nama').value;
+
+            if (!kelas || !nama) {
+                alert("Silakan pilih kelas dan nama terlebih dahulu!");
+                return;
+            }
+
+            // Request Fullscreen
+            if (!document.fullscreenElement) {
+                try {
+                    await document.documentElement.requestFullscreen();
+                } catch(e) {
+                    console.log("Browser menolak fullscreen otomatis.");
+                }
+            }
+
+            requestWakeLock();
+
+            if (!isReset) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('exam-screen').classList.remove('hidden');
+                document.getElementById('display-nama').textContent = nama;
+                document.getElementById('display-kelas').textContent = kelas;
+                
+                // Set Timer Ujian untuk mengakhiri paksa pukul 09.30
+                timerInterval = setInterval(() => {
+                    const now = new Date().getTime();
+                    const distance = END_TIME - now;
+                    
+                    if (distance <= 0) {
+                        clearInterval(timerInterval);
+                        alert("Waktu habis! Ujian otomatis diakhiri.");
+                        submitExam();
+                    } else {
+                        // Hapus operasi modulo (%) agar jam tidak dibuang
+const m = Math.floor(distance / (1000 * 60)); 
+const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+// Tampilkan mm:ss (misal: 110:00)
+document.getElementById('timer').textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                    }
+                }, 1000);
+            }
+
+            isExamActive = true;
+            
+            // Persiapan Soal (Diacak)
+            let tempBank = JSON.parse(JSON.stringify(bankSoal)); // Deep copy
+            shuffleArray(tempBank);
+            shuffledQuestions = tempBank.slice(0, 20); // Ambil 20 soal
+            userAnswers = new Array(shuffledQuestions.length).fill(null);
+            currentIndex = 0;
+            
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = shuffledQuestions[currentIndex];
+            document.getElementById('q-num').textContent = currentIndex + 1;
+            document.getElementById('q-text').textContent = q.text;
+            
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+
+            const abjad = ['A', 'B', 'C', 'D', 'E'];
+            
+            q.options.forEach((opt, index) => {
+                const isChecked = userAnswers[currentIndex] === index;
+                const div = document.createElement('div');
+                div.className = `p-3 border rounded cursor-pointer transition ${isChecked ? 'bg-blue-100 border-blue-500' : 'hover:bg-gray-50'}`;
+                div.onclick = () => selectOption(index);
+                div.innerHTML = `
+                    <label class="flex items-center cursor-pointer w-full">
+                        <input type="radio" name="option" class="mr-3 w-4 h-4 text-blue-600" ${isChecked ? 'checked' : ''}>
+                        <span><strong>${abjad[index]}.</strong> ${opt}</span>
+                    </label>
+                `;
+                optContainer.appendChild(div);
+            });
+
+            // Navigasi tombol
+            document.getElementById('btn-prev').disabled = currentIndex === 0;
+            
+            if (currentIndex === shuffledQuestions.length - 1) {
+                document.getElementById('btn-next').classList.add('hidden');
+                document.getElementById('btn-submit').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-next').classList.remove('hidden');
+                document.getElementById('btn-submit').classList.add('hidden');
+            }
+            if (window.MathJax) {
+                MathJax.typesetPromise([document.getElementById('exam-screen')]).catch((err) => console.log(err.message));
+            }
+        }
+
+        function selectOption(index) {
+            userAnswers[currentIndex] = index;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentIndex < shuffledQuestions.length - 1) {
+                currentIndex++;
+                renderQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuestion();
+            }
+        }
+
+        // ================= ANTI CHEAT SYSTEM =================
+        document.addEventListener('visibilitychange', () => {
+            if (isExamActive && document.hidden) {
+                handleCheating();
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            if (isExamActive && !document.fullscreenElement) {
+                handleCheating();
+            }
+        });
+
+        function handleCheating() {
+            alert("PERINGATAN!\nAnda terdeteksi berpindah aplikasi atau keluar dari layar penuh.\nUjian Anda dibatalkan dan soal diacak ulang.");
+            
+            // Kirim log peringatan ke Sheets
+            const data = {
+                type: 'warning',
+                nama: document.getElementById('nama').value,
+                kelas: document.getElementById('kelas').value
+            };
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) }).catch(e => console.log(e));
+
+            // Hentikan ujian dan kembalikan ke portal utama sebagai penalti
+            isExamActive = false;
+            clearInterval(timerInterval);
+            
+            // Amankan fungsi keluar fullscreen
+            try {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            } catch(e) {}
+
+            // Sembunyikan soal, paksa siswa menekan tombol "Mulai" lagi agar browser mengizinkan fullscreen
+            document.getElementById('exam-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        // ================= SUBMIT & PENILAIAN =================
+        function confirmSubmit() {
+            // Tampilkan modal custom alih-alih pop-up bawaan browser
+            document.getElementById('submit-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            // Sembunyikan modal jika siswa menekan "Batal", ujian lanjut dengan aman
+            document.getElementById('submit-modal').classList.add('hidden');
+        }
+
+        function executeSubmit() {
+            // Sembunyikan modal lalu eksekusi pengumpulan nilai
+            document.getElementById('submit-modal').classList.add('hidden');
+            submitExam();
+        }
+
+        function submitExam() {
+            isExamActive = false;
+            clearInterval(timerInterval);
+            
+            // Gunakan try-catch agar jika terjadi error dari bawaan browser, nilai tetap terkirim
+            try {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            } catch (err) { console.log(err); }
+
+            try {
+                if (wakeLock !== null) {
+                    wakeLock.release();
+                }
+            } catch (err) { console.log(err); }
+
+            let benar = 0;
+            let salah = 0;
+            let kosong = 0;
+
+            userAnswers.forEach((ans, idx) => {
+                if (ans === null) {
+                    kosong++;
+                } else if (ans === shuffledQuestions[idx].answer) {
+                    benar++;
+                } else {
+                    salah++;
+                }
+            });
+
+            const nilai = benar * 5;
+            const nama = document.getElementById('nama').value;
+            const kelas = document.getElementById('kelas').value;
+
+            // Tampilkan Hasil (Baris ini sekarang aman dari blokir error di atas)
+            document.getElementById('exam-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            document.getElementById('res-nama').textContent = nama;
+            document.getElementById('res-kelas').textContent = kelas;
+            document.getElementById('res-benar').textContent = benar;
+            document.getElementById('res-salah').textContent = salah;
+            document.getElementById('res-kosong').textContent = kosong;
+            document.getElementById('res-nilai').textContent = nilai;
+
+            // Logika Tombol Ulangi
+            const now = new Date().getTime();
+            const btnRetake = document.getElementById('btn-retake');
+            if (btnRetake) {
+                if (now < END_TIME) {
+                    btnRetake.classList.remove('hidden');
+                } else {
+                    btnRetake.classList.add('hidden');
+                }
+            }
+
+            // Kirim ke Spreadsheet
+            const data = { type: 'result', nama, kelas, benar, salah, kosong, nilai };
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) }).catch(e => console.log(e));        }
+    </script>
+</body>
+</html>
