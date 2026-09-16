@@ -124,7 +124,7 @@
             }
         });
         // ================= PENGATURAN UTAMA =================
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz8yqsy3E9tkd8aR8bwLRNdLqGm2LZpuv48l5rPKOP4M1JdinoCnimoTjLomM7rJuS4gA/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_DheI5UTJHyjjYDytmCJXvM_-RoCeXy6c0w822NdqPag96xfBIwIn9ueFIbQ5oYB9bA/exec';
         const START_TIME = new Date('2026-09-16T09:50:00+07:00').getTime(); // WIB
         const END_TIME = new Date('2026-09-16T23:50:00+07:00').getTime();   // WIB
         
@@ -619,7 +619,11 @@ document.getElementById('timer').textContent = `${m.toString().padStart(2, '0')}
                 nama: document.getElementById('nama').value,
                 kelas: document.getElementById('kelas').value
             };
-            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) }).catch(e => console.log(e));
+            fetch(SCRIPT_URL, { 
+    method: 'POST', 
+    mode: 'no-cors', // Tambahan wajib untuk mengatasi CORS Google Apps Script
+    body: JSON.stringify(data) 
+}).catch(e => console.log(e));
 
             // Hentikan ujian dan kembalikan ke portal utama sebagai penalti
             isExamActive = false;
