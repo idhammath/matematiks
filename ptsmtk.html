@@ -689,7 +689,8 @@ document.getElementById('timer').textContent = `${m.toString().padStart(2, '0')}
                 }
             });
 
-            const nilai = benar * 5;
+            const totalSoal = shuffledQuestions.length; 
+            const nilai = Math.round((benar * 100) / totalSoal);
             const nama = document.getElementById('nama').value;
             const kelas = document.getElementById('kelas').value;
 
