@@ -136,6 +136,8 @@
 
  
 const aa = pilihSebagian(deretBilBul(2,9),2);
+const arrai1 = pilihSebagian(deretBilBul(2,9),3);
+aa.push(...arrai1)
 const bb = [];
 const bnr = [];
 
@@ -310,7 +312,7 @@ const opsiAcak = [
                     `$\\dfrac1{p^{${aa[0]*aa[1]}}}$`,
                     `$p^{${aa[0]+aa[1]}}$`,
                     `$\\dfrac1{p^{${aa[0]+aa[1]}}}$`,
-                    `$2026^{${-aa[0]+aa[1]}}$`
+                    `$p^{${-aa[0]+aa[1]}}$`
                 ],
                 answer: 1
             },
@@ -320,11 +322,67 @@ const opsiAcak = [
                     `$p^{${aa[0]*aa[1]}}$`,
                     `$\\dfrac1{p^{${aa[0]*aa[1]}}}$`,
                     `$p^{${aa[0]+aa[1]}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^{${-aa[0]+aa[1]}}$`
+                    `$\\dfrac1{p^{${aa[0]+aa[1]}}}$`,
+                    `$p^{${-aa[0]+aa[1]}}$`
                 ],
                 answer: 0
             },
+            {
+                text: `$\\left(\\dfrac{p^${aa[2]}}{p^${aa[3]}}}\\right)^{${aa[4]}}=$ ....`,
+                options: [
+                    `$p^{${(aa[3]-aa[2])*aa[4]}}$`,
+                    `$\\dfrac1{p^{${(aa[3]-aa[2])*aa[4]}}}$`,
+                    `$p^{${(aa[4]-aa[2])*aa[3]}}$`,
+                    `$\\dfrac1{p^{${(aa[4]-aa[2])*aa[3]}}}$`,
+                    `$p^{${(aa[4]-aa[3])*aa[2]}}$`
+                ],
+                answer: 1
+            },
+            {
+                text: `$\\left(\\dfrac{p^${aa[3]}}{p^${aa[2]}}}\\right)^{${aa[4]}}=$ ....`,
+                options: [
+                    `$p^{${(aa[3]-aa[2])*aa[4]}}$`,
+                    `$\\dfrac1{p^{${(aa[3]-aa[2])*aa[4]}}}$`,
+                    `$p^{${(aa[4]-aa[2])*aa[3]}}$`,
+                    `$\\dfrac1{p^{${(aa[4]-aa[2])*aa[3]}}}$`,
+                    `$p^{${(aa[4]-aa[3])*aa[2]}}$`
+                ],
+                answer: 0
+            },
+            {
+                text: `$\\left(\\dfrac{p^${aa[4]}}{p^${aa[2]}}}\\right)^{${aa[3]}}=$ ....`,
+                options: [
+                    `$p^{${(aa[3]-aa[2])*aa[4]}}$`,
+                    `$\\dfrac1{p^{${(aa[3]-aa[2])*aa[4]}}}$`,
+                    `$p^{${(aa[4]-aa[2])*aa[3]}}$`,
+                    `$\\dfrac1{p^{${(aa[4]-aa[2])*aa[3]}}}$`,
+                    `$p^{${(aa[4]-aa[3])*aa[2]}}$`
+                ],
+                answer: 2
+            },
+            {
+                text: `$\\left(\\dfrac{p^${aa[2]}}{p^${aa[4]}}}\\right)^{${aa[3]}}=$ ....`,
+                options: [
+                    `$p^{${(aa[3]-aa[2])*aa[4]}}$`,
+                    `$\\dfrac1{p^{${(aa[3]-aa[2])*aa[4]}}}$`,
+                    `$p^{${(aa[4]-aa[2])*aa[3]}}$`,
+                    `$\\dfrac1{p^{${(aa[4]-aa[2])*aa[3]}}}$`,
+                    `$p^{${(aa[4]-aa[3])*aa[2]}}$`
+                ],
+                answer: 3
+            },
+            {
+                text: `$\\left(\\dfrac{p^${aa[4]}}{p^${aa[3]}}}\\right)^{${aa[2]}}=$ ....`,
+                options: [
+                    `$p^{${(aa[3]-aa[2])*aa[4]}}$`,
+                    `$\\dfrac1{p^{${(aa[3]-aa[2])*aa[4]}}}$`,
+                    `$p^{${(aa[4]-aa[2])*aa[3]}}$`,
+                    `$\\dfrac1{p^{${(aa[4]-aa[2])*aa[3]}}}$`,
+                    `$p^{${(aa[4]-aa[3])*aa[2]}}$`
+                ],
+                answer: 4
+            },
+
         ];
 
         // Variabel State Ujian
