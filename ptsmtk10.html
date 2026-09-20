@@ -137,7 +137,17 @@
  
 const aa = pilihSebagian(deretBilBul(2,9),2);
 const arrai1 = pilihSebagian(deretBilBul(2,9),3);
-aa.push(...arrai1)
+aa.push(...arrai1);
+const arrai2 = pilihSebagian(deretBilBul(2,9),2);
+aa.push(...arrai2);
+const arrai3 = pilihSebagian(deretBilBul(11,19),2);
+aa.push(...arrai3);
+aa.push(acakAntara(2,9));
+const arrai4 = pilihSebagian(deretBilBul(2,9),3);
+const arrai5 = pilihSebagian(deretBilBul(12,19),3);
+aa.push(...arrai4);
+aa.push(...arrai5);
+aa.push(acakAntara(3,9));
 const bb = [];
 const bnr = [];
 
@@ -162,227 +172,1140 @@ const opsiAcak = [
                 ],
                 answer: 4
             },
-            {
-                text: `$2026^{${aa[0]}}\\times 2026^{${aa[1]}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^{${aa[0]*aa[1]}}$`
-                ],
-                answer: 0
-            },
-            {
-                text: `$2026^{${-aa[0]}}\\times 2026^{${aa[1]}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^{${aa[0]*aa[1]}}$`
-                ],
-                answer: 1
-            },
-            {
-                text: `$2026^{${aa[0]}}\\times 2026^{${-aa[1]}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^{${aa[0]*aa[1]}}$`
-                ],
-                answer: 2
-            },
-            {
-                text: `$2026^{${-aa[0]}}\\times 2026^{${-aa[1]}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^{${aa[0]*aa[1]}}$`
-                ],
-                answer: 3
-            },
-            {
-                text: `$\\dfrac{2026^{${aa[0]}}}{2026^{${aa[1]}}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^0$`
-                ],
-                answer: 2
-            },
-            {
-                text: `$\\dfrac{2026^{${-aa[0]}}}{2026^{${aa[1]}}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^0$`
-                ],
-                answer: 3
-            },
-            {
-                text: `$\\dfrac{2026^{${aa[0]}}}{2026^{${-aa[1]}}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^0$`
-                ],
-                answer: 0
-            },
-            {
-                text: `$\\dfrac{2026^{${-aa[0]}}}{2026^{${-aa[1]}}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^0$`
-                ],
-                answer: 1
-            },
-            {
-                text: `$\\dfrac{2026^{${aa[1]}}}{2026^{${aa[0]}}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^{${aa[0]*aa[1]}}$`
-                ],
-                answer: 1
-            },
-                        {
-                text: `$\\dfrac{2026^{${-aa[1]}}}{2026^{${aa[0]}}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^{${aa[0]*aa[1]}}$`
-                ],
-                answer: 3
-            },
-                        {
-                text: `$\\dfrac{2026^{${aa[1]}}}{2026^{${-aa[0]}}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^{${aa[0]*aa[1]}}$`
-                ],
-                answer: 0
-            },
-            {
-                text: `$\\dfrac{2026^{${-aa[1]}}}{2026^{${-aa[0]}}}=$ ....`,
-                options: [
-                    `$2026^{${aa[0]+aa[1]}}$`,
-                    `$2026^{${aa[1]-aa[0]}}$`,
-                    `$\\dfrac1{2026^{${aa[1]-aa[0]}}}$`,
-                    `$\\dfrac1{2026^{${aa[0]+aa[1]}}}$`,
-                    `$2026^{${aa[0]*aa[1]}}$`
-                ],
-                answer: 2
-            },
-            {
-                text: `$\\left(p^${aa[0]}\\right)^${aa[1]}=$ ....`,
-                options: [
-                    `$p^{${aa[0]*aa[1]}}$`,
-                    `$\\dfrac1{p^{${aa[0]*aa[1]}}}$`,
-                    `$p^{${aa[0]+aa[1]}}$`,
-                    `$\\dfrac1{p^{${aa[0]+aa[1]}}}$`,
-                    `$p^{${-aa[0]+aa[1]}}$`
-                ],
-                answer: 0
-            },
-            {
-                text: `$\\left(p^{${-aa[0]}}\\right)^${aa[1]}=$ ....`,
-                options: [
-                    `$p^{${aa[0]*aa[1]}}$`,
-                    `$\\dfrac1{p^{${aa[0]*aa[1]}}}$`,
-                    `$p^{${aa[0]+aa[1]}}$`,
-                    `$\\dfrac1{p^{${aa[0]+aa[1]}}}$`,
-                    `$p^{${-aa[0]+aa[1]}}$`
-                ],
-                answer: 1
-            },
-{
-                text: `$\\left(p^{${-aa[0]}}\\right)^{${-aa[1]}}=$ ....`,
-                options: [
-                    `$p^{${aa[0]*aa[1]}}$`,
-                    `$\\dfrac1{p^{${aa[0]*aa[1]}}}$`,
-                    `$p^{${aa[0]+aa[1]}}$`,
-                    `$\\dfrac1{p^{${aa[0]+aa[1]}}}$`,
-                    `$p^{${-aa[0]+aa[1]}}$`
-                ],
-                answer: 0
-            },
-            {
-                text: `$\\left(\\dfrac{p^${aa[2]}}{p^${aa[3]}}}\\right)^{${aa[4]}}=$ ....`,
-                options: [
-                    `$p^{${(aa[3]-aa[2])*aa[4]}}$`,
-                    `$\\dfrac1{p^{${(aa[3]-aa[2])*aa[4]}}}$`,
-                    `$p^{${(aa[4]-aa[2])*aa[3]}}$`,
-                    `$\\dfrac1{p^{${(aa[4]-aa[2])*aa[3]}}}$`,
-                    `$p^{${(aa[4]-aa[3])*aa[2]}}$`
-                ],
-                answer: 1
-            },
-            {
-                text: `$\\left(\\dfrac{p^${aa[3]}}{p^${aa[2]}}}\\right)^{${aa[4]}}=$ ....`,
-                options: [
-                    `$p^{${(aa[3]-aa[2])*aa[4]}}$`,
-                    `$\\dfrac1{p^{${(aa[3]-aa[2])*aa[4]}}}$`,
-                    `$p^{${(aa[4]-aa[2])*aa[3]}}$`,
-                    `$\\dfrac1{p^{${(aa[4]-aa[2])*aa[3]}}}$`,
-                    `$p^{${(aa[4]-aa[3])*aa[2]}}$`
-                ],
-                answer: 0
-            },
-            {
-                text: `$\\left(\\dfrac{p^${aa[4]}}{p^${aa[2]}}}\\right)^{${aa[3]}}=$ ....`,
-                options: [
-                    `$p^{${(aa[3]-aa[2])*aa[4]}}$`,
-                    `$\\dfrac1{p^{${(aa[3]-aa[2])*aa[4]}}}$`,
-                    `$p^{${(aa[4]-aa[2])*aa[3]}}$`,
-                    `$\\dfrac1{p^{${(aa[4]-aa[2])*aa[3]}}}$`,
-                    `$p^{${(aa[4]-aa[3])*aa[2]}}$`
-                ],
-                answer: 2
-            },
-            {
-                text: `$\\left(\\dfrac{p^${aa[2]}}{p^${aa[4]}}}\\right)^{${aa[3]}}=$ ....`,
-                options: [
-                    `$p^{${(aa[3]-aa[2])*aa[4]}}$`,
-                    `$\\dfrac1{p^{${(aa[3]-aa[2])*aa[4]}}}$`,
-                    `$p^{${(aa[4]-aa[2])*aa[3]}}$`,
-                    `$\\dfrac1{p^{${(aa[4]-aa[2])*aa[3]}}}$`,
-                    `$p^{${(aa[4]-aa[3])*aa[2]}}$`
-                ],
-                answer: 3
-            },
-            {
-                text: `$\\left(\\dfrac{p^${aa[4]}}{p^${aa[3]}}}\\right)^{${aa[2]}}=$ ....`,
-                options: [
-                    `$p^{${(aa[3]-aa[2])*aa[4]}}$`,
-                    `$\\dfrac1{p^{${(aa[3]-aa[2])*aa[4]}}}$`,
-                    `$p^{${(aa[4]-aa[2])*aa[3]}}$`,
-                    `$\\dfrac1{p^{${(aa[4]-aa[2])*aa[3]}}}$`,
-                    `$p^{${(aa[4]-aa[3])*aa[2]}}$`
-                ],
-                answer: 4
-            },
+            
+            // ==========================================
+            // BLOK 1: Pangkat Biasa (a0, a1)
+            // ==========================================
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$2026^{${a0}}\\times 2026^{${a1}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^{${a0*a1}}$`
+                    ],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$2026^{${-a0}}\\times 2026^{${a1}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^{${a0*a1}}$`
+                    ],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$2026^{${a0}}\\times 2026^{${-a1}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^{${a0*a1}}$`
+                    ],
+                    answer: 2
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$2026^{${-a0}}\\times 2026^{${-a1}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^{${a0*a1}}$`
+                    ],
+                    answer: 3
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$\\dfrac{2026^{${a0}}}{2026^{${a1}}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^0$`
+                    ],
+                    answer: 2
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$\\dfrac{2026^{${-a0}}}{2026^{${a1}}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^0$`
+                    ],
+                    answer: 3
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$\\dfrac{2026^{${a0}}}{2026^{${-a1}}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^0$`
+                    ],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$\\dfrac{2026^{${-a0}}}{2026^{${-a1}}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^0$`
+                    ],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$\\dfrac{2026^{${a1}}}{2026^{${a0}}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^{${a0*a1}}$`
+                    ],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$\\dfrac{2026^{${-a1}}}{2026^{${a0}}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^{${a0*a1}}$`
+                    ],
+                    answer: 3
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$\\dfrac{2026^{${a1}}}{2026^{${-a0}}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^{${a0*a1}}$`
+                    ],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$\\dfrac{2026^{${-a1}}}{2026^{${-a0}}}=$ ....`,
+                    options: [
+                        `$2026^{${a0+a1}}$`,
+                        `$2026^{${a1-a0}}$`,
+                        `$\\dfrac1{2026^{${a1-a0}}}$`,
+                        `$\\dfrac1{2026^{${a0+a1}}}$`,
+                        `$2026^{${a0*a1}}$`
+                    ],
+                    answer: 2
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$\\left(p^{${a0}}\\right)^{${a1}}=$ ....`,
+                    options: [
+                        `$p^{${a0*a1}}$`,
+                        `$\\dfrac1{p^{${a0*a1}}}$`,
+                        `$p^{${a0+a1}}$`,
+                        `$\\dfrac1{p^{${a0+a1}}}$`,
+                        `$p^{${-a0+a1}}$`
+                    ],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$\\left(p^{${-a0}}\\right)^{${a1}}=$ ....`,
+                    options: [
+                        `$p^{${a0*a1}}$`,
+                        `$\\dfrac1{p^{${a0*a1}}}$`,
+                        `$p^{${a0+a1}}$`,
+                        `$\\dfrac1{p^{${a0+a1}}}$`,
+                        `$p^{${-a0+a1}}$`
+                    ],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const [a0, a1] = pilihSebagian(deretBilBul(2, 9), 2);
+                return {
+                    text: `$\\left(p^{${-a0}}\\right)^{${-a1}}=$ ....`,
+                    options: [
+                        `$p^{${a0*a1}}$`,
+                        `$\\dfrac1{p^{${a0*a1}}}$`,
+                        `$p^{${a0+a1}}$`,
+                        `$\\dfrac1{p^{${a0+a1}}}$`,
+                        `$p^{${-a0+a1}}$`
+                    ],
+                    answer: 0
+                };
+            })(),
 
+            // ==========================================
+            // BLOK 2: Pangkat Pecahan Variabel P (a2, a3, a4)
+            // ==========================================
+            (() => {
+                const [a2, a3, a4] = pilihSebagian(deretBilBul(2, 9), 3);
+                return {
+                    text: `$\\left(\\dfrac{p^{${a2}}}{p^{${a3}}}\\right)^{${a4}}=$ ....`,
+                    options: [
+                        `$p^{${(a3-a2)*a4}}$`,
+                        `$\\dfrac1{p^{${(a3-a2)*a4}}}$`,
+                        `$p^{${(a4-a2)*a3}}$`,
+                        `$\\dfrac1{p^{${(a4-a2)*a3}}}$`,
+                        `$p^{${(a4-a3)*a2}}$`
+                    ],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const [a2, a3, a4] = pilihSebagian(deretBilBul(2, 9), 3);
+                return {
+                    text: `$\\left(\\dfrac{p^{${a3}}}{p^{${a2}}}\\right)^{${a4}}=$ ....`,
+                    options: [
+                        `$p^{${(a3-a2)*a4}}$`,
+                        `$\\dfrac1{p^{${(a3-a2)*a4}}}$`,
+                        `$p^{${(a4-a2)*a3}}$`,
+                        `$\\dfrac1{p^{${(a4-a2)*a3}}}$`,
+                        `$p^{${(a4-a3)*a2}}$`
+                    ],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const [a2, a3, a4] = pilihSebagian(deretBilBul(2, 9), 3);
+                return {
+                    text: `$\\left(\\dfrac{p^{${a4}}}{p^{${a2}}}\\right)^{${a3}}=$ ....`,
+                    options: [
+                        `$p^{${(a3-a2)*a4}}$`,
+                        `$\\dfrac1{p^{${(a3-a2)*a4}}}$`,
+                        `$p^{${(a4-a2)*a3}}$`,
+                        `$\\dfrac1{p^{${(a4-a2)*a3}}}$`,
+                        `$p^{${(a4-a3)*a2}}$`
+                    ],
+                    answer: 2
+                };
+            })(),
+            (() => {
+                const [a2, a3, a4] = pilihSebagian(deretBilBul(2, 9), 3);
+                return {
+                    text: `$\\left(\\dfrac{p^{${a2}}}{p^{${a4}}}\\right)^{${a3}}=$ ....`,
+                    options: [
+                        `$p^{${(a3-a2)*a4}}$`,
+                        `$\\dfrac1{p^{${(a3-a2)*a4}}}$`,
+                        `$p^{${(a4-a2)*a3}}$`,
+                        `$\\dfrac1{p^{${(a4-a2)*a3}}}$`,
+                        `$p^{${(a4-a3)*a2}}$`
+                    ],
+                    answer: 3
+                };
+            })(),
+            (() => {
+                const [a2, a3, a4] = pilihSebagian(deretBilBul(2, 9), 3);
+                return {
+                    text: `$\\left(\\dfrac{p^{${a4}}}{p^{${a3}}}\\right)^{${a2}}=$ ....`,
+                    options: [
+                        `$p^{${(a3-a2)*a4}}$`,
+                        `$\\dfrac1{p^{${(a3-a2)*a4}}}$`,
+                        `$p^{${(a4-a2)*a3}}$`,
+                        `$\\dfrac1{p^{${(a4-a2)*a3}}}$`,
+                        `$p^{${(a4-a3)*a2}}$`
+                    ],
+                    answer: 4
+                };
+            })(),
+
+            // ==========================================
+            // BLOK 3: Variabel a dan b (a5, a6, a7, a8)
+            // ==========================================
+            (() => {
+                const [a5, a6] = pilihSebagian(deretBilBul(2, 9), 2);
+                const [a7, a8] = pilihSebagian(deretBilBul(11, 19), 2);
+                return {
+                    text: `$\\dfrac{a^{${a7}}b^{${a8}}}{a^{${a5}}b^{${a6}}}=$ ....`,
+                    options: [
+                        `$a^{${a7-a5}}b^{${a8-a6}}$`,
+                        `$\\dfrac{b^{${a8-a6}}}{a^{${a7-a5}}}$`,
+                        `$\\dfrac{a^{${a7-a5}}}{b^{${a8-a6}}}$`,
+                        `$\\dfrac1{a^{${a7-a5}}b^{${a8-a6}}}$`,
+                        `$a^{${a7+a5}}b^{${a8+a6}}$`
+                    ],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const [a5, a6] = pilihSebagian(deretBilBul(2, 9), 2);
+                const [a7, a8] = pilihSebagian(deretBilBul(11, 19), 2);
+                return {
+                    text: `$\\dfrac{a^{${a5}}b^{${a8}}}{a^{${a7}}b^{${a6}}}=$ ....`,
+                    options: [
+                        `$a^{${a7-a5}}b^{${a8-a6}}$`,
+                        `$\\dfrac{b^{${a8-a6}}}{a^{${a7-a5}}}$`,
+                        `$\\dfrac{a^{${a7-a5}}}{b^{${a8-a6}}}$`,
+                        `$\\dfrac1{a^{${a7-a5}}b^{${a8-a6}}}$`,
+                        `$a^{${a7+a5}}b^{${a8+a6}}$`
+                    ],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const [a5, a6] = pilihSebagian(deretBilBul(2, 9), 2);
+                const [a7, a8] = pilihSebagian(deretBilBul(11, 19), 2);
+                return {
+                    text: `$\\dfrac{a^{${a7}}b^{${a6}}}{a^{${a5}}b^{${a8}}}=$ ....`,
+                    options: [
+                        `$a^{${a7-a5}}b^{${a8-a6}}$`,
+                        `$\\dfrac{b^{${a8-a6}}}{a^{${a7-a5}}}$`,
+                        `$\\dfrac{a^{${a7-a5}}}{b^{${a8-a6}}}$`,
+                        `$\\dfrac1{a^{${a7-a5}}b^{${a8-a6}}}$`,
+                        `$a^{${a7+a5}}b^{${a8+a6}}$`
+                    ],
+                    answer: 2
+                };
+            })(),
+            (() => {
+                const [a5, a6] = pilihSebagian(deretBilBul(2, 9), 2);
+                const [a7, a8] = pilihSebagian(deretBilBul(11, 19), 2);
+                return {
+                    text: `$\\dfrac{a^{${a5}}b^{${a6}}}{a^{${a7}}b^{${a8}}}=$ ....`,
+                    options: [
+                        `$a^{${a7-a5}}b^{${a8-a6}}$`,
+                        `$\\dfrac{b^{${a8-a6}}}{a^{${a7-a5}}}$`,
+                        `$\\dfrac{a^{${a7-a5}}}{b^{${a8-a6}}}$`,
+                        `$\\dfrac1{a^{${a7-a5}}b^{${a8-a6}}}$`,
+                        `$a^{${a7+a5}}b^{${a8+a6}}$`
+                    ],
+                    answer: 3
+                };
+            })(),
+
+            // ==========================================
+            // BLOK 4: Variabel a dan b Berpangkat Luar (a5..a9)
+            // ==========================================
+            (() => {
+                const [a5, a6] = pilihSebagian(deretBilBul(2, 9), 2);
+                const [a7, a8] = pilihSebagian(deretBilBul(11, 19), 2);
+                const a9 = acakAntara(2, 9);
+                return {
+                    text: `$\\left(\\dfrac{a^{${a7}}b^{${a8}}}{a^{${a5}}b^{${a6}}}\\right)^{${a9}}=$ ....`,
+                    options: [
+                        `$a^{${a9*(a7-a5)}}b^{${a9*(a8-a6)}}$`,
+                        `$\\dfrac{b^{${a9*(a8-a6)}}}{a^{${a9*(a7-a5)}}}$`,
+                        `$\\dfrac{a^{${a9*(a7-a5)}}}{b^{${a9*(a8-a6)}}}$`,
+                        `$\\dfrac1{a^{${a9*(a7-a5)}}b^{${a9*(a8-a6)}}}$`,
+                        `$a^{${a9*(a7+a5)}}b^{${a9*(a8+a6)}}$`
+                    ],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const [a5, a6] = pilihSebagian(deretBilBul(2, 9), 2);
+                const [a7, a8] = pilihSebagian(deretBilBul(11, 19), 2);
+                const a9 = acakAntara(2, 9);
+                return {
+                    text: `$\\left(\\dfrac{a^{${a5}}b^{${a8}}}{a^{${a7}}b^{${a6}}}\\right)^{${a9}}=$ ....`,
+                    options: [
+                        `$a^{${a9*(a7-a5)}}b^{${a9*(a8-a6)}}$`,
+                        `$\\dfrac{b^{${a9*(a8-a6)}}}{a^{${a9*(a7-a5)}}}$`,
+                        `$\\dfrac{a^{${a9*(a7-a5)}}}{b^{${a9*(a8-a6)}}}$`,
+                        `$\\dfrac1{a^{${a9*(a7-a5)}}b^{${a9*(a8-a6)}}}$`,
+                        `$a^{${a9*(a7+a5)}}b^{${a9*(a8+a6)}}$`
+                    ],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const [a5, a6] = pilihSebagian(deretBilBul(2, 9), 2);
+                const [a7, a8] = pilihSebagian(deretBilBul(11, 19), 2);
+                const a9 = acakAntara(2, 9);
+                return {
+                    text: `$\\left(\\dfrac{a^{${a7}}b^{${a6}}}{a^{${a5}}b^{${a8}}}\\right)^{${a9}}=$ ....`,
+                    options: [
+                        `$a^{${a9*(a7-a5)}}b^{${a9*(a8-a6)}}$`,
+                        `$\\dfrac{b^{${a9*(a8-a6)}}}{a^{${a9*(a7-a5)}}}$`,
+                        `$\\dfrac{a^{${a9*(a7-a5)}}}{b^{${a9*(a8-a6)}}}$`,
+                        `$\\dfrac1{a^{${a9*(a7-a5)}}b^{${a9*(a8-a6)}}}$`,
+                        `$a^{${a9*(a7+a5)}}b^{${a9*(a8+a6)}}$`
+                    ],
+                    answer: 2
+                };
+            })(),
+            (() => {
+                const [a5, a6] = pilihSebagian(deretBilBul(2, 9), 2);
+                const [a7, a8] = pilihSebagian(deretBilBul(11, 19), 2);
+                const a9 = acakAntara(2, 9);
+                return {
+                    text: `$\\left(\\dfrac{a^{${a5}}b^{${a6}}}{a^{${a7}}b^{${a8}}}\\right)^{${a9}}=$ ....`,
+                    options: [
+                        `$a^{${a9*(a7-a5)}}b^{${a9*(a8-a6)}}$`,
+                        `$\\dfrac{b^{${a9*(a8-a6)}}}{a^{${a9*(a7-a5)}}}$`,
+                        `$\\dfrac{a^{${a9*(a7-a5)}}}{b^{${a9*(a8-a6)}}}$`,
+                        `$\\dfrac1{a^{${a9*(a7-a5)}}b^{${a9*(a8-a6)}}}$`,
+                        `$a^{${a9*(a7+a5)}}b^{${a9*(a8+a6)}}$`
+                    ],
+                    answer: 3
+                };
+            })(),
+
+            // ==========================================
+            // BLOK 5: Variabel a, b, dan c (a10..a16)
+            // ==========================================
+            (() => {
+                const [a10, a11, a12] = pilihSebagian(deretBilBul(2, 9), 3);
+                const [a13, a14, a15] = pilihSebagian(deretBilBul(12, 19), 3);
+                const a16 = acakAntara(3, 9);
+                return {
+                    text: `$\\left(\\dfrac{a^{${a13}}b^{${a14}}c^{${a15}}}{a^{${a10}}b^{${a11}}c^{${a12}}}\\right)^{${a16}}=$ ....`,
+                    options: [
+                        `$a^{${a16*(a10-a13)}}b^{${a16*(a11-a14)}}c^{${a16*(a12-a15)}}$`,
+                        `$a^{${a16*(a13+a10)}}b^{${a16*(a14+a11)}}c^{${a16*(a15+a12)}}$`,
+                        `$a^{${a13-a10}}b^{${a14-a11}}c^{${a15-a12}}$`,
+                        `$a^{${a16*(a13-a10)}}b^{${a16*(a14-a11)}}c^{${a16*(a15-a12)}}$`,
+                        `$\\dfrac1{a^{${a16*(a13-a10)}}b^{${a16*(a14-a11)}}c^{${a16*(a15-a12)}}}$`
+                    ],
+                    answer: 3
+                };
+            })(),
+            (() => {
+                const [a10, a11, a12] = pilihSebagian(deretBilBul(2, 9), 3);
+                const [a13, a14, a15] = pilihSebagian(deretBilBul(12, 19), 3);
+                const a16 = acakAntara(3, 9);
+                return {
+                    text: `$\\left(\\dfrac{a^{${a10}}b^{${a11}}c^{${a12}}}{a^{${a13}}b^{${a14}}c^{${a15}}}\\right)^{${a16}}=$ ....`,
+                    options: [
+                        `$a^{${a16*(a10-a13)}}b^{${a16*(a11-a14)}}c^{${a16*(a12-a15)}}$`,
+                        `$a^{${a16*(a13-a10)}}b^{${a16*(a14-a11)}}c^{${a16*(a15-a12)}}$`,
+                        `$\\dfrac1{a^{${a16*(a10-a13)}}b^{${a16*(a11-a14)}}c^{${a16*(a12-a15)}}}$`,
+                        `$a^{${a16*(a13+a10)}}b^{${a16*(a14+a11)}}c^{${a16*(a15+a12)}}$`,
+                        `$a^{${a10-a13}}b^{${a11-a14}}c^{${a12-a15}}$`
+                    ],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const [a10, a11, a12] = pilihSebagian(deretBilBul(2, 9), 3);
+                const [a13, a14, a15] = pilihSebagian(deretBilBul(12, 19), 3);
+                const a16 = acakAntara(3, 9);
+                return {
+                    text: `$\\left(\\dfrac{a^{${a13}}b^{${a14}}c^{${a15}}}{a^{${a10}}b^{${a11}}c^{${a12}}}\\right)^{${-a16}}=$ ....`,
+                    options: [
+                        `$a^{${a16*(a13-a10)}}b^{${a16*(a14-a11)}}c^{${a16*(a15-a12)}}$`,
+                        `$a^{${a16*(a10-a13)}}b^{${a16*(a11-a14)}}c^{${a16*(a12-a15)}}$`,
+                        `$a^{${-a16*(a10+a13)}}b^{${-a16*(a11+a14)}}c^{${-a16*(a12+a15)}}$`,
+                        `$\\dfrac1{a^{${a16*(a10-a13)}}b^{${a16*(a11-a14)}}c^{${a16*(a12-a15)}}}$`,
+                        `$a^{${-a13+a10}}b^{${-a14+a11}}c^{${-a15+a12}}$`
+                    ],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const [a10, a11, a12] = pilihSebagian(deretBilBul(2, 9), 3);
+                const [a13, a14, a15] = pilihSebagian(deretBilBul(12, 19), 3);
+                const a16 = acakAntara(3, 9);
+                return {
+                    text: `$\\left(a^{${a10}}b^{${a11}}c^{${a12}} \\times a^{${a13}}b^{${a14}}c^{${a15}}\\right)^{${a16}}=$ ....`,
+                    options: [
+                        `$a^{${a16*(a10-a13)}}b^{${a16*(a11-a14)}}c^{${a16*(a12-a15)}}$`,
+                        `$a^{${a16*(a13-a10)}}b^{${a16*(a14-a11)}}c^{${a16*(a15-a12)}}$`,
+                        `$a^{${a16*(a10+a13)}}b^{${a16*(a11+a14)}}c^{${a16*(a12+a15)}}$`,
+                        `$a^{${a10+a13}}b^{${a11+a14}}c^{${a12+a15}}$`,
+                        `$\\dfrac1{a^{${a16*(a10+a13)}}b^{${a16*(a11+a14)}}c^{${a16*(a12+a15)}}}$`
+                    ],
+                    answer: 2
+                };
+            })(),
+            (() => {
+                const [a10, a11, a12] = pilihSebagian(deretBilBul(2, 9), 3);
+                const [a13, a14, a15] = pilihSebagian(deretBilBul(12, 19), 3);
+                const a16 = acakAntara(3, 9);
+                return {
+                    text: `$\\left(\\dfrac{a^{${a13}}b^{${a14}}c^{${a15}}}{a^{${-a10}}b^{${-a11}}c^{${-a12}}}\\right)^{${a16}}=$ ....`,
+                    options: [
+                        `$a^{${a16*(a13-a10)}}b^{${a16*(a14-a11)}}c^{${a16*(a15-a12)}}$`,
+                        `$a^{${a16*(a10-a13)}}b^{${a16*(a11-a14)}}c^{${a16*(a12-a15)}}$`,
+                        `$a^{${a16*(a10+a13)}}b^{${a16*(a11+a14)}}c^{${a16*(a12+a15)}}$`,
+                        `$\\dfrac1{a^{${a16*(a10+a13)}}b^{${a16*(a11+a14)}}c^{${a16*(a12+a15)}}}$`,
+                        `$a^{${a10+a13}}b^{${a11+a14}}c^{${a12+a15}}$`
+                    ],
+                    answer: 2
+                };
+            })(),
+            // ==========================================
+            // MATERI: Pangkat Nol (3 Soal)
+            // ==========================================
+            (() => {
+                const a = acakAntara(5, 50);
+                return {
+                    text: `Hasil dari $${a}^0$ adalah ....`,
+                    options: [`$0$`, `$1$`, `$${a}$`, `$-1$`, `$\\dfrac{1}{${a}}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const koef = acakAntara(2, 9);
+                return {
+                    text: `Nilai dari $(${koef}x^2y)^0$, dengan syarat $x \\neq 0$ dan $y \\neq 0$ adalah ....`,
+                    options: [`$0$`, `$1$`, `$${koef}$`, `$${koef}x^2y$`, `$\\dfrac{1}{${koef}x^2y}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const a = acakAntara(2, 7);
+                const b = acakAntara(8, 12);
+                const c = acakAntara(13, 20);
+                return {
+                    text: `Nilai dari $${a}^0 + ${b}^0 - ${c}^0$ adalah ....`,
+                    options: [`$0$`, `$1$`, `$2$`, `$3$`, `$10$`],
+                    answer: 1
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Hubungan Bilangan Berpangkat Pecahan & Bentuk Akar (3 Soal)
+            // ==========================================
+            (() => {
+                const a = acakAntara(2, 5);
+                return {
+                    text: `Bentuk akar dari $x^{\\frac{1}{${a}}}$ adalah ....`,
+                    options: [`$\\sqrt{x}$`, `$\\sqrt[${a}]{x}$`, `$x^${a}$`, `$\\sqrt{x^${a}}$`, `$\\dfrac{1}{\\sqrt[${a}]{x}}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const b = acakAntara(2, 4);
+                const c = b + acakAntara(1, 3);
+                return {
+                    text: `Bentuk akar dari $a^{\\frac{${b}}{${c}}}$ adalah ....`,
+                    options: [`$\\sqrt[${b}]{a^${c}}$`, `$\\sqrt{a^${c}}$`, `$\\sqrt[${c}]{a^${b}}$`, `$\\sqrt[${c}]{a}$`, `$\\dfrac{1}{\\sqrt[${c}]{a^${b}}}$`],
+                    answer: 2
+                };
+            })(),
+            (() => {
+                const x = acakAntara(2, 4); // basis asli
+                const c = acakAntara(2, 3); // pangkat penyebut
+                const a = Math.pow(x, c); // bilangan yg diakar
+                const b = acakAntara(2, 3); // pangkat pembilang
+                const ans = Math.pow(x, b);
+                return {
+                    text: `Nilai dari $${a}^{\\frac{${b}}{${c}}}$ adalah ....`,
+                    options: [`$${ans - 1}$`, `$${ans}$`, `$${ans + 1}$`, `$${ans * 2}$`, `$${a}$`],
+                    answer: 1
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Menentukan Nilai dari Akar Bilangan Kuadrat (3 Soal)
+            // ==========================================
+            (() => {
+                const a = acakAntara(10, 15);
+                const n = a * a;
+                return {
+                    text: `Nilai dari $\\sqrt{${n}}$ adalah ....`,
+                    options: [`$${a - 2}$`, `$${a}$`, `$${a + 2}$`, `$${a + 4}$`, `$${a + 6}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const a = acakAntara(16, 20);
+                const n = a * a;
+                return {
+                    text: `Nilai dari $\\sqrt{${n}}$ adalah ....`,
+                    options: [`$${a}$`, `$${a + 5}$`, `$${a + 10}$`, `$${a + 15}$`, `$${a + 20}$`],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const a = acakAntara(21, 25);
+                const n = a * a;
+                return {
+                    text: `Nilai dari $\\sqrt{${n}}$ adalah ....`,
+                    options: [`$${a - 10}$`, `$${a}$`, `$${a + 10}$`, `$${a + 20}$`, `$${a + 30}$`],
+                    answer: 1
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Menyederhanakan Bentuk Akar Bilangan Non-Kuadrat (4 Soal)
+            // ==========================================
+            (() => {
+                const a = acakAntara(2, 4); // bagian luar akar
+                const p = pilihAcak([2, 3, 5], 1)[0]; // bagian dalam akar
+                const n = (a * a) * p;
+                return {
+                    text: `Bentuk sederhana dari $\\sqrt{${n}}$ adalah ....`,
+                    options: [`$${a + 1}\\sqrt{${p}}$`, `$${a}\\sqrt{${p}}$`, `$${p}\\sqrt{${a}}$`, `$${a * 2}\\sqrt{${p}}$`, `$${a}\\sqrt{${p + 1}}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const a = acakAntara(5, 7);
+                const p = pilihAcak([2, 3], 1)[0];
+                const n = (a * a) * p;
+                return {
+                    text: `Bentuk sederhana dari $\\sqrt{${n}}$ adalah ....`,
+                    options: [`$${a - 1}\\sqrt{${p}}$`, `$${a}\\sqrt{${p}}$`, `$${p}\\sqrt{${a}}$`, `$${a + 1}\\sqrt{${p}}$`, `$${a}\\sqrt{${p * 2}}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const a = acakAntara(8, 10);
+                const p = pilihAcak([2, 3, 5], 1)[0];
+                const n = (a * a) * p;
+                return {
+                    text: `Bentuk sederhana dari $\\sqrt{${n}}$ adalah ....`,
+                    options: [`$${a}\\sqrt{${p}}$`, `$${p}\\sqrt{${a}}$`, `$${a + 2}\\sqrt{${p}}$`, `$${a / 2}\\sqrt{${p * 2}}$`, `$${a}\\sqrt{${p + 2}}$`],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const a = acakAntara(11, 15);
+                const p = pilihAcak([2, 3], 1)[0];
+                const n = (a * a) * p;
+                return {
+                    text: `Bentuk sederhana dari $\\sqrt{${n}}$ adalah ....`,
+                    options: [`$${a - 2}\\sqrt{${p}}$`, `$${p}\\sqrt{${a}}$`, `$${a}\\sqrt{${p}}$`, `$${a + 2}\\sqrt{${p}}$`, `$${a * 2}\\sqrt{${p}}$`],
+                    answer: 2
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Penjumlahan Bentuk Akar (4 Soal)
+            // ==========================================
+            (() => {
+                const c1 = acakAntara(2, 5);
+                const c2 = acakAntara(3, 7);
+                const p = pilihAcak([2, 3, 5, 7], 1)[0];
+                return {
+                    text: `Hasil dari $${c1}\\sqrt{${p}} + ${c2}\\sqrt{${p}}$ adalah ....`,
+                    options: [`$${c1 + c2}\\sqrt{${p}}$`, `$${c1 * c2}\\sqrt{${p}}$`, `$${c1 + c2}\\sqrt{${p * 2}}$`, `$${c1 * c2}\\sqrt{${p * 2}}$`, `$${c1 + c2 + 2}\\sqrt{${p}}$`],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const c1 = acakAntara(2, 4);
+                const c2 = acakAntara(3, 5);
+                const p = pilihAcak([2, 3, 5], 1)[0];
+                const ans = c1 + c2 + 1;
+                return {
+                    text: `Hasil dari $${c1}\\sqrt{${p}} + ${c2}\\sqrt{${p}} + \\sqrt{${p}}$ adalah ....`,
+                    options: [`$${ans - 1}\\sqrt{${p}}$`, `$${ans}\\sqrt{${p}}$`, `$${ans + 1}\\sqrt{${p}}$`, `$${ans - 1}\\sqrt{${p * 3}}$`, `$${ans}\\sqrt{${p * 3}}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const p = pilihAcak([2, 3], 1)[0];
+                const a1 = acakAntara(2, 3);
+                const a2 = acakAntara(4, 5);
+                const n1 = (a1 * a1) * p;
+                const n2 = (a2 * a2) * p;
+                const ans = a1 + a2;
+                return {
+                    text: `Hasil dari $\\sqrt{${n1}} + \\sqrt{${n2}}$ adalah ....`,
+                    options: [`$\\sqrt{${n1 + n2}}$`, `$${ans}\\sqrt{${p}}$`, `$${ans + 1}\\sqrt{${p}}$`, `$${ans - 1}\\sqrt{${p}}$`, `$${ans + 2}\\sqrt{${p}}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const p = pilihAcak([2, 3], 1)[0];
+                const c1 = acakAntara(2, 3);
+                const a1 = acakAntara(2, 3);
+                const n1 = (a1 * a1) * p;
+                const c2 = acakAntara(2, 3);
+                const a2 = acakAntara(4, 5);
+                const n2 = (a2 * a2) * p;
+                const ans = (c1 * a1) + (c2 * a2);
+                return {
+                    text: `Hasil dari $${c1}\\sqrt{${n1}} + ${c2}\\sqrt{${n2}}$ adalah ....`,
+                    options: [`$${ans - 2}\\sqrt{${p}}$`, `$${ans}\\sqrt{${p}}$`, `$${ans + 2}\\sqrt{${p}}$`, `$${(c1 + c2)}\\sqrt{${p}}$`, `$${ans + 4}\\sqrt{${p}}$`],
+                    answer: 1
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Pengurangan Bentuk Akar (4 Soal)
+            // ==========================================
+            (() => {
+                const c1 = acakAntara(6, 10);
+                const c2 = acakAntara(2, 4);
+                const p = pilihAcak([2, 3, 5], 1)[0];
+                const ans = c1 - c2;
+                return {
+                    text: `Hasil dari $${c1}\\sqrt{${p}} - ${c2}\\sqrt{${p}}$ adalah ....`,
+                    options: [`$${c1 + c2}\\sqrt{${p}}$`, `$${ans}\\sqrt{${p}}$`, `$${ans}\\sqrt{${p * 2}}$`, `$${ans}$`, `$\\sqrt{${p}}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const c1 = acakAntara(10, 15);
+                const c2 = acakAntara(2, 4);
+                const c3 = acakAntara(2, 4);
+                const p = pilihAcak([3, 5, 7], 1)[0];
+                const ans = c1 - c2 - c3;
+                return {
+                    text: `Hasil dari $${c1}\\sqrt{${p}} - ${c2}\\sqrt{${p}} - ${c3}\\sqrt{${p}}$ adalah ....`,
+                    options: [`$${ans}\\sqrt{${p}}$`, `$${ans - 1}\\sqrt{${p}}$`, `$${ans + 1}\\sqrt{${p}}$`, `$${ans + 2}\\sqrt{${p}}$`, `$${ans + 3}\\sqrt{${p}}$`],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const p = pilihAcak([2, 3], 1)[0];
+                const a1 = acakAntara(5, 7);
+                const a2 = acakAntara(2, 3);
+                const n1 = (a1 * a1) * p;
+                const n2 = (a2 * a2) * p;
+                const ans = a1 - a2;
+                return {
+                    text: `Hasil dari $\\sqrt{${n1}} - \\sqrt{${n2}}$ adalah ....`,
+                    options: [`$\\sqrt{${n1 - n2}}$`, `$${ans - 1}\\sqrt{${p}}$`, `$${ans}\\sqrt{${p}}$`, `$${ans + 1}\\sqrt{${p}}$`, `$${ans + 2}\\sqrt{${p}}$`],
+                    answer: 2
+                };
+            })(),
+            (() => {
+                const p = pilihAcak([2, 3], 1)[0];
+                const c1 = acakAntara(2, 4);
+                const a1 = acakAntara(4, 5);
+                const n1 = (a1 * a1) * p;
+                const c2 = acakAntara(2, 3);
+                const a2 = acakAntara(2, 3);
+                const n2 = (a2 * a2) * p;
+                const ans = (c1 * a1) - (c2 * a2);
+                return {
+                    text: `Hasil dari $${c1}\\sqrt{${n1}} - ${c2}\\sqrt{${n2}}$ adalah ....`,
+                    options: [`$\\sqrt{${n1 - n2}}$`, `$${ans - 2}\\sqrt{${p}}$`, `$${ans - 1}\\sqrt{${p}}$`, `$${ans}\\sqrt{${p}}$`, `$${ans + 1}\\sqrt{${p}}$`],
+                    answer: 3
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Perkalian Bentuk Akar (4 Soal)
+            // ==========================================
+            (() => {
+                const a = pilihAcak([2, 3], 1)[0];
+                const b = pilihAcak([5, 7], 1)[0];
+                const ans = a * b;
+                return {
+                    text: `Hasil dari $\\sqrt{${a}} \\times \\sqrt{${b}}$ adalah ....`,
+                    options: [`$\\sqrt{${a + b}}$`, `$\\sqrt{${ans}}$`, `$2\\sqrt{${ans}}$`, `$${a}\\sqrt{${b}}$`, `$${b}\\sqrt{${a}}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const c1 = acakAntara(2, 4);
+                const a = pilihAcak([2, 3], 1)[0];
+                const c2 = acakAntara(2, 5);
+                const b = pilihAcak([5, 7], 1)[0];
+                const ansLuar = c1 * c2;
+                const ansDalam = a * b;
+                return {
+                    text: `Hasil dari $${c1}\\sqrt{${a}} \\times ${c2}\\sqrt{${b}}$ adalah ....`,
+                    options: [`$${ansLuar - 2}\\sqrt{${ansDalam}}$`, `$${ansLuar}\\sqrt{${ansDalam}}$`, `$${ansLuar - 2}\\sqrt{${a + b}}$`, `$${ansLuar}\\sqrt{${a + b}}$`, `$${ansLuar * 2}\\sqrt{${ansDalam}}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const a = acakAntara(2, 4);
+                const p = pilihAcak([2, 3], 1)[0];
+                const n = (a * a) * p;
+                const ans = a * p;
+                return {
+                    text: `Hasil dari $\\sqrt{${n}} \\times \\sqrt{${p}}$ adalah ....`,
+                    options: [`$\\sqrt{${n + p}}$`, `$${ans / p}$`, `$${ans}$`, `$${ans * 2}$`, `$${ans * 4}$`],
+                    answer: 2
+                };
+            })(),
+            (() => {
+                const p = pilihAcak([2, 3, 5], 1)[0];
+                const c1 = acakAntara(2, 4);
+                const c2 = acakAntara(2, 4);
+                const ans = c1 * c2 * p;
+                return {
+                    text: `Hasil dari $${c1}\\sqrt{${p}} \\times ${c2}\\sqrt{${p}}$ adalah ....`,
+                    options: [`$${c1 * c2}\\sqrt{${p * 2}}$`, `$${c1 * c2}\\sqrt{${p}}$`, `$${ans / p}\\sqrt{${p}}$`, `$${ans}$`, `$${ans * 2}$`],
+                    answer: 3
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Merasionalkan Penyebut Akar Bentuk \sqrt{a} (3 Soal)
+            // ==========================================
+            (() => {
+                const b = pilihAcak([2, 3, 5, 7], 1)[0];
+                const k = acakAntara(2, 5);
+                const a = k * b;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${a}}{\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$\\dfrac{1}{${k}}\\sqrt{${b}}$`, `$${k}\\sqrt{${b}}$`, `$${k * 2}\\sqrt{${b}}$`, `$${a}\\sqrt{${b}}$`, `$${k}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const b = pilihAcak([2, 3, 5], 1)[0];
+                const k = acakAntara(3, 6);
+                const a = k * b;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${a}}{\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$\\sqrt{${b}}$`, `$${k}\\sqrt{${b}}$`, `$${a}\\sqrt{${b}}$`, `$${k * 2}\\sqrt{${b}}$`, `$${k}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const b = pilihAcak([3, 5, 7], 1)[0];
+                const k = acakAntara(2, 4);
+                const a = k * b;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${a}}{\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$\\sqrt{${b}}$`, `$${k}\\sqrt{${b}}$`, `$${k + 1}\\sqrt{${b}}$`, `$${a}\\sqrt{${b}}$`, `$${k}$`],
+                    answer: 1
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Merasionalkan Penyebut Bentuk \sqrt{a}+b (3 Soal)
+            // ==========================================
+            (() => {
+                const b = acakAntara(1, 3);
+                let a = b * b + acakAntara(1, 4); 
+                const den = a - (b * b);
+                const k = acakAntara(2, 4);
+                const c = k * den;
+                return {
+                    text: `Bentuk sederhana dari $\\dfrac{${c}}{\\sqrt{${a}}+${b}}$ adalah ....`,
+                    options: [`$${k}(\\sqrt{${a}}+${b})$`, `$${k}(\\sqrt{${a}}-${b})$`, `$${k * 2}(\\sqrt{${a}}-${b})$`, `$\\dfrac{\\sqrt{${a}}-${b}}{${k}}$`, `$\\sqrt{${a}}-${b}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const b = acakAntara(1, 2);
+                let a = b * b + acakAntara(2, 5); 
+                const den = a - (b * b);
+                const k = acakAntara(3, 5);
+                const c = k * den;
+                return {
+                    text: `Bentuk sederhana dari $\\dfrac{${c}}{\\sqrt{${a}}+${b}}$ adalah ....`,
+                    options: [`$${k * 2}(\\sqrt{${a}}+${b})$`, `$${k}(\\sqrt{${a}}-${b})$`, `$${k}(\\sqrt{${a}}+${b})$`, `$\\sqrt{${a}}-${b}$`, `$\\dfrac{${k}\\sqrt{${a}}-${b}}{2}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const b = acakAntara(2, 3);
+                let a = b * b + acakAntara(1, 3); 
+                const den = a - (b * b);
+                const k = acakAntara(2, 3);
+                const c = k * den;
+                return {
+                    text: `Bentuk sederhana dari $\\dfrac{${c}}{\\sqrt{${a}}+${b}}$ adalah ....`,
+                    options: [`$${k - 1}(\\sqrt{${a}}-${b})$`, `$${k}(\\sqrt{${a}}-${b})$`, `$\\sqrt{${a}}-${b}$`, `$${k}(\\sqrt{${a}}+${b})$`, `$${b}-\\sqrt{${a}}$`],
+                    answer: 1
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Merasionalkan Penyebut Bentuk \sqrt{a}-b (3 Soal)
+            // ==========================================
+            (() => {
+                const b = acakAntara(1, 3);
+                let a = b * b + acakAntara(1, 4);
+                const den = a - (b * b);
+                const k = acakAntara(2, 4);
+                const c = k * den;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${c}}{\\sqrt{${a}}-${b}}$ adalah ....`,
+                    options: [`$\\dfrac{\\sqrt{${a}}-${b}}{${k}}$`, `$${k}(\\sqrt{${a}}+${b})$`, `$\\sqrt{${a}}+${b}$`, `$\\sqrt{${a}}-${b}$`, `$${k * 2}\\sqrt{${a}}+${b}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const b = acakAntara(1, 3);
+                let a = b * b + acakAntara(1, 3);
+                const den = a - (b * b);
+                const k = acakAntara(3, 5);
+                const c = k * den;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${c}}{\\sqrt{${a}}-${b}}$ adalah ....`,
+                    options: `$${k}(\\sqrt{${a}}+${b})$ | $${k}(\\sqrt{${a}}-${b})$ | $\\sqrt{${a}}+${b}$ | $\\dfrac{${k}(\\sqrt{${a}}+${b})}{2}$ | $\\dfrac{${k}\\sqrt{${a}}+${b}}{3}$`.split(" | "),
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const b = acakAntara(2, 4);
+                let a = b * b + acakAntara(1, 3);
+                const den = a - (b * b);
+                const k = acakAntara(2, 4);
+                const c = k * den;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${c}}{\\sqrt{${a}}-${b}}$ adalah ....`,
+                    options: `$${k - 1}(\\sqrt{${a}}-${b})$ | $${k}(\\sqrt{${a}}+${b})$ | $\\dfrac{${c}(\\sqrt{${a}}+${b})}{-${den}}$ | $\\dfrac{-\\sqrt{${a}}+${b}}{2}$ | $\\sqrt{${a}}+${b}$`.split(" | "),
+                    answer: 1
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Merasionalkan Penyebut Bentuk a+\sqrt{b} (3 Soal)
+            // ==========================================
+            (() => {
+                const a = acakAntara(2, 4);
+                const b = a * a - acakAntara(1, 3);
+                const den = (a * a) - b;
+                const k = acakAntara(2, 5);
+                const c = k * den;
+                return {
+                    text: `Bentuk sederhana dari $\\dfrac{${c}}{${a}+\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$${a}+\\sqrt{${b}}$`, `$${k}(${a}-\\sqrt{${b}})$`, `$\\dfrac{${a}-\\sqrt{${b}}}{${k}}$`, `$${c}(${a}-\\sqrt{${b}})$`, `$${a * k}-${k * 2}\\sqrt{${b}}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const a = acakAntara(3, 5);
+                const b = a * a - acakAntara(1, 3);
+                const den = (a * a) - b;
+                const k = acakAntara(3, 6);
+                const c = k * den;
+                return {
+                    text: `Bentuk sederhana dari $\\dfrac{${c}}{${a}+\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$${k}(${a}-\\sqrt{${b}})$`, `$${k}(${a}+\\sqrt{${b}})$`, `$\\dfrac{${a}-\\sqrt{${b}}}{2}$`, `$${c}(${a}-\\sqrt{${b}})$`, `$${a * k}-${k * 2}\\sqrt{${b}}$`],
+                    answer: 0
+                };
+            })(),
+            (() => {
+                const a = acakAntara(2, 5);
+                const b = a * a - acakAntara(2, 4);
+                const den = (a * a) - b;
+                const k = acakAntara(2, 4);
+                const c = k * den;
+                return {
+                    text: `Bentuk sederhana dari $\\dfrac{${c}}{${a}+\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$${k - 1}(${a}-\\sqrt{${b}})$`, `$${k}(${a}-\\sqrt{${b}})$`, `$\\dfrac{${a}+\\sqrt{${b}}}{${k}}$`, `$${a * 2}-${k}\\sqrt{${b}}$`, `$\\dfrac{${a}-\\sqrt{${b}}}{${c}}$`],
+                    answer: 1
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Merasionalkan Penyebut Bentuk a-\sqrt{b} (3 Soal)
+            // ==========================================
+            (() => {
+                const a = acakAntara(2, 4);
+                const b = a * a - acakAntara(1, 3);
+                const den = (a * a) - b;
+                const k = acakAntara(2, 5);
+                const c = k * den;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${c}}{${a}-\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$${a}-\\sqrt{${b}}$`, `$${k}(${a}+\\sqrt{${b}})$`, `$\\dfrac{${a}+\\sqrt{${b}}}{${k}}$`, `$${a * k}+${k * 2}\\sqrt{${b}}$`, `$${c}(${a}+\\sqrt{${b}})$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const a = acakAntara(3, 5);
+                const b = a * a - acakAntara(1, 3);
+                const den = (a * a) - b;
+                const k = acakAntara(3, 6);
+                const c = k * den;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${c}}{${a}-\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$${k * 2}+${k}\\sqrt{${b}}$`, `$${k * 2}-${k}\\sqrt{${b}}$`, `$${a}+\\sqrt{${b}}$`, `$\\dfrac{${a}+\\sqrt{${b}}}{${k}}$`, `$${k}(${a}+\\sqrt{${b}})$`],
+                    answer: 4
+                };
+            })(),
+            (() => {
+                const a = acakAntara(4, 6);
+                const b = a * a - acakAntara(1, 4);
+                const den = (a * a) - b;
+                const k = acakAntara(2, 4);
+                const c = k * den;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${c}}{${a}-\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$\\dfrac{${k}(${a}+\\sqrt{${b}})}{2}$`, `$\\dfrac{${k}(${a}-\\sqrt{${b}})}{2}$`, `$${k}(${a}+\\sqrt{${b}})$`, `$${k * 2}(${a}+\\sqrt{${b}})$`, `$\\dfrac{${a}+\\sqrt{${b}}}{${den}}$`],
+                    answer: 2
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Merasionalkan Penyebut Bentuk \sqrt{a}+\sqrt{b} (3 Soal)
+            // ==========================================
+            (() => {
+                const b = pilihAcak([2, 3], 1)[0];
+                const a = b + acakAntara(1, 3);
+                const den = a - b;
+                const k = acakAntara(2, 5);
+                const c = k * den;
+                return {
+                    text: `Bentuk sederhana dari $\\dfrac{${c}}{\\sqrt{${a}}+\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$\\sqrt{${a}}+\\sqrt{${b}}$`, `$${k}(\\sqrt{${a}}-\\sqrt{${b}})$`, `$${k * 2}(\\sqrt{${a}}-\\sqrt{${b}})$`, `$\\dfrac{\\sqrt{${a}}-\\sqrt{${b}}}{${k}}$`, `$\\sqrt{${a - b}}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const b = pilihAcak([3, 5], 1)[0];
+                const a = b + acakAntara(2, 4);
+                const den = a - b;
+                const k = acakAntara(3, 6);
+                const c = k * den;
+                return {
+                    text: `Bentuk sederhana dari $\\dfrac{${c}}{\\sqrt{${a}}+\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$${k / 2}(\\sqrt{${a}}+\\sqrt{${b}})$`, `$${k}(\\sqrt{${a}}-\\sqrt{${b}})$`, `$${k * 2}(\\sqrt{${a}}-\\sqrt{${b}})$`, `$\\sqrt{${a}}-\\sqrt{${b}}$`, `$\\dfrac{${k}(\\sqrt{${a}}-\\sqrt{${b}})}{2}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const b = pilihAcak([2, 5], 1)[0];
+                const a = b + acakAntara(1, 3);
+                const den = a - b;
+                const k = acakAntara(2, 4);
+                const c = k * den;
+                return {
+                    text: `Bentuk sederhana dari $\\dfrac{${c}}{\\sqrt{${a}}+\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$${k}(\\sqrt{${a}}-\\sqrt{${b}})$`, `$${k - 1}(\\sqrt{${a}}-\\sqrt{${b}})$`, `$${k * 3}(\\sqrt{${a}}-\\sqrt{${b}})$`, `$\\dfrac{\\sqrt{${a}}-\\sqrt{${b}}}{${c}}$`, `$\\sqrt{${a - b}}$`],
+                    answer: 0
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: Merasionalkan Penyebut Bentuk \sqrt{a}-\sqrt{b} (3 Soal)
+            // ==========================================
+            (() => {
+                const b = pilihAcak([2, 3], 1)[0];
+                const a = b + acakAntara(1, 3);
+                const den = a - b;
+                const k = acakAntara(2, 5);
+                const c = k * den;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${c}}{\\sqrt{${a}}-\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$\\sqrt{${a}}-\\sqrt{${b}}$`, `$${k}(\\sqrt{${a}}+\\sqrt{${b}})$`, `$${c}(\\sqrt{${a}}+\\sqrt{${b}})$`, `$\\dfrac{\\sqrt{${a}}+\\sqrt{${b}}}{${k}}$`, `$${k * 2}(\\sqrt{${a}}+\\sqrt{${b}})$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const b = pilihAcak([3, 5], 1)[0];
+                const a = b + acakAntara(2, 4);
+                const den = a - b;
+                const k = acakAntara(3, 6);
+                const c = k * den;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${c}}{\\sqrt{${a}}-\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$${k / 2}(\\sqrt{${a}}-\\sqrt{${b}})$`, `$${k}(\\sqrt{${a}}+\\sqrt{${b}})$`, `$${c}(\\sqrt{${a}}+\\sqrt{${b}})$`, `$\\sqrt{${a}}+\\sqrt{${b}}$`, `$\\dfrac{${k}(\\sqrt{${a}}+\\sqrt{${b}})}{2}$`],
+                    answer: 1
+                };
+            })(),
+            (() => {
+                const b = pilihAcak([2, 5], 1)[0];
+                const a = b + acakAntara(1, 3);
+                const den = a - b;
+                const k = acakAntara(2, 4);
+                const c = k * den;
+                return {
+                    text: `Bentuk rasional dari $\\dfrac{${c}}{\\sqrt{${a}}-\\sqrt{${b}}}$ adalah ....`,
+                    options: [`$${k}(\\sqrt{${a}}+\\sqrt{${b}})$`, `$${k - 1}(\\sqrt{${a}}+\\sqrt{${b}})$`, `$${k * 3}(\\sqrt{${a}}+\\sqrt{${b}})$`, `$\\dfrac{\\sqrt{${a}}+\\sqrt{${b}}}{${c}}$`, `$\\sqrt{${a + b}}$`],
+                    answer: 0
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: SPLDV (Sistem Persamaan Langsung) (2 Soal)
+            // ==========================================
+            (() => {
+                const x = acakAntara(5, 10);
+                const y = acakAntara(2, 4);
+                const a = x + y;
+                const b = x - y;
+                return {
+                    text: `Diketahui sistem persamaan $x + y = ${a}$ dan $x - y = ${b}$. Nilai dari $x$ adalah ....`,
+                    options: [`$${x - 2}$`, `$${x - 1}$`, `$${x + 2}$`, `$${x}$`, `$${x + 3}$`],
+                    answer: 3
+                };
+            })(),
+            (() => {
+                const x = acakAntara(2, 5);
+                const y = acakAntara(1, 4);
+                const k1 = acakAntara(2, 3);
+                const k2 = acakAntara(2, 3);
+                const c1 = k1 * x + y;
+                const c2 = x + k2 * y;
+                return {
+                    text: `Penyelesaian dari sistem persamaan $${k1}x + y = ${c1}$ dan $x + ${k2}y = ${c2}$ adalah $(x, y)$. Nilai $x$ dan $y$ berturut-turut adalah ....`,
+                    options: [`$(${x}, ${y})$`, `$(${y}, ${x})$`, `$(${x + 1}, ${y - 1})$`, `$(${x - 1}, ${y + 1})$`, `$(${x + 2}, ${y})$`],
+                    answer: 0
+                };
+            })(),
+
+            // ==========================================
+            // MATERI: SPLDV (Soal Cerita) (2 Soal)
+            // ==========================================
+            (() => {
+                const hargaBuku = acakAntara(3, 6) * 1000;
+                const hargaPensil = acakAntara(1, 2) * 1000;
+                const k1 = acakAntara(2, 3);
+                const k2 = acakAntara(3, 4);
+                const k3 = acakAntara(3, 4);
+                const k4 = acakAntara(1, 2);
+                const total1 = (k1 * hargaBuku) + (k2 * hargaPensil);
+                const total2 = (k3 * hargaBuku) + (k4 * hargaPensil);
+                
+                // Format rupiah tanpa desimal
+                const fmt = n => `Rp${n.toLocaleString('id-ID')},00`;
+                
+                return {
+                    text: `Harga ${k1} buku dan ${k2} pensil adalah ${fmt(total1)}. Harga ${k3} buku dan ${k4} pensil adalah ${fmt(total2)}. Harga 1 buku adalah ....`,
+                    options: [`${fmt(hargaBuku - 1000)}`, `${fmt(hargaBuku + 1000)}`, `${fmt(hargaBuku)}`, `${fmt(hargaBuku + 2000)}`, `${fmt(hargaBuku + 3000)}`],
+                    answer: 2
+                };
+            })(),
+            (() => {
+                const ayam = acakAntara(15, 25);
+                const kambing = acakAntara(10, 20);
+                const totalHewan = ayam + kambing;
+                const totalKaki = (ayam * 2) + (kambing * 4);
+                return {
+                    text: `Di sebuah peternakan terdapat ayam dan kambing sebanyak ${totalHewan} ekor. Jika jumlah kaki semua hewan adalah ${totalKaki} kaki, maka banyak kambing adalah ....`,
+                    options: [`$${kambing}$ ekor`, `$${kambing + 5}$ ekor`, `$${kambing + 10}$ ekor`, `$${ayam}$ ekor`, `$${totalHewan}$ ekor`],
+                    answer: 0
+                };
+            })()
         ];
 
         // Variabel State Ujian
