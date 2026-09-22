@@ -24,7 +24,7 @@
 
         <!-- Layar Login -->
         <div id="login-screen" class="hidden">
-            <h2 class="text-2xl font-bold text-center text-blue-600">Penilaian Tengah Semester Matematika</h2>
+            <h2 class="text-2xl font-bold text-center text-blue-600">Penilaian Tengah Semester Informatika</h2>
             <h3 class="text-lg font-semibold mb-4 text-center">Kelas 10 SMKN 9 Kabupaten Tangerang</h3>
             <div class="mb-4">
                 <label class="block mb-2 font-semibold">Pilih Kelas</label>
@@ -116,13 +116,13 @@
         });
         // ================= PENGATURAN UTAMA =================
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_DheI5UTJHyjjYDytmCJXvM_-RoCeXy6c0w822NdqPag96xfBIwIn9ueFIbQ5oYB9bA/exec';
-        const START_TIME = new Date('2026-09-16T09:50:00+07:00').getTime(); // WIB
-        const END_TIME = new Date('2026-09-16T23:50:00+07:00').getTime();   // WIB
+        const START_TIME = new Date('2026-09-23T13:30:00+07:00').getTime(); // WIB
+        const END_TIME = new Date('2026-09-23T15:30:00+07:00').getTime();   // WIB
         
         // Template Data Siswa (Bisa diekstrak dari Excel/JSON)
         const dataSiswa = {
-            "X RPL 1": ["Ahmad Surya", "Budi Santoso", "Citra Lestari"],
-            "X TKJ 1": ["Dewi Anggraini", "Eko Prasetyo", "Fajar Nugraha"]
+            "X MP 1": ["Adelia Maisya Asyfa","Anatasya Septia Hayuningtyas","Alissya Meilani Putri","Balqis Meilani Anone","Cahlia","Dzeko Hanggara Putra","Fatikha Ajeng Anggono","Hana Khairunisa","Husna Nur Safitra","Ira Suhendar","Jajun Johari","Joehanes Lie","Keysha Aulia Khairunissa","Malika Kama Dahayu","Muhammad Aldy Al Kholik Nasution","Muhammad Zaki","Natasha Aprinia","Nurul Amaliah","Rachel Azka Tsabita","Rani Fitriyani","Raya Nurfalisa Azalia","Rere Khairatun Hisan","Ridho Maulana Firdaus","Rina Fitriyana","Rio Rivaldo Cong","Saefi Akhmal","Sefti Yanita Pratiwi","Siti Rusyanah","Steffany Kirana Adisti","Suci Mulyani","Syaqina Azzahra","Thalita Nurizzati","Yasmin Felani","Zaara Ilmira Hermawan","Zahra Assyfa","Zahra Nafisa"],
+            "X MP 2": ["Aisyah Qori Qurani","Alisa Putri Marsyani","Alischa Nurul Aulia","Ananda Putri Noviandari","Andien Meisya Poetri","Benedicta Meisya Christiani Manurung","Dian Putri Mangku Langit","Diana Asmirandah","Dinda Velisya Marwah","Dyanna Sukmawijaya","Faiz Dwi Muri","Hanif Gyro Asyraf","Hanifah Rizka","Inggi","Laras Fitria","Muhamad Wildan Ramadhan","Muhammad Fahry Purwanto","Nasya Setya Kirani","Natashya Putri","Nengli","Nia Febriani","Puspita Duwi","Putri Diana Rose","Rachel Aurellia","Reihan Shoheh","Ria Kartika","Risma Kaylah","Salsabilla Malika Desniant","Septi Dwi Cahya Wardani","Shakila Nuraliffa","Sifatunnazah","Siti Aisyah Oktarina","Thuffail Agriffina","Tri Andini","Zahra Alya Nabilah Saskia","Zulfa Fakihatul Jannah"]
         };
 
 
@@ -248,7 +248,7 @@
 
         // Variabel State Ujian
         let shuffledQuestions = [];
-        let userAnswers = new Array(20).fill(null);
+        let userAnswers = new Array(100).fill(null);
         let currentIndex = 0;
         let wakeLock = null;
         let isExamActive = false;
@@ -276,7 +276,7 @@
             if (now < START_TIME) {
                 timeScreen.classList.remove('hidden');
                 loginScreen.classList.add('hidden');
-                msg.textContent = "Ujian belum dibuka. Dimulai pada 21 September 2026 pukul 07.40 WIB.";
+                msg.textContent = "Ujian belum dibuka. Dimulai pada 23 September 2026 pukul 13.30 WIB.";
             } else if (now > END_TIME) {
                 const btnRetake = document.getElementById('btn-retake');
                 if (btnRetake) btnRetake.classList.add('hidden');
@@ -396,7 +396,7 @@ document.getElementById('timer').textContent = `${m.toString().padStart(2, '0')}
             // Persiapan Soal (Diacak)
             let tempBank = JSON.parse(JSON.stringify(bankSoal)); // Deep copy
             shuffleArray(tempBank);
-            shuffledQuestions = tempBank.slice(0, 20); // Ambil 20 soal
+            shuffledQuestions = tempBank.slice(0, 100); // Ambil 20 soal
             userAnswers = new Array(shuffledQuestions.length).fill(null);
             currentIndex = 0;
             
