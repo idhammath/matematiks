@@ -96,7 +96,7 @@
         <div id="submit-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
             <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-11/12 text-center">
                 <h3 class="text-xl font-bold mb-4 text-gray-800">Konfirmasi</h3>
-                <p class="mb-6 text-gray-600">Apakah Anda yakin ingin mengumpulkan jawaban sekarang? Anda tidak bisa mengubahnya lagi.</p>
+                <p id="submit-warning-text" class="mb-6 text-gray-600">Apakah Anda yakin ingin mengumpulkan jawaban sekarang? Anda tidak bisa mengubahnya lagi.</p>
                 <div class="flex justify-center space-x-4">
                     <button onclick="closeModal()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 font-semibold transition">Batal</button>
                     <button onclick="executeSubmit()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-semibold transition">Ya, Kumpulkan</button>
@@ -125,8 +125,8 @@
         });
         // ================= PENGATURAN UTAMA =================
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_DheI5UTJHyjjYDytmCJXvM_-RoCeXy6c0w822NdqPag96xfBIwIn9ueFIbQ5oYB9bA/exec';
-        const START_TIME = new Date('2026-09-22T10:15:00+07:00').getTime(); // WIB
-        const END_TIME = new Date('2026-09-22T11:50:00+07:00').getTime();   // WIB
+        const START_TIME = new Date('2026-09-28T07:40:00+07:00').getTime(); // WIB
+        const END_TIME = new Date('2026-09-28T09:30:00+07:00').getTime();   // WIB
         
         // Template Data Siswa (Bisa diekstrak dari Excel/JSON)
         const dataSiswa = {
@@ -489,7 +489,22 @@ buatOpsiGanda(bnr[7], 3, 5)
                 alert("Silakan pilih kelas dan nama terlebih dahulu!");
                 return;
             }
-
+// ==========================================
+    // TAMBAHKAN KODE INI UNTUK MEREKAM LOG MULAI
+    // ==========================================
+    if (!isReset) {
+        const startData = {
+            type: 'start',
+            nama: nama,
+            kelas: kelas
+        };
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(startData)
+        }).catch(e => console.log(e));
+    }
+    // ==========================================
             // Request Fullscreen
             if (!document.fullscreenElement) {
                 try {
@@ -654,7 +669,17 @@ document.getElementById('timer').textContent = `${m.toString().padStart(2, '0')}
 
         // ================= SUBMIT & PENILAIAN =================
         function confirmSubmit() {
-            // Tampilkan modal custom alih-alih pop-up bawaan browser
+            const now = new Date().getTime();
+    const distance = END_TIME - now;
+    const menitSisa = Math.floor(distance / (1000 * 60)); // Hitung sisa waktu dalam menit
+    const teksPeringatan = document.getElementById('submit-warning-text');
+
+    // Cek jika sisa waktu lebih dari 15 menit (15 * 60 * 1000 milidetik)
+    if (distance > 15 * 60 * 1000) {
+        teksPeringatan.innerHTML = `Sisa waktu Anda masih <b>${menitSisa} menit</b>.<br><br><span class="text-red-600 font-bold">PERINGATAN: Jika Anda mengumpulkan sekarang, nilai Anda akan DIKURANGI 5 POIN!</span><br><br>Yakin ingin mengumpulkan sekarang?`;
+    } else {
+        teksPeringatan.innerHTML = "Apakah Anda yakin ingin mengumpulkan jawaban sekarang? Anda tidak bisa mengubahnya lagi.";
+    }
             document.getElementById('submit-modal').classList.remove('hidden');
         }
 
@@ -701,7 +726,20 @@ document.getElementById('timer').textContent = `${m.toString().padStart(2, '0')}
             });
 
             const totalSoal = shuffledQuestions.length; 
-            const nilai = Math.round((benar * 100) / totalSoal);
+            let nilai = Math.round((benar * 100) / totalSoal);
+            // ==============================================
+// LOGIKA PENALTI 5 POIN JIKA TERLALU CEPAT
+// ==============================================
+const waktuSubmit = new Date().getTime(); // Menggunakan nama variabel baru agar tidak bentrok
+const sisaWaktu = END_TIME - waktuSubmit;
+let infoPenalti = "";
+
+if (sisaWaktu > 15 * 60 * 1000) {
+    nilai -= 5;
+    if (nilai < 0) nilai = 0; // Mencegah nilai menjadi minus
+    infoPenalti = " (-5 Poin)"; // Keterangan tambahan di layar hasil
+}
+// ==============================================
             const nama = document.getElementById('nama').value;
             const kelas = document.getElementById('kelas').value;
 
@@ -715,7 +753,7 @@ document.getElementById('timer').textContent = `${m.toString().padStart(2, '0')}
             document.getElementById('res-benar').textContent = benar;
             document.getElementById('res-salah').textContent = salah;
             document.getElementById('res-kosong').textContent = kosong;
-            document.getElementById('res-nilai').textContent = nilai;
+            document.getElementById('res-nilai').textContent = nilai+infoPenalti;
 
             // Logika Tombol Ulangi
             const now = new Date().getTime();
