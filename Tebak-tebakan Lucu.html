@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Tebak-tebakan Lucu & Receh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0fdf4; /* Light green background */
+            background-image: radial-gradient(#bbf7d0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        h1, h2, h3, .brand-font {
+            font-family: 'Fredoka One', cursive;
+        }
+
+        .btn-option {
+            transition: all 0.2s ease;
+        }
+        
+        .btn-option:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-option:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .correct-answer {
+            background-color: #22c55e !important;
+            color: white !important;
+            border-color: #16a34a !important;
+            animation: pulse-green 1s;
+        }
+
+        .wrong-answer {
+            background-color: #ef4444 !important;
+            color: white !important;
+            border-color: #dc2626 !important;
+            animation: shake 0.5s;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e2e8f0;
+            border-radius: 9999px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 0.75rem;
+            background-color: #3b82f6;
+            border-radius: 9999px;
+            transition: width 0.3s ease;
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 text-gray-800">
+
+    <canvas id="confetti-canvas" class="hidden"></canvas>
+
+    <div class="max-w-3xl w-full bg-white rounded-2xl shadow-xl overflow-hidden border-4 border-indigo-500 relative">
+        
+        <!-- Header -->
+        <div class="bg-indigo-500 text-white p-6 text-center">
+            <h1 class="text-3xl md:text-4xl tracking-wide">🌟 Kuis Receh Kelas 🌟</h1>
+            <p class="mt-2 text-indigo-100 font-semibold">Siap-siap ngakak (atau kesel)!</p>
+        </div>
+
+        <div class="p-6 md:p-8">
+            <!-- Layar Mulai -->
+            <div id="start-screen" class="text-center space-y-6">
+                <div class="text-6xl">🤪</div>
+                <h2 class="text-2xl font-bold text-gray-700">50 Tebak-tebakan Ice Breaking</h2>
+                <p class="text-gray-600">Pilih jawaban yang paling nggak masuk akal (tapi bener). Cocok buat ngetes seberapa receh temen-temen kamu!</p>
+                <button id="btn-start" class="brand-font mt-4 px-8 py-3 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 text-xl rounded-full shadow-lg transform transition hover:scale-105 active:scale-95 border-2 border-yellow-600">
+                    Mulai Main! 🚀
+                </button>
+            </div>
+
+            <!-- Layar Kuis -->
+            <div id="quiz-screen" class="hidden">
+                <div class="flex justify-between items-center mb-2 font-bold text-gray-500">
+                    <span id="question-counter">Soal 1 / 50</span>
+                    <span id="score-display" class="text-indigo-600">Skor: 0</span>
+                </div>
+                
+                <div class="progress-bar-container">
+                    <div id="progress-bar" class="progress-bar" style="width: 2%;"></div>
+                </div>
+
+                <div class="bg-indigo-50 rounded-xl p-6 mb-6 border-2 border-indigo-100 shadow-inner">
+                    <h2 id="question-text" class="text-xl md:text-2xl font-bold text-indigo-900 text-center leading-relaxed">
+                        Pertanyaan akan muncul di sini?
+                    </h2>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-3">
+                    <!-- Opsi jawaban akan di-generate oleh JS -->
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button id="btn-next" class="hidden brand-font px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow transition transform active:scale-95">
+                        Lanjut 👉
+                    </button>
+                </div>
+            </div>
+
+            <!-- Layar Hasil -->
+            <div id="result-screen" class="hidden text-center space-y-6">
+                <div id="result-emoji" class="text-7xl mb-4">🏆</div>
+                <h2 class="text-3xl brand-font text-indigo-700">Kuis Selesai!</h2>
+                <div class="bg-gray-100 rounded-xl p-6 inline-block w-full max-w-sm">
+                    <p class="text-gray-500 font-bold mb-1">Skor Akhir Kamu:</p>
+                    <p id="final-score" class="text-5xl brand-font text-green-500 mb-2">0/50</p>
+                    <p id="result-message" class="text-lg font-semibold text-gray-700">Predikat</p>
+                </div>
+                <div class="pt-4">
+                    <button id="btn-restart" class="brand-font px-8 py-3 bg-indigo-500 hover:bg-indigo-600 text-white text-lg rounded-full shadow-lg transition transform hover:scale-105 active:scale-95">
+                        Main Lagi 🔄
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Confetti Ringan -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const quizData = [
+            {
+                question: "Orang apa yang kalau berenang rambutnya tidak basah?",
+                options: ["Orang sakti", "Orang botak", "Orang pakai payung", "Orang di dalam kapal selam", "Orang Arab"],
+                answer: 1
+            },
+            {
+                question: "Benda apa yang kalau ditutup berubah jadi tongkat, tapi kalau dibuka malah jadi tenda?",
+                options: ["Pancingan", "Sapu", "Payung", "Pintu", "Lemari"],
+                answer: 2
+            },
+            {
+                question: "Pintu apa yang didorong sekuat tenaga nggak bakalan pernah bisa terbuka?",
+                options: ["Pintu besi", "Pintu hati", "Pintu yang ada tulisannya 'Geser'", "Pintu surga", "Pintu tetangga"],
+                answer: 2
+            },
+            {
+                question: "Kebo apa yang bikin kita sangat lelah dan capek?",
+                options: ["Kebo liar", "Kebo ngamuk", "Kebogor jalan kaki", "Kebobolan gol", "Kebocoran ban"],
+                answer: 2
+            },
+            {
+                question: "Ayam, ayam apa yang nggak bisa makan dan nggak bisa jalan?",
+                options: ["Ayam goreng", "Ayam sakit", "Ayam-ayaman", "Ayam kampus", "Ayam tetangga"],
+                answer: 2
+            },
+            {
+                question: "Sepatu, sepatu apa yang bisa dipakai untuk masak?",
+                options: ["Sepatu kaca", "Sepatu kulit", "Sepatula (Spatula)", "Sepatu boot", "Sepatu roda"],
+                answer: 2
+            },
+            {
+                question: "Kenapa air mata warnanya bening?",
+                options: ["Karena dari mata", "Karena isinya air", "Kalau ijo namanya air matcha xixixi", "Karena sedih", "Karena belum diwarnai"],
+                answer: 2
+            },
+            {
+                question: "Hewan apa yang kalau diinjek nggak bakalan marah?",
+                options: ["Semut", "Kucing", "Kera mik (keramik)", "Gajah", "Ular"],
+                answer: 2
+            },
+            {
+                question: "Kota apa yang banyak bapak-bapaknya?",
+                options: ["Jakarta", "Purwodaddy", "Bapakpapan", "Manado", "Semarang"],
+                answer: 1
+            },
+            {
+                question: "Gendang apa yang nggak bisa dipukul?",
+                options: ["Gendang rusak", "Gendang telinga", "Gendang kecil", "Gendang air", "Gendang bapak"],
+                answer: 1
+            },
+            {
+                question: "Warna apa yang paling nggak peduli sama sekitarnya?",
+                options: ["Hitam legam", "Putih pucat", "Biru don't care", "Merah merona", "Kuning langsat"],
+                answer: 2
+            },
+            {
+                question: "Kalau kijang sama kuda tabrakan, yang mati siapa hayo?",
+                options: ["Kijang", "Kuda", "Sopirnya", "Penontonnya", "Rumputnya"],
+                answer: 2
+            },
+            {
+                question: "Hewan apa yang hobi telat ke sekolah?",
+                options: ["Siput", "Kura-kura", "Kaki seribu (kelamaan pakai sepatu)", "Kungkang", "Kucing garong"],
+                answer: 2
+            },
+            {
+                question: "Hewan apa yang cuma terdiri dari dua huruf saja?",
+                options: ["Ikan", "U dan G (Udang)", "Nyamuk", "Kutu", "Ular"],
+                answer: 1
+            },
+            {
+                question: "Sabun, sabun apa yang paling genit?",
+                options: ["Sabun mandi", "Sabun muka", "Sabun colek", "Sabun cuci piring", "Sabun cuci baju"],
+                answer: 2
+            },
+            {
+                question: "Gajah apa yang paling baik hati sedunia?",
+                options: ["Gajah sirkus", "Gajah Lampung", "Gajahat", "Gajah terbang", "Gajah mini"],
+                answer: 2
+            },
+            {
+                question: "Buah apa yang nggak ada otaknya?",
+                options: ["Semangka", "Durian", "Semua buah emang nggak ada otaknya", "Kelapa", "Apel"],
+                answer: 2
+            },
+            {
+                question: "Jika ada 1 kilo batu dan 1 kilo kapas dijatuhkan ke atas kaki, apa yang lebih sakit?",
+                options: ["Batu", "Kapas", "Kaki kita", "Dua-duanya", "Lantainya"],
+                answer: 2
+            },
+            {
+                question: "Bekerja untuk banyak orang, berbeda setiap hari, memotong rambut tiap hari tapi tidak botak. Siapa dia?",
+                options: ["Tukang cukur", "Penjual wig", "Dokter", "Guru", "Petani"],
+                answer: 0
+            },
+            {
+                question: "Kenapa pohon mangga yang ada di depan rumah harus ditebang?",
+                options: ["Menghalangi jalan", "Banyak ulatnya", "Kalau dicabut berat", "Buahnya habis", "Akarnya merusak"],
+                answer: 2
+            },
+            {
+                question: "Sandal apa yang paling enak di dunia?",
+                options: ["Sandal jepit", "Sandal hotel", "Sandal terasi", "Sandal kulit", "Sandal baru"],
+                answer: 2
+            },
+            {
+                question: "Apa bedanya sarung dan kotak?",
+                options: ["Ukurannya", "Bentuknya", "Kalau sarung bisa kotak-kotak, kotak nggak bisa sarung-sarung", "Bahannya", "Warnanya"],
+                answer: 2
+            },
+            {
+                question: "Kenapa dalang membawa keris ketika pertunjukan wayang?",
+                options: ["Buat jaga-jaga", "Biar gagah", "Karena kalau bawa kompor, istrinya gak bisa masak", "Syarat tradisi", "Buat properti"],
+                answer: 2
+            },
+            {
+                question: "Bundaran HI kalau diputerin dua kali jadi apa pak?",
+                options: ["Pusing", "HI HI", "Macet", "Capek", "Siang"],
+                answer: 1
+            },
+            {
+                question: "Hantu apa yang bisa dilihat setiap hari?",
+                options: ["Kuntilanak", "Pocong", "Burung hantu", "Tuyul", "Genderuwo"],
+                answer: 2
+            },
+            {
+                question: "Apa yang selalu datang tetapi tidak pernah tiba?",
+                options: ["Pak Pos", "Kurir paket", "Hari Esok (Masa depan)", "Janji manis", "Hujan"],
+                answer: 2
+            },
+            {
+                question: "Apa yang memiliki banyak jari tetapi tidak bisa memegang apapun?",
+                options: ["Kaki", "Sarung tangan", "Pohon", "Sisir", "Garpu"],
+                answer: 1
+            },
+            {
+                question: "Apa yang bisa kamu pecahkan tanpa menyentuhnya?",
+                options: ["Gelas", "Telur", "Janji", "Batu", "Kaca"],
+                answer: 2
+            },
+            {
+                question: "Apa yang selalu basah ketika mengering?",
+                options: ["Air", "Keringat", "Handuk", "Baju", "Jemuran"],
+                answer: 2
+            },
+            {
+                question: "Apa yang memiliki kepala dan ekor tetapi tidak memiliki tubuh?",
+                options: ["Ular", "Cacing", "Koin (Uang logam)", "Layang-layang", "Kereta api"],
+                answer: 2
+            },
+            {
+                question: "Apa yang bisa berlari tetapi tidak memiliki kaki?",
+                options: ["Mobil", "Hidung (ingus)", "Air / Sungai", "Waktu", "Angin"],
+                answer: 2
+            },
+            {
+                question: "Apa yang memiliki banyak mata tetapi tidak bisa melihat?",
+                options: ["Nanas", "Dadu", "Jala", "Sisir", "Kancing"],
+                answer: 0
+            },
+            {
+                question: "Makanan apa yang paling dikasihani?",
+                options: ["Nasi sisa", "Kerupuk melempem", "Kuaci (Kuacian deh lu!)", "Permen karet", "Roti tawar"],
+                answer: 2
+            },
+            {
+                question: "Jamu apa yang merugikan kesehatan?",
+                options: ["Jamu beras kencur", "Jamuran", "Jamu pahit", "Jamu basi", "Jamu kuat"],
+                answer: 1
+            },
+            {
+                question: "Orang apa yang bisa masuk botol?",
+                options: ["Orang sakti", "Orang kecil", "Orang-aring", "Orang gila", "Orang orangan sawah"],
+                answer: 2
+            },
+            {
+                question: "Tank apa yang moncongnya ke bawah?",
+                options: ["Tank baja", "Tank perang", "Tank kurep (Tengkurap)", "Tank air", "Tank kosong"],
+                answer: 2
+            },
+            {
+                question: "Bis apa yang boleh masuk ke rumah dan ke masjid?",
+                options: ["Bis kota", "Bis malam", "BISmillah", "Bis pariwisata", "Biskuit"],
+                answer: 2
+            },
+            {
+                question: "Lem apa yang rasanya asem?",
+                options: ["Lem kertas", "Lem kayu", "LEMon", "Lem tikus", "Lem aibon"],
+                answer: 2
+            },
+            {
+                question: "Perbedaan Matahari dengan Bulan?",
+                options: ["Ukurannya", "Matahari ada diskon (di mall), Bulan tidak ada", "Warnanya", "Panasnya", "Jaraknya"],
+                answer: 1
+            },
+            {
+                question: "Kutu, kutu apa yang menakutkan?",
+                options: ["Kutu rambut", "Kutu busuk", "Kutukan", "Kutu buku", "Kutu air"],
+                answer: 2
+            },
+            {
+                question: "Daun yang tidak bisa dipegang?",
+                options: ["Daun kering", "Daun putri malu", "Daun touch me!", "Daun pepaya", "Daun pintu"],
+                answer: 2
+            },
+            {
+                question: "Negara apa yang hanya terdiri dari 2 huruf?",
+                options: ["AS", "U Ganda (Uganda)", "Inggris", "Italia", "Spanyol"],
+                answer: 1
+            },
+            {
+                question: "Orang naik pohon kelapa kelihatan apanya?",
+                options: ["Kakinya", "Kepalanya", "Kelihatan begonya (mana ada orang naik kelapa)", "Tangannya", "Punggungnya"],
+                answer: 2
+            },
+            {
+                question: "Olahraga apa yang paling berat?",
+                options: ["Angkat besi", "Maraton", "Catur (karena ngangkat kuda dan banteng)", "Renang", "Gulat"],
+                answer: 2
+            },
+            {
+                question: "Hewan apa yang paling tidak sopan di dunia?",
+                options: ["Monyet", "Anjing", "Kutu rambut (Kepala orang diinjak-injak)", "Kucing", "Lalat"],
+                answer: 2
+            },
+            {
+                question: "Benda apa yang selalu jujur?",
+                options: ["Cermin", "Timbangan", "Lampu (karena dia terus terang)", "Penggaris", "Jam"],
+                answer: 2
+            },
+            {
+                question: "Ayam apa yang paling besar?",
+                options: ["Ayam kalkun", "Ayam pelung", "Ayam semesta", "Ayam potong", "Ayam kampus"],
+                answer: 2
+            },
+            {
+                question: "Kenapa kucing kalau lari suka nengok ke belakang?",
+                options: ["Takut anjing", "Nyari mangsa", "Karena nggak punya kaca spion", "Panggil anaknya", "Takut majikan"],
+                answer: 2
+            },
+            {
+                question: "Rambut putih namanya uban, rambut merah namanya pirang, kalau rambut hijau namanya apa?",
+                options: ["Dicat", "Punk", "Rambutan belum mateng", "Lumut", "Sayuran"],
+                answer: 2
+            },
+            {
+                question: "Telor, telor apa yang diinjak nggak pecah?",
+                options: ["Telor dinosaurus", "Telor palsu", "Telortoar (Trotoar)", "Telor puyuh", "Telor cicak"],
+                answer: 2
+            }
+        ];
+
+        // Shuffle questions array to randomize order
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Randomize questions
+        shuffleArray(quizData);
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isAnswered = false;
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        
+        const btnStart = document.getElementById('btn-start');
+        const btnNext = document.getElementById('btn-next');
+        const btnRestart = document.getElementById('btn-restart');
+        
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const scoreDisplay = document.getElementById('score-display');
+        const progressBar = document.getElementById('progress-bar');
+        
+        const finalScore = document.getElementById('final-score');
+        const resultMessage = document.getElementById('result-message');
+        const resultEmoji = document.getElementById('result-emoji');
+        const confettiCanvas = document.getElementById('confetti-canvas');
+
+        // Event Listeners
+        btnStart.addEventListener('click', startQuiz);
+        btnNext.addEventListener('click', loadNextQuestion);
+        btnRestart.addEventListener('click', restartQuiz);
+
+        function startQuiz() {
+            startScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            updateScoreDisplay();
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnswered = false;
+            btnNext.classList.add('hidden');
+            
+            const currentQuestion = quizData[currentQuestionIndex];
+            
+            // Update Progress & Counter
+            questionCounter.textContent = `Soal ${currentQuestionIndex + 1} / ${quizData.length}`;
+            const progressPercentage = ((currentQuestionIndex) / quizData.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            
+            // Set Question
+            questionText.textContent = currentQuestion.question;
+            
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+            
+            // Create options array with original index to track the correct answer after shuffling
+            let optionsWithIndex = currentQuestion.options.map((opt, index) => {
+                return { text: opt, originalIndex: index };
+            });
+            
+            // Shuffle options
+            shuffleArray(optionsWithIndex);
+            
+            // Render options
+            optionsWithIndex.forEach((optionObj) => {
+                const button = document.createElement('button');
+                // Prefix letters (A, B, C, D, E)
+                const prefix = String.fromCharCode(65 + optionsContainer.children.length);
+                
+                button.innerHTML = `<span class="font-bold mr-2 text-indigo-500">${prefix}.</span> ${optionObj.text}`;
+                button.className = 'btn-option w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-400 bg-white hover:bg-indigo-50 text-gray-700 font-semibold focus:outline-none';
+                
+                button.addEventListener('click', () => selectAnswer(button, optionObj.originalIndex, currentQuestion.answer));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectAnswer(selectedButton, selectedIndex, correctIndex) {
+            if (isAnswered) return;
+            isAnswered = true;
+            
+            const allButtons = optionsContainer.querySelectorAll('button');
+            
+            if (selectedIndex === correctIndex) {
+                // Correct Answer
+                selectedButton.classList.add('correct-answer');
+                score++;
+                updateScoreDisplay();
+            } else {
+                // Wrong Answer
+                selectedButton.classList.add('wrong-answer');
+                // Highlight correct answer
+                allButtons.forEach((btn, index) => {
+                    // We need to find which button holds the correct original index
+                    // In a real scenario we'd attach a data attribute, doing it simply here:
+                    if(quizData[currentQuestionIndex].options[correctIndex] === btn.innerText.substring(3).trim() || 
+                       btn.innerText.includes(quizData[currentQuestionIndex].options[correctIndex])) {
+                         btn.classList.add('border-green-500', 'text-green-600', 'bg-green-50');
+                    }
+                });
+            }
+            
+            // Disable all buttons
+            allButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.remove('hover:border-indigo-400', 'hover:bg-indigo-50');
+                if(!btn.classList.contains('correct-answer') && !btn.classList.contains('wrong-answer') && !btn.classList.contains('border-green-500')){
+                    btn.classList.add('opacity-50');
+                }
+            });
+            
+            // Show Next Button
+            btnNext.classList.remove('hidden');
+            
+            // Change Next button text on last question
+            if (currentQuestionIndex === quizData.length - 1) {
+                btnNext.textContent = 'Lihat Hasil 🏆';
+            } else {
+                btnNext.innerHTML = 'Lanjut 👉';
+            }
+        }
+
+        function loadNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function updateScoreDisplay() {
+            scoreDisplay.textContent = `Skor: ${score}`;
+            scoreDisplay.classList.add('scale-110', 'text-green-600');
+            setTimeout(() => {
+                scoreDisplay.classList.remove('scale-110', 'text-green-600');
+            }, 300);
+        }
+
+        function showResult() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            confettiCanvas.classList.remove('hidden');
+            
+            progressBar.style.width = '100%';
+            
+            finalScore.textContent = `${score} / ${quizData.length}`;
+            
+            const percentage = (score / quizData.length) * 100;
+            
+            if (percentage >= 80) {
+                resultMessage.textContent = "Suhu Receh! Selera humormu tingkat dewa 😂";
+                resultEmoji.textContent = "👑";
+                fireConfetti();
+            } else if (percentage >= 50) {
+                resultMessage.textContent = "Lumayan receh, teman-temanmu pasti sering kesel 😆";
+                resultEmoji.textContent = "😎";
+                fireConfetti();
+            } else if (percentage >= 20) {
+                resultMessage.textContent = "Kurang piknik! Butuh asupan jokes bapak-bapak nih 😅";
+                resultEmoji.textContent = "🫠";
+            } else {
+                resultMessage.textContent = "Terlalu serius! Hidup ini perlu ditertawakan kawan 🗿";
+                resultEmoji.textContent = "🗿";
+            }
+        }
+
+        function restartQuiz() {
+            confettiCanvas.classList.add('hidden');
+            shuffleArray(quizData); // Reshuffle for next play
+            startQuiz();
+        }
+
+        function fireConfetti() {
+            var myConfetti = confetti.create(confettiCanvas, {
+                resize: true,
+                useWorker: true
+            });
+            myConfetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+            });
+        }
+    </script>
+</body>
+</html>
