@@ -1597,8 +1597,8 @@ document.getElementById('timer').textContent = `${m.toString().padStart(2, '0')}
     const menitSisa = Math.floor(distance / (1000 * 60)); // Hitung sisa waktu dalam menit
     const teksPeringatan = document.getElementById('submit-warning-text');
 
-    // Cek jika sisa waktu lebih dari 30 menit (30 * 60 * 1000 milidetik)
-    if (distance > 30 * 60 * 1000) {
+    // Cek jika sisa waktu lebih dari 10 menit (10 * 60 * 1000 milidetik)
+    if (distance > 10 * 60 * 1000) {
         teksPeringatan.innerHTML = `Sisa waktu Anda masih <b>${menitSisa} menit</b>.<br><br><span class="text-red-600 font-bold">PERINGATAN: Jika Anda mengumpulkan sekarang, nilai Anda akan DIKURANGI 5 POIN!</span><br><br>Yakin ingin mengumpulkan sekarang?`;
     } else {
         teksPeringatan.innerHTML = "Apakah Anda yakin ingin mengumpulkan jawaban sekarang? Anda tidak bisa mengubahnya lagi.";
@@ -1657,7 +1657,7 @@ const waktuSubmit = new Date().getTime(); // Menggunakan nama variabel baru agar
 const sisaWaktu = END_TIME - waktuSubmit;
 let infoPenalti = "";
 
-if (sisaWaktu > 30 * 60 * 1000) {
+if (sisaWaktu > 10 * 60 * 1000) {
     nilai -= 5;
     if (nilai < 0) nilai = 0; // Mencegah nilai menjadi minus
     infoPenalti = " (-5 Poin)"; // Keterangan tambahan di layar hasil
