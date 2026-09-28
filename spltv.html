@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Pembelajaran: Sistem Persamaan Linear Tiga Variabel (SPLTV)</title>
+    
+    <!-- Konfigurasi MathJax v4 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0-beta.4/tex-mml-chtml.js"></script>
+
+    <style>
+        /* CSS untuk Tampilan Layar dan Cetak */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #2980b9;
+            --bg-color: #ffffff;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: 'Georgia', serif; /* Font serif bagus untuk dicetak */
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: var(--bg-color);
+            padding: 40px 60px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: var(--accent-color);
+            margin-top: 40px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+        }
+
+        .callout {
+            background-color: #e8f4f8;
+            border-left: 5px solid var(--accent-color);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .callout-title {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            display: block;
+            font-size: 1.1em;
+        }
+
+        .example-box {
+            background-color: #fdfbf7;
+            border: 1px solid #e2d9c3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid #bdc3c7;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #ecf0f1;
+        }
+
+        .btn-print {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-print:hover {
+            background-color: #1c5980;
+        }
+
+        /* Penyesuaian khusus untuk pencetakan (Print) */
+        @media print {
+            body {
+                background-color: transparent;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+            .btn-print {
+                display: none;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            /* Menghindari terpotongnya persamaan matematika saat pindah halaman */
+            .example-box, .callout, p, mjx-container {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-print" onclick="window.print()">🖨️ Cetak Modul Ini</button>
+
+    <div class="container">
+        <h1>Sistem Persamaan Linear Tiga Variabel (SPLTV)</h1>
+
+        <!-- BAGIAN 1: APERSEPSI -->
+        <section>
+            <h2>1. Apersepsi: Matematika di Balik Kasir</h2>
+            <p>Pernahkah kalian membeli alat tulis bersama teman-teman di toko yang sama, lalu setelah membayar kalian menyadari bahwa struk belanjaan hilang, padahal kalian harus membagi biaya patungan?</p>
+            
+            <div class="callout">
+                <span class="callout-title">Kasus Toko Alat Tulis "Maju Jaya"</span>
+                <p>Suatu hari menjelang ujian, tiga orang sahabat: <strong>Ali</strong>, <strong>Badar</strong>, dan <strong>Carli</strong> pergi ke toko alat tulis. Mereka membeli barang dari merek yang sama persis.</p>
+                <ul>
+                    <li><strong>Ali</strong> membeli 2 buku tulis, 1 pensil, dan 1 penghapus. Ia membayar kasir sebesar <strong>Rp 11.000</strong>.</li>
+                    <li><strong>Badar</strong> membeli 1 buku tulis, 2 pensil, dan 1 penghapus. Ia membayar <strong>Rp 9.000</strong>.</li>
+                    <li><strong>Carli</strong> memborong 3 buku tulis, 2 pensil, dan 1 penghapus. Ia membayar <strong>Rp 17.000</strong>.</li>
+                </ul>
+                <p>Saat dalam perjalanan pulang, adik Carli menelepon dan menitip dibelikan <strong>1 buku tulis, 1 pensil, dan 1 penghapus</strong>. Carli bingung karena tidak tahu harga masing-masing barang. Apakah Carli harus kembali ke toko untuk bertanya ke kasir?</p>
+            </div>
+
+            <p>Tentu saja tidak perlu! Dengan bekal ilmu <strong>Sistem Persamaan Linear Tiga Variabel (SPLTV)</strong>, kita bisa bertindak seperti detektif untuk mengungkap harga masing-masing barang hanya dari total belanjaan mereka. Mari kita pelajari konsepnya terlebih dahulu, dan kita akan bantu Carli memecahkan masalahnya di akhir materi ini.</p>
+        </section>
+
+        <!-- BAGIAN 2: PENGERTIAN & BENTUK UMUM -->
+        <section>
+            <h2>2. Pengertian dan Bentuk Umum SPLTV</h2>
+            <p>Sistem Persamaan Linear Tiga Variabel (SPLTV) adalah kumpulan persamaan linear yang memiliki tiga variabel (biasanya disimbolkan dengan $x$, $y$, dan $z$) dan masing-masing variabel berpangkat satu.</p>
+            
+            <div class="callout">
+                <span class="callout-title">Bentuk Umum SPLTV</span>
+                <p>Bentuk umum dari SPLTV yang terdiri dari tiga persamaan adalah sebagai berikut:</p>
+                $$
+                \begin{cases} 
+                a_1 x + b_1 y + c_1 z = d_1 & \text{... (Persamaan 1)} \\ 
+                a_2 x + b_2 y + c_2 z = d_2 & \text{... (Persamaan 2)} \\ 
+                a_3 x + b_3 y + c_3 z = d_3 & \text{... (Persamaan 3)} 
+                \end{cases}
+                $$
+                <p><strong>Keterangan:</strong></p>
+                <ul>
+                    <li>$x, y, z$ adalah variabel (peubah).</li>
+                    <li>$a, b, c$ adalah koefisien dari masing-masing variabel.</li>
+                    <li>$d$ adalah konstanta.</li>
+                </ul>
+            </div>
+            <p>Tujuan dari menyelesaikan SPLTV adalah mencari <strong>Himpunan Penyelesaian (HP)</strong> berupa pasangan berurutan $(x, y, z)$ yang memenuhi ketiga persamaan tersebut sekaligus secara bersama-sama.</p>
+        </section>
+
+        <div class="page-break"></div>
+
+        <!-- BAGIAN 3: METODE PENYELESAIAN -->
+        <section>
+            <h2>3. Metode Penyelesaian SPLTV</h2>
+            <p>Untuk memecahkan SPLTV, kita bisa menggunakan beberapa metode. Metode yang paling umum dan efisien diajarkan adalah <strong>Metode Gabungan (Eliminasi - Substitusi)</strong>. Berikut adalah langkah-langkah umumnya:</p>
+
+            <ol>
+                <li><strong>Pilih dua pasang persamaan</strong> dari ketiga persamaan yang ada (misalnya persamaan 1 & 2, lalu persamaan 1 & 3).</li>
+                <li><strong>Eliminasi salah satu variabel</strong> (misalnya variabel $z$) dari kedua pasang persamaan tersebut. Langkah ini akan menghasilkan Sistem Persamaan Linear Dua Variabel (SPLDV).</li>
+                <li><strong>Selesaikan SPLDV</strong> yang didapat menggunakan metode eliminasi dan substitusi untuk mendapatkan nilai dua variabel pertama (misal $x$ dan $y$).</li>
+                <li><strong>Substitusikan</strong> nilai dua variabel yang sudah didapat ke salah satu persamaan awal (SPLTV) untuk mendapatkan nilai variabel ketiga (misal $z$).</li>
+            </ol>
+        </section>
+
+        <!-- BAGIAN 4: CONTOH SOAL -->
+        <section>
+            <h2>4. Contoh Soal dan Pembahasan</h2>
+            
+            <div class="example-box">
+                <h3>Contoh Soal</h3>
+                <p>Tentukan himpunan penyelesaian dari SPLTV berikut:</p>
+                $$
+                \begin{cases} 
+                x + y - z = -3 & \text{... (1)} \\ 
+                x + 2y + z = 7 & \text{... (2)} \\ 
+                2x + y + z = 4 & \text{... (3)} 
+                \end{cases}
+                $$
+                
+                <h3>Pembahasan:</h3>
+                <p><strong>Langkah 1 & 2: Eliminasi variabel $z$</strong></p>
+                <p>Kita amati bahwa koefisien $z$ pada ketiga persamaan sudah sama yaitu 1 dan -1, sehingga sangat mudah untuk dieliminasi.</p>
+                
+                <p><em>Pilih Persamaan (1) dan (2):</em></p>
+                $$
+                \begin{array}{rl}
+                x + y - z &= -3 \\
+                x + 2y + z &= 7 \\
+                \hline
+                2x + 3y &= 4 & \text{... (4)} \quad \textit{(Kedua persamaan ditambahkan)}
+                \end{array}
+                $$
+
+                <p><em>Pilih Persamaan (1) dan (3):</em></p>
+                $$
+                \begin{array}{rl}
+                x + y - z &= -3 \\
+                2x + y + z &= 4 \\
+                \hline
+                3x + 2y &= 1 & \text{... (5)} \quad \textit{(Kedua persamaan ditambahkan)}
+                \end{array}
+                $$
+
+                <p><strong>Langkah 3: Selesaikan SPLDV dari Persamaan (4) dan (5)</strong></p>
+                <p>Kita dapatkan SPLDV:</p>
+                $$
+                \begin{cases}
+                2x + 3y = 4 & \text{... (4)} \\
+                3x + 2y = 1 & \text{... (5)}
+                \end{cases}
+                $$
+                <p>Mari kita eliminasi variabel $y$. Kita kalikan persamaan (4) dengan 2, dan persamaan (5) dengan 3.</p>
+                $$
+                \begin{array}{rl|c|rl}
+                2x + 3y = 4 & & \times 2 & 4x + 6y &= 8 \\
+                3x + 2y = 1 & & \times 3 & 9x + 6y &= 3 \\
+                \hline
+                & & & -5x &= 5 \quad \textit{(Dikurangkan)} \\
+                & & & x &= \frac{5}{-5} \\
+                & & & x &= -1
+                \end{array}
+                $$
+                <p>Substitusi nilai $x = -1$ ke persamaan (4):</p>
+                $$
+                \begin{align*}
+                2(-1) + 3y &= 4 \\
+                -2 + 3y &= 4 \\
+                3y &= 4 + 2 \\
+                3y &= 6 \\
+                y &= 2
+                \end{align*}
+                $$
+
+                <p><strong>Langkah 4: Substitusi $x$ dan $y$ ke Persamaan (1)</strong></p>
+                <p>Sekarang kita punya $x = -1$ dan $y = 2$. Masukkan ke persamaan (1):</p>
+                $$
+                \begin{align*}
+                x + y - z &= -3 \\
+                (-1) + 2 - z &= -3 \\
+                1 - z &= -3 \\
+                -z &= -3 - 1 \\
+                -z &= -4 \\
+                z &= 4
+                \end{align*}
+                $$
+
+                <p><strong>Kesimpulan:</strong></p>
+                <p>Jadi, himpunan penyelesaiannya adalah <strong>HP = $\{(-1, 2, 4)\}$</strong>.</p>
+            </div>
+        </section>
+
+        <div class="page-break"></div>
+
+        <!-- BAGIAN 5: PENYELESAIAN APERSEPSI -->
+        <section>
+            <h2>5. Memecahkan Masalah Kasir (Penyelesaian Apersepsi)</h2>
+            <p>Sekarang, mari kita gunakan ilmu yang baru kita pelajari untuk membantu Carli. Langkah pertama dalam memecahkan soal cerita adalah <strong>Membuat Model Matematika</strong>.</p>
+            
+            <p>Misalkan:<br>
+            $x$ = Harga 1 buku tulis<br>
+            $y$ = Harga 1 pensil<br>
+            $z$ = Harga 1 penghapus</p>
+
+            <p>Maka, model matematika dari belanjaan mereka adalah:</p>
+            $$
+            \begin{cases} 
+            2x + y + z = 11.000 & \text{... (Belanjaan Ali, Pers. 1)} \\ 
+            x + 2y + z = 9.000 & \text{... (Belanjaan Badar, Pers. 2)} \\ 
+            3x + 2y + z = 17.000 & \text{... (Belanjaan Carli, Pers. 3)} 
+            \end{cases}
+            $$
+
+            <h3>Mari kita selesaikan!</h3>
+            <p>Perhatikan bahwa koefisien $z$ pada ketiga persamaan adalah sama yaitu 1. Ini sangat mempermudah perhitungan kita. Kita akan eliminasi $z$.</p>
+
+            <p><strong>1. Eliminasi $z$ dari Persamaan (1) dan (2):</strong></p>
+            $$
+            \begin{array}{rl}
+            2x + y + z &= 11.000 \\
+            x + 2y + z &= 9.000 \\
+            \hline
+            x - y &= 2.000 & \text{... (Pers. 4)} \quad \textit{(Dikurangkan)}
+            \end{array}
+            $$
+            <p>Dari persamaan (4), kita bisa ubah bentuknya menjadi: $x = y + 2.000$.</p>
+
+            <p><strong>2. Eliminasi $z$ dari Persamaan (3) dan (1):</strong></p>
+            $$
+            \begin{array}{rl}
+            3x + 2y + z &= 17.000 \\
+            2x + y + z &= 11.000 \\
+            \hline
+            x + y &= 6.000 & \text{... (Pers. 5)} \quad \textit{(Dikurangkan)}
+            \end{array}
+            $$
+
+            <p><strong>3. Substitusi Persamaan (4) ke Persamaan (5):</strong></p>
+            <p>Kita tahu dari Pers. 4 bahwa $x = y + 2.000$. Masukkan ini ke Pers. 5:</p>
+            $$
+            \begin{align*}
+            (y + 2.000) + y &= 6.000 \\
+            2y + 2.000 &= 6.000 \\
+            2y &= 6.000 - 2.000 \\
+            2y &= 4.000 \\
+            y &= 2.000
+            \end{align*}
+            $$
+            <p>Wah! Kita sudah tahu harga 1 pensil adalah <strong>Rp 2.000</strong>.</p>
+
+            <p><strong>4. Mencari nilai $x$ (Buku):</strong></p>
+            <p>Masukkan nilai $y = 2.000$ ke persamaan (4):</p>
+            $$
+            \begin{align*}
+            x &= y + 2.000 \\
+            x &= 2.000 + 2.000 \\
+            x &= 4.000
+            \end{align*}
+            $$
+            <p>Harga 1 buku adalah <strong>Rp 4.000</strong>.</p>
+
+            <p><strong>5. Mencari nilai $z$ (Penghapus):</strong></p>
+            <p>Pilih persamaan yang paling sederhana, misal Persamaan (2): $x + 2y + z = 9.000$</p>
+            $$
+            \begin{align*}
+            4.000 + 2(2.000) + z &= 9.000 \\
+            4.000 + 4.000 + z &= 9.000 \\
+            8.000 + z &= 9.000 \\
+            z &= 1.000
+            \end{align*}
+            $$
+            <p>Harga 1 penghapus adalah <strong>Rp 1.000</strong>.</p>
+
+            <div class="callout" style="border-left-color: #27ae60; background-color: #e9f7ef;">
+                <span class="callout-title" style="color: #27ae60;">Kesimpulan Detektif Matematika!</span>
+                <p>Berdasarkan perhitungan SPLTV, Carli sekarang mengetahui harga barang di toko "Maju Jaya":</p>
+                <ul>
+                    <li>Harga 1 Buku Tulis ($x$) = <strong>Rp 4.000</strong></li>
+                    <li>Harga 1 Pensil ($y$) = <strong>Rp 2.000</strong></li>
+                    <li>Harga 1 Penghapus ($z$) = <strong>Rp 1.000</strong></li>
+                </ul>
+                <p>Adik Carli menitip 1 buku, 1 pensil, dan 1 penghapus. Berarti, uang yang harus disiapkan adik Carli adalah:<br>
+                $$x + y + z = 4.000 + 2.000 + 1.000 = \mathbf{Rp \ 7.000}$$
+                Masalah terselesaikan tanpa harus bolak-balik ke toko!</p>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>

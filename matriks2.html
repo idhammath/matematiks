@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Pembelajaran: Operasi Matriks</title>
+    
+    <!-- Tailwind CSS untuk styling tampilan layar (Screen) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Konfigurasi MathJax v4 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0-beta.4/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Styling Umum untuk tampilan bacaan yang baik */
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .math-block {
+            overflow-x: auto;
+            padding: 1rem 0;
+        }
+
+        /* Styling khusus untuk cetak (Print) */
+        @media print {
+            body {
+                background-color: white;
+                color: black;
+                font-family: 'Times New Roman', Times, serif;
+                font-size: 12pt;
+                line-height: 1.5;
+            }
+            .print-container {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            .avoid-break {
+                page-break-inside: avoid;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+                color: black !important;
+            }
+            .box-style {
+                border: 1px solid #000 !important;
+                background-color: transparent !important;
+                color: black !important;
+                box-shadow: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <main class="print-container max-w-4xl mx-auto bg-white p-6 md:p-12 rounded-xl shadow-lg box-style">
+        
+        <!-- Header Modul -->
+        <header class="text-center mb-10 border-b-2 border-blue-500 pb-6">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-800 mb-2">Modul Pembelajaran Matematika</h1>
+            <h2 class="text-xl md:text-2xl font-semibold text-gray-700">Operasi Matriks</h2>
+            <p class="text-sm text-gray-500 mt-2">Penjumlahan, Pengurangan, dan Perkalian Matriks</p>
+        </header>
+
+        <!-- Tombol Cetak (Hanya tampil di layar) -->
+        <div class="text-right mb-6 no-print">
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-300">
+                🖨️ Cetak Materi
+            </button>
+        </div>
+
+        <!-- Bagian Apersepsi -->
+        <section class="mb-10 bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500 box-style">
+            <h3 class="text-xl font-bold text-blue-800 mb-3">Apersepsi: Matriks di Dunia Nyata 🏢</h3>
+            <p class="mb-4">
+                Pernahkah kalian membayangkan bagaimana sebuah kedai kopi dengan banyak cabang menghitung total persediaan, memperkirakan kebutuhan bulan depan, atau menghitung pendapatan harian mereka dengan cepat?
+            </p>
+            <p class="mb-4">
+                Bayangkan kamu adalah seorang manajer di <strong>"Kedai Kopi Senja"</strong> yang memiliki 2 cabang. Kedai ini menjual dua jenis minuman andalan: <em>Kopi Susu</em> dan <em>Matcha Latte</em>.
+            </p>
+            <ul class="list-disc ml-6 mb-4 space-y-2">
+                <li><strong>Minggu ke-1:</strong> Cabang A menjual 50 Kopi Susu dan 30 Matcha Latte. Cabang B menjual 40 Kopi Susu dan 35 Matcha Latte.</li>
+                <li><strong>Minggu ke-2:</strong> Cabang A menjual 60 Kopi Susu dan 45 Matcha Latte. Cabang B menjual 55 Kopi Susu dan 40 Matcha Latte.</li>
+            </ul>
+            <p class="mb-2 text-gray-700 font-semibold">Sebagai manajer, kamu dihadapkan pada pertanyaan berikut:</p>
+            <ol class="list-decimal ml-6 mb-4 space-y-1">
+                <li>Berapa total penjualan masing-masing minuman di tiap cabang selama dua minggu tersebut?</li>
+                <li>Jika pada minggu ke-3 diproyeksikan penjualan akan melonjak <strong>2 kali lipat</strong> dari minggu ke-2 karena ada festival, berapa proyeksi penjualannya?</li>
+                <li>Jika keuntungan per gelas <em>Kopi Susu</em> adalah Rp 10.000 dan <em>Matcha Latte</em> adalah Rp 12.000, berapa total keuntungan masing-masing cabang pada Minggu ke-1?</li>
+            </ol>
+            <p class="text-sm italic text-gray-600">
+                Simpan pertanyaan ini di pikiran kalian. Kita akan menyelesaikan masalah bisnis "Kedai Kopi Senja" ini di akhir materi setelah kita mempelajari operasi matriks!
+            </p>
+        </section>
+
+        <section class="mb-10 avoid-break">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">1. Penjumlahan dan Pengurangan Matriks</h2>
+            
+            <div class="bg-yellow-50 p-4 rounded-md border-l-4 border-yellow-400 mb-4 box-style">
+                <h4 class="font-bold text-yellow-800">📌 Syarat Mutlak:</h4>
+                <p>Dua buah matriks hanya dapat dijumlahkan atau dikurangkan <strong>JIKA DAN HANYA JIKA</strong> keduanya memiliki <strong>ordo (ukuran baris $\times$ kolom) yang sama</strong>.</p>
+            </div>
+
+            <p class="mb-4">
+                Jika syarat ordo sama terpenuhi, operasi penjumlahan dan pengurangan dilakukan dengan cara mengoperasikan elemen-elemen yang <strong>seletak (posisinya sama)</strong>.
+            </p>
+
+            <h3 class="text-lg font-semibold mt-6 mb-2">Contoh 1: Penjumlahan</h3>
+            <p>Diberikan dua matriks berordo $2 \times 2$:</p>
+            <div class="math-block">
+                $$ A = \begin{bmatrix} 2 & 3 \\ 1 & 4 \end{bmatrix}, \quad B = \begin{bmatrix} 5 & -1 \\ 0 & 2 \end{bmatrix} $$
+            </div>
+            <p>Maka $A + B$ adalah:</p>
+            <div class="math-block">
+                $$ A + B = \begin{bmatrix} 2 & 3 \\ 1 & 4 \end{bmatrix} + \begin{bmatrix} 5 & -1 \\ 0 & 2 \end{bmatrix} = \begin{bmatrix} 2+5 & 3+(-1) \\ 1+0 & 4+2 \end{bmatrix} = \begin{bmatrix} 7 & 2 \\ 1 & 6 \end{bmatrix} $$
+            </div>
+
+            <h3 class="text-lg font-semibold mt-6 mb-2">Contoh 2: Pengurangan</h3>
+            <p>Diberikan dua matriks berordo $2 \times 3$:</p>
+            <div class="math-block">
+                $$ P = \begin{bmatrix} 6 & 2 & -3 \\ -1 & 5 & 0 \end{bmatrix}, \quad Q = \begin{bmatrix} 4 & 2 & 1 \\ 3 & -2 & 5 \end{bmatrix} $$
+            </div>
+            <p>Maka $P - Q$ adalah:</p>
+            <div class="math-block">
+                $$ P - Q = \begin{bmatrix} 6-4 & 2-2 & -3-1 \\ -1-3 & 5-(-2) & 0-5 \end{bmatrix} = \begin{bmatrix} 2 & 0 & -4 \\ -4 & 7 & -5 \end{bmatrix} $$
+            </div>
+            
+            <p class="mt-4 text-red-600 font-semibold italic text-sm">
+                *Catatan: Jika matriks memiliki ordo berbeda, misalnya $2 \times 2$ dan $2 \times 3$, maka operasinya TIDAK DAPAT dilakukan.
+            </p>
+        </section>
+
+        <section class="mb-10 page-break avoid-break">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">2. Perkalian Matriks dengan Skalar</h2>
+            
+            <p class="mb-4">
+                Dalam matematika, "skalar" secara sederhana berarti sebuah angka biasa (bilangan real), bukan bentuk matriks. Perkalian skalar adalah proses mengalikan sebuah matriks dengan suatu bilangan (skalar).
+            </p>
+
+            <div class="bg-green-50 p-4 rounded-md border-l-4 border-green-500 mb-4 box-style">
+                <h4 class="font-bold text-green-800">📌 Aturan:</h4>
+                <p>Untuk mengalikan matriks dengan bilangan skalar $k$, kita cukup mengalikan <strong>setiap elemen</strong> di dalam matriks tersebut dengan bilangan $k$. Tidak ada syarat ordo dalam perkalian ini.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mt-6 mb-2">Contoh 3:</h3>
+            <p>Diberikan bilangan skalar $k = 3$ dan matriks $M$:</p>
+            <div class="math-block">
+                $$ M = \begin{bmatrix} 4 & -2 \\ 0 & 5 \\ 1 & 7 \end{bmatrix} $$
+            </div>
+            <p>Maka $3M$ (atau $3 \times M$) adalah:</p>
+            <div class="math-block">
+                $$ 3M = 3 \begin{bmatrix} 4 & -2 \\ 0 & 5 \\ 1 & 7 \end{bmatrix} = \begin{bmatrix} 3(4) & 3(-2) \\ 3(0) & 3(5) \\ 3(1) & 3(7) \end{bmatrix} = \begin{bmatrix} 12 & -6 \\ 0 & 15 \\ 3 & 21 \end{bmatrix} $$
+            </div>
+        </section>
+
+        <section class="mb-10 page-break avoid-break">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">3. Perkalian Dua Matriks</h2>
+            
+            <p class="mb-4">
+                Perkalian antara dua buah matriks sedikit lebih rumit dibandingkan penjumlahan atau perkalian skalar. Perkalian ini tidak dilakukan dengan mengalikan elemen yang seletak.
+            </p>
+
+            <div class="bg-red-50 p-4 rounded-md border-l-4 border-red-500 mb-4 box-style">
+                <h4 class="font-bold text-red-800">📌 Syarat Mutlak (Penting!):</h4>
+                <p>Dua matriks $A$ dan $B$ dapat dikalikan ($A \times B$) <strong>hanya jika</strong> jumlah <strong>KOLOM matriks $A$</strong> sama dengan jumlah <strong>BARIS matriks $B$</strong>.</p>
+                <div class="text-center my-3 font-mono bg-white p-2 inline-block rounded border box-style">
+                    Ordo A: $(m \times \color{red}{n})$  &times;  Ordo B: $(\color{red}{n} \times p)$ $\rightarrow$ Hasil Matriks C berordo $(m \times p)$
+                </div>
+            </div>
+
+            <h3 class="text-xl font-semibold mt-6 mb-2">Algoritma "Baris Kali Kolom" (Dot Product)</h3>
+            <p class="mb-4">
+                Untuk mencari nilai elemen pada hasil perkalian matriks, kita mengalikan elemen-elemen pada <strong>BARIS</strong> matriks pertama dengan elemen-elemen pada <strong>KOLOM</strong> matriks kedua secara berurutan, lalu menjumlahkannya.
+            </p>
+
+            <h3 class="text-lg font-semibold mt-6 mb-2">Contoh 4: Perkalian Matriks $2 \times 2$</h3>
+            <div class="math-block">
+                $$ A = \begin{bmatrix} \color{blue}{1} & \color{blue}{2} \\ 3 & 4 \end{bmatrix}, \quad B = \begin{bmatrix} \color{red}{5} & 6 \\ \color{red}{7} & 8 \end{bmatrix} $$
+            </div>
+            <p>Kolom A (2) = Baris B (2). Syarat terpenuhi! Hasilnya adalah matriks $2 \times 2$.</p>
+            <p class="mt-2">Langkah pengerjaan $C = A \times B$:</p>
+            <ul class="list-disc ml-6 space-y-2 mb-4">
+                <li><strong>Baris 1, Kolom 1 ($C_{11}$):</strong> Baris 1 Matriks A $\times$ Kolom 1 Matriks B <br> $(\color{blue}{1} \times \color{red}{5}) + (\color{blue}{2} \times \color{red}{7}) = 5 + 14 = 19$</li>
+                <li><strong>Baris 1, Kolom 2 ($C_{12}$):</strong> Baris 1 Matriks A $\times$ Kolom 2 Matriks B <br> $(1 \times 6) + (2 \times 8) = 6 + 16 = 22$</li>
+                <li><strong>Baris 2, Kolom 1 ($C_{21}$):</strong> Baris 2 Matriks A $\times$ Kolom 1 Matriks B <br> $(3 \times 5) + (4 \times 7) = 15 + 28 = 43$</li>
+                <li><strong>Baris 2, Kolom 2 ($C_{22}$):</strong> Baris 2 Matriks A $\times$ Kolom 2 Matriks B <br> $(3 \times 6) + (4 \times 8) = 18 + 32 = 50$</li>
+            </ul>
+            <p>Sehingga hasil akhirnya:</p>
+            <div class="math-block">
+                $$ A \times B = \begin{bmatrix} 19 & 22 \\ 43 & 50 \end{bmatrix} $$
+            </div>
+
+            <h3 class="text-lg font-semibold mt-6 mb-2">Contoh 5: Beda Ordo (Tetapi memenuhi syarat)</h3>
+            <p>Matriks $P$ ordo $(2 \times 3)$ dikali matriks $Q$ ordo $(3 \times 1)$:</p>
+            <div class="math-block">
+                $$ P = \begin{bmatrix} 2 & 0 & 1 \\ -1 & 3 & 2 \end{bmatrix}, \quad Q = \begin{bmatrix} 4 \\ 1 \\ 5 \end{bmatrix} $$
+            </div>
+            <p>Kolom P (3) = Baris Q (3). Syarat terpenuhi. Matriks hasil akan berordo $(2 \times 1)$.</p>
+            <div class="math-block">
+                $$ P \times Q = \begin{bmatrix} (2)(4) + (0)(1) + (1)(5) \\ (-1)(4) + (3)(1) + (2)(5) \end{bmatrix} = \begin{bmatrix} 8 + 0 + 5 \\ -4 + 3 + 10 \end{bmatrix} = \begin{bmatrix} 13 \\ 9 \end{bmatrix} $$
+            </div>
+        </section>
+
+        <section class="mb-10 page-break bg-indigo-50 p-6 rounded-lg border border-indigo-200 box-style">
+            <h2 class="text-2xl font-bold text-indigo-900 mb-4 border-b border-indigo-300 pb-2">🎯 Penyelesaian Masalah: "Kedai Kopi Senja"</h2>
+            <p class="mb-4">
+                Sekarang, mari kita ubah data dari cerita apersepsi di awal ke dalam bentuk matriks. Baris menyatakan "Cabang" (Baris 1 = Cabang A, Baris 2 = Cabang B). Kolom menyatakan "Produk" (Kolom 1 = Kopi Susu, Kolom 2 = Matcha Latte).
+            </p>
+
+            <div class="math-block">
+                Data Minggu 1 ($M_1$):
+                $$ M_1 = \begin{bmatrix} 50 & 30 \\ 40 & 35 \end{bmatrix} $$
+                <br>
+                Data Minggu 2 ($M_2$):
+                $$ M_2 = \begin{bmatrix} 60 & 45 \\ 55 & 40 \end{bmatrix} $$
+            </div>
+
+            <div class="mt-6">
+                <h4 class="font-bold text-indigo-800">1. Total penjualan masing-masing minuman tiap cabang (Penjumlahan)</h4>
+                <p>Kita menjumlahkan Matriks $M_1$ dan $M_2$:</p>
+                <div class="math-block">
+                    $$ M_{total} = M_1 + M_2 = \begin{bmatrix} 50 & 30 \\ 40 & 35 \end{bmatrix} + \begin{bmatrix} 60 & 45 \\ 55 & 40 \end{bmatrix} = \begin{bmatrix} 110 & 75 \\ 95 & 75 \end{bmatrix} $$
+                </div>
+                <p class="italic text-sm">Kesimpulan: Total 2 minggu, Cabang A menjual 110 Kopi Susu & 75 Matcha. Cabang B menjual 95 Kopi Susu & 75 Matcha.</p>
+            </div>
+
+            <div class="mt-6">
+                <h4 class="font-bold text-indigo-800">2. Proyeksi Minggu ke-3 (Perkalian Skalar)</h4>
+                <p>Proyeksi adalah 2 kali lipat dari penjualan Minggu ke-2. Kita kalikan matriks $M_2$ dengan skalar $k = 2$:</p>
+                <div class="math-block">
+                    $$ M_3 = 2 \times M_2 = 2 \begin{bmatrix} 60 & 45 \\ 55 & 40 \end{bmatrix} = \begin{bmatrix} 120 & 90 \\ 110 & 80 \end{bmatrix} $$
+                </div>
+                <p class="italic text-sm">Kesimpulan: Proyeksi untuk Cabang A adalah 120 Kopi Susu & 90 Matcha. Cabang B adalah 110 Kopi Susu & 80 Matcha.</p>
+            </div>
+
+            <div class="mt-6">
+                <h4 class="font-bold text-indigo-800">3. Total Keuntungan Minggu ke-1 (Perkalian Matriks)</h4>
+                <p>Matriks Penjualan Minggu 1 ($M_1$) berukuran $2 \times 2$. Matriks Keuntungan per produk kita buat sebagai matriks kolom $K$ ukuran $2 \times 1$:</p>
+                <div class="math-block">
+                    $$ K = \begin{bmatrix} 10.000 \\ 12.000 \end{bmatrix} \quad \text{(Atas: Kopi, Bawah: Matcha)} $$
+                </div>
+                <p>Total keuntungan $T$ dicari dengan mengalikan $M_1 \times K$ (Syarat kolom $2 = $ baris $2$ terpenuhi):</p>
+                <div class="math-block">
+                    $$ T = \begin{bmatrix} 50 & 30 \\ 40 & 35 \end{bmatrix} \begin{bmatrix} 10.000 \\ 12.000 \end{bmatrix} $$
+                    $$ T = \begin{bmatrix} (50 \times 10.000) + (30 \times 12.000) \\ (40 \times 10.000) + (35 \times 12.000) \end{bmatrix} $$
+                    $$ T = \begin{bmatrix} 500.000 + 360.000 \\ 400.000 + 420.000 \end{bmatrix} = \begin{bmatrix} 860.000 \\ 820.000 \end{bmatrix} $$
+                </div>
+                <p class="font-semibold mt-2 text-gray-800">Kesimpulan Akhir:</p>
+                <p>
+                    Hanya dengan satu operasi perkalian matriks, manajer mengetahui bahwa total keuntungan pada Minggu pertama di <strong>Cabang A adalah Rp 860.000</strong> dan di <strong>Cabang B adalah Rp 820.000</strong>.
+                </p>
+            </div>
+        </section>
+        
+        <footer class="text-center text-sm text-gray-500 border-t pt-4 no-print">
+            Selesai. Selamat Belajar! ✨
+        </footer>
+    </main>
+</body>
+</html>
