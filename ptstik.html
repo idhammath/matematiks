@@ -116,8 +116,8 @@
         });
         // ================= PENGATURAN UTAMA =================
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_DheI5UTJHyjjYDytmCJXvM_-RoCeXy6c0w822NdqPag96xfBIwIn9ueFIbQ5oYB9bA/exec';
-        const START_TIME = new Date('2026-09-28T10:15:00+07:00').getTime(); // WIB
-        const END_TIME = new Date('2026-09-28T11:59:00+07:00').getTime();   // WIB
+        const START_TIME = new Date('2026-09-30T13:30:00+07:00').getTime(); // WIB
+        const END_TIME = new Date('2026-09-30T15:00:00+07:00').getTime();   // WIB
         
         // Template Data Siswa (Bisa diekstrak dari Excel/JSON)
         const dataSiswa = {
@@ -528,7 +528,7 @@ document.getElementById('timer').textContent = `${m.toString().padStart(2, '0')}
     const teksPeringatan = document.getElementById('submit-warning-text');
 
     // Cek jika sisa waktu lebih dari 15 menit (15 * 60 * 1000 milidetik)
-    if (distance > 15 * 60 * 1000) {
+    if (distance > 30 * 60 * 1000) {
         teksPeringatan.innerHTML = `Sisa waktu Anda masih <b>${menitSisa} menit</b>.<br><br><span class="text-red-600 font-bold">PERINGATAN: Jika Anda mengumpulkan sekarang, nilai Anda akan DIKURANGI 5 POIN!</span><br><br>Yakin ingin mengumpulkan sekarang?`;
     } else {
         teksPeringatan.innerHTML = "Apakah Anda yakin ingin mengumpulkan jawaban sekarang? Anda tidak bisa mengubahnya lagi.";
@@ -587,7 +587,7 @@ const waktuSubmit = new Date().getTime(); // Menggunakan nama variabel baru agar
 const sisaWaktu = END_TIME - waktuSubmit;
 let infoPenalti = "";
 
-if (sisaWaktu > 15 * 60 * 1000) {
+if (sisaWaktu > 30 * 60 * 1000) {
     nilai -= 5;
     if (nilai < 0) nilai = 0; // Mencegah nilai menjadi minus
     infoPenalti = " (-5 Poin)"; // Keterangan tambahan di layar hasil
