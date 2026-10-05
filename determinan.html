@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materi Lengkap: Determinan Matriks 2x2 dan 3x3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.7;
+        }
+        /* Custom styles for structured content boxes */
+        .section-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        .apperception-box {
+            background: linear-gradient(to right bottom, #ebf8ff, #e0e7ff);
+            border-left: 6px solid #4f46e5;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+        }
+        .definition-box {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-left: 6px solid #22c55e;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .example-box {
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 6px -1px rgba(251, 191, 36, 0.1);
+        }
+        .step-box {
+            background-color: #f1f5f9;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #94a3b8;
+        }
+        .important-box {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            border-left: 6px solid #ef4444;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+        }
+        .resolution-box {
+            background: linear-gradient(to right bottom, #ecfdf5, #d1fae5);
+            border: 1px solid #a7f3d0;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 3rem;
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1);
+        }
+        /* Typography adjustments */
+        h1, h2, h3, h4 { color: #0f172a; }
+        h2 { 
+            border-bottom: 2px solid #e2e8f0; 
+            padding-bottom: 0.75rem; 
+            margin-top: 2rem; 
+            margin-bottom: 1.5rem;
+        }
+        h3 { margin-top: 1.5rem; margin-bottom: 1rem; }
+        .math-display { 
+            overflow-x: auto; 
+            padding: 1rem 0; 
+            margin: 1rem 0; 
+            text-align: center;
+        }
+        
+        /* Interactive Tabs for Sarrus Method */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+
+    <script>
+      // MathJax v4 Configuration
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          packages: {'[+]': ['ams', 'configmacros']},
+          macros: {
+            // Custom macros for easier matrix typing
+            mat: ['\\begin{pmatrix}#1\\end{pmatrix}', 1],
+            detmat: ['\\begin{vmatrix}#1\\end{vmatrix}', 1],
+            bold: ['\\mathbf{#1}', 1]
+          }
+        },
+        svg: {
+          fontCache: 'global'
+        },
+        chtml: {
+          displayAlign: 'center',
+          displayIndent: '0'
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+</head>
+<body class="antialiased text-slate-800">
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+
+    <header class="text-center mb-16">
+        <span class="text-indigo-600 font-semibold tracking-wider uppercase text-sm mb-2 block">Matematika Wajib - Matriks</span>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">Membongkar Rahasia <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Determinan Matriks</span></h1>
+        <p class="text-xl text-slate-600 max-w-2xl mx-auto">Panduan komprehensif memahami determinan matriks ordo 2x2 dan 3x3, mulai dari konsep dasar hingga penerapannya.</p>
+    </header>
+
+    <div class="section-card">
+        <h2 class="text-3xl font-bold mt-0 text-slate-900 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Apersepsi: Masalah di Toko Roti "Bunda"
+        </h2>
+        
+        <div class="apperception-box">
+            <p class="mb-4 text-lg">Bayangkan kamu sedang membantu ibumu mengelola keuangan toko roti. Ibumu baru saja membeli bahan baku dari agen, tetapi nota pembeliannya sobek dan sebagian harganya tidak terbaca.</p>
+            
+            <p class="mb-2 font-semibold">Data yang tersisa dari nota adalah:</p>
+            <ul class="list-disc list-inside mb-4 ml-4 space-y-1 text-slate-700">
+                <li>Pembelian ke-1: <strong>4 karung tepung</strong> dan <strong>3 dus mentega</strong> seharga <strong>Rp 850.000</strong>.</li>
+                <li>Pembelian ke-2: <strong>3 karung tepung</strong> dan <strong>2 dus mentega</strong> seharga <strong>Rp 600.000</strong>.</li>
+            </ul>
+            
+            <p class="mb-4">Ibumu perlu tahu harga <strong>1 karung tepung (misal: $x$)</strong> dan harga <strong>1 dus mentega (misal: $y$)</strong> untuk menentukan harga jual kue.</p>
+            
+            <p>Tentu saja, kamu tahu ini adalah Sistem Persamaan Linear Dua Variabel (SPLDV):</p>
+            <div class="math-display text-lg">
+                $$ \begin{cases} 4x + 3y = 850.000 \\ 3x + 2y = 600.000 \end{cases} $$
+            </div>
+            
+            <p class="mt-4">Kamu bisa menyelesaikannya dengan metode eliminasi atau substitusi. Namun, tahukah kamu bahwa sistem ini bisa diubah menjadi bentuk matriks?</p>
+            
+            <div class="math-display">
+                $$ \begin{pmatrix} 4 & 3 \\ 3 & 2 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 850.000 \\ 600.000 \end{pmatrix} $$
+            </div>
+
+            <p class="mt-4 font-medium text-indigo-900 border-l-4 border-indigo-500 pl-4 py-2">
+                <strong>Pertanyaan Pemantik:</strong> Jika kita memisahkan angka-angka koefisien menjadi sebuah matriks $\mat{4 & 3 \\ 3 & 2}$, adakah "satu nilai rahasia" dari matriks ini yang bisa menjadi kunci utama untuk menemukan harga $x$ dan $y$?
+            </p>
+            <p class="text-sm mt-2 text-indigo-600 italic text-right">Kita akan kembali untuk memecahkan nota sobek ini di akhir pembelajaran!</p>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h2 class="text-2xl font-bold mt-0 flex items-center">
+            <span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-lg">1</span>
+            Apa itu Determinan?
+        </h2>
+        
+        <p class="mb-4 text-lg">Sebelum kita menghitung, mari pahami konsep dasarnya. Secara sederhana, <strong>Determinan</strong> adalah sebuah nilai khusus berupa bilangan real (skalar) yang dapat dihitung dari elemen-elemen penyusun suatu matriks.</p>
+        
+        <div class="important-box">
+            <h4 class="font-bold text-red-700 text-lg mb-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Syarat Wajib Determinan
+            </h4>
+            <p class="text-red-900">Determinan <strong>HANYA</strong> dimiliki oleh <strong>Matriks Persegi</strong> (bujur sangkar), yaitu matriks yang jumlah barisnya sama dengan jumlah kolomnya. Misalnya matriks berordo $2 \times 2$, $3 \times 3$, $4 \times 4$, dan seterusnya. Matriks persegi panjang (seperti $2 \times 3$) <strong>tidak memiliki</strong> determinan.</p>
+        </div>
+
+        <h3 class="text-xl font-semibold text-slate-800">Notasi Determinan</h3>
+        <p class="mb-4">Jika kita memiliki sebuah matriks bernama $A$, maka determinan dari matriks $A$ dapat dituliskan dengan beberapa simbol standar dalam matematika:</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white border border-slate-200 rounded-lg p-4 text-center shadow-sm">
+                <p class="text-sm text-slate-500 mb-2">Notasi 1</p>
+                <div class="text-xl font-bold text-indigo-700">$\det(A)$</div>
+                <p class="text-xs text-slate-400 mt-2">Paling umum digunakan</p>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-lg p-4 text-center shadow-sm">
+                <p class="text-sm text-slate-500 mb-2">Notasi 2</p>
+                <div class="text-xl font-bold text-indigo-700">$|A|$</div>
+                <p class="text-xs text-slate-400 mt-2">Hati-hati, ini BUKAN nilai mutlak!</p>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-lg p-4 text-center shadow-sm">
+                <p class="text-sm text-slate-500 mb-2">Notasi 3 (Bentuk Matriks)</p>
+                <div class="text-lg font-bold text-indigo-700">$\detmat{a & b \\ c & d}$</div>
+                <p class="text-xs text-slate-400 mt-2">Mengganti kurung biasa dengan garis lurus</p>
+            </div>
+        </div>
+        <p class="text-sm text-slate-600 bg-slate-100 p-3 rounded"><em>Tips: Jika melihat angka tersusun dalam dua garis lurus vertikal seperti notasi ke-3, itu berarti kamu diminta untuk menghitung determinannya, bukan sekadar melihat susunan matriksnya.</em></p>
+    </div>
+
+    <div class="section-card">
+        <h2 class="text-2xl font-bold mt-0 flex items-center">
+            <span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-lg">2</span>
+            Determinan Matriks Ordo 2x2
+        </h2>
+        
+        <p class="mb-6">Ini adalah bentuk determinan yang paling dasar dan paling sering ditemui. Mari kita pelajari rumusnya.</p>
+
+        <h3 class="text-xl font-semibold text-slate-800">Definisi dan Rumus</h3>
+        <p class="mb-4">Misalkan terdapat sebuah matriks $A$ berordo $2 \times 2$ (2 baris, 2 kolom):</p>
+        <div class="math-display">
+            $$ A = \mat{a & b \\ c & d} $$
+        </div>
+        
+        <div class="definition-box">
+            <h4 class="font-bold text-green-800 mb-2">Rumus Determinan 2x2</h4>
+            <p class="mb-4">Determinan matriks $A$ didefinisikan sebagai <strong>selisih</strong> antara hasil kali elemen-elemen pada <strong>diagonal utama</strong> dengan hasil kali elemen-elemen pada <strong>diagonal sekunder (samping)</strong>.</p>
+            
+            <div class="math-display bg-white p-4 rounded border border-green-200 shadow-sm">
+                $$ \det(A) = |A| = \detmat{a & b \\ c & d} = \color{blue}{(a \times d)} - \color{red}{(b \times c)} $$
+            </div>
+            <p class="text-center font-bold text-xl mt-2">Atau secara singkat: $ |A| = ad - bc $</p>
+        </div>
+
+        <div class="flex flex-col md:flex-row justify-center items-stretch gap-6 my-8">
+            <div class="flex-1 bg-blue-50 p-6 rounded-xl border border-blue-100 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <svg class="w-16 h-16 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                </div>
+                <h4 class="font-bold text-blue-800 mb-4">Langkah 1: Diagonal Utama (Positif)</h4>
+                <div class="math-display text-2xl">
+                    $$ \mat{\color{blue}{\mathbf{a}} & b \\ c & \color{blue}{\mathbf{d}}} $$
+                </div>
+                <p class="text-slate-600 mt-2">Kalikan elemen dari kiri atas ke kanan bawah: <strong>$a \times d$</strong></p>
+            </div>
+            <div class="flex-1 bg-red-50 p-6 rounded-xl border border-red-100 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <svg class="w-16 h-16 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+                </div>
+                <h4 class="font-bold text-red-800 mb-4">Langkah 2: Diagonal Sekunder (Negatif)</h4>
+                <div class="math-display text-2xl">
+                    $$ \mat{a & \color{red}{\mathbf{b}} \\ \color{red}{\mathbf{c}} & d} $$
+                </div>
+                <p class="text-slate-600 mt-2">Kalikan elemen dari kanan atas ke kiri bawah: <strong>$b \times c$</strong></p>
+            </div>
+        </div>
+
+        <h3 class="text-xl font-semibold text-slate-800 mt-10">Contoh Soal dan Pembahasan</h3>
+        
+        <div class="example-box">
+            <div class="flex items-center mb-3">
+                <span class="bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">Contoh 1</span>
+                <span class="ml-3 font-semibold text-amber-900">Perhitungan Dasar</span>
+            </div>
+            <p>Tentukan determinan dari matriks $ P = \mat{5 & 2 \\ 4 & 3} $</p>
+            
+            <div class="mt-4 pl-4 border-l-2 border-amber-300">
+                <p class="font-medium text-slate-700">Penyelesaian:</p>
+                <div class="math-display text-left ml-4 overflow-x-auto">
+                    \begin{align*} 
+                    \det(P) &= \detmat{5 & 2 \\ 4 & 3} \\[1ex]
+                    &= (\color{blue}{5 \times 3}) - (\color{red}{2 \times 4}) \\
+                    &= 15 - 8 \\
+                    \det(P) &= \mathbf{7}
+                    \end{align*}
+                </div>
+                <p class="mt-2 text-slate-700">Jadi, nilai determinan matriks $P$ adalah <strong>7</strong>.</p>
+            </div>
+        </div>
+
+        <div class="example-box">
+            <div class="flex items-center mb-3">
+                <span class="bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">Contoh 2</span>
+                <span class="ml-3 font-semibold text-amber-900">Elemen Bernilai Negatif & Matriks Singular</span>
+            </div>
+            <p>Diketahui matriks $ Q = \mat{-3 & 6 \\ -2 & 4} $. Tentukan $|Q|$ !</p>
+            
+            <div class="mt-4 pl-4 border-l-2 border-amber-300">
+                <p class="font-medium text-slate-700">Penyelesaian:</p>
+                <p class="text-sm text-slate-500 mb-2"><em>(Hati-hati dengan tanda negatif saat mengalikan!)</em></p>
+                <div class="math-display text-left ml-4 overflow-x-auto">
+                    \begin{align*} 
+                    |Q| &= \detmat{-3 & 6 \\ -2 & 4} \\[1ex]
+                    &= (\color{blue}{-3 \times 4}) - (\color{red}{6 \times -2}) \\
+                    &= -12 - (-12) \\
+                    &= -12 + 12 \\
+                    |Q| &= \mathbf{0}
+                    \end{align*}
+                </div>
+                
+                <div class="mt-4 bg-white p-3 rounded border border-amber-200 shadow-sm inline-block">
+                    <span class="font-bold text-amber-900">Istilah Penting:</span>
+                    <p class="text-sm text-slate-700">Karena determinan matriks Q bernilai <strong>0 (Nol)</strong>, maka matriks Q disebut sebagai <strong>Matriks Singular</strong>. Matriks singular adalah matriks yang tidak memiliki invers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h2 class="text-2xl font-bold mt-0 flex items-center">
+            <span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-lg">3</span>
+            Determinan Matriks Ordo 3x3 (Aturan Sarrus)
+        </h2>
+        
+        <p class="mb-4">Untuk matriks $3 \times 3$ (3 baris, 3 kolom), perhitungannya sedikit lebih panjang karena ukurannya lebih besar. Terdapat dua metode utama: Aturan Sarrus dan Metode Kofaktor. Pada materi ini, kita akan fokus pada metode yang paling mudah divisualisasikan dan paling sering diajarkan di sekolah, yaitu <strong>Aturan Sarrus</strong>.</p>
+
+        <h3 class="text-xl font-semibold text-slate-800">Langkah-langkah Aturan Sarrus</h3>
+        <p class="mb-4">Misalkan kita memiliki matriks $B = \mat{a & b & c \\ d & e & f \\ g & h & i}$.</p>
+        
+        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+            <ol class="list-decimal list-inside space-y-4 text-slate-800">
+                <li class="pb-3 border-b border-slate-200">
+                    <span class="font-semibold">Siapkan Format:</span> Tulis kembali elemen-elemen matriks di dalam tanda determinan (garis lurus).
+                </li>
+                <li class="pb-3 border-b border-slate-200">
+                    <span class="font-semibold">Salin Kolom:</span> Salin <strong>Kolom ke-1</strong> dan <strong>Kolom ke-2</strong>, lalu letakkan persis di sebelah kanan garis vertikal penutup. Ini berfungsi sebagai kolom bantuan.
+                </li>
+                <li class="pb-3 border-b border-slate-200">
+                    <span class="font-semibold">Kalikan Diagonal Utama (+):</span> Buat tiga garis diagonal yang arahnya ke <strong>kanan bawah</strong>. Kalikan tiga elemen pada masing-masing garis, lalu <strong>jumlahkan</strong> ketiganya.
+                </li>
+                <li>
+                    <span class="font-semibold">Kalikan Diagonal Sekunder (-):</span> Buat tiga garis diagonal yang arahnya ke <strong>kiri bawah</strong>. Kalikan tiga elemen pada masing-masing garis, lalu <strong>kurangkan</strong> hasil kalinya.
+                </li>
+            </ol>
+        </div>
+
+        <div class="definition-box bg-blue-50 border-blue-200">
+            <h4 class="font-bold text-blue-900 mb-4 text-center text-lg">Visualisasi Aturan Sarrus</h4>
+            
+            <div class="overflow-x-auto">
+                <div class="math-display text-xl whitespace-nowrap min-w-max">
+                    $$
+                    |B| = 
+                    \detmat{
+                    a & b & c \\
+                    d & e & f \\
+                    g & h & i
+                    }
+                    \begin{array}{cc}
+                    | & \color{gray}{a} & \color{gray}{b} \\
+                    | & \color{gray}{d} & \color{gray}{e} \\
+                    | & \color{gray}{g} & \color{gray}{h}
+                    \end{array}
+                    $$
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-blue-500">
+                    <p class="font-bold text-blue-700 text-center mb-2">Diagonal Kanan Bawah <br><span class="text-lg">(Diberi Tanda Positif)</span></p>
+                    <ul class="text-center space-y-2 text-slate-700">
+                        <li>$+(a \times e \times i)$</li>
+                        <li>$+(b \times f \times g)$</li>
+                        <li>$+(c \times d \times h)$</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border-t-4 border-red-500">
+                    <p class="font-bold text-red-700 text-center mb-2">Diagonal Kiri Bawah <br><span class="text-lg">(Diberi Tanda Negatif)</span></p>
+                    <ul class="text-center space-y-2 text-slate-700">
+                        <li>$-(c \times e \times g)$</li>
+                        <li>$-(a \times f \times h)$</li>
+                        <li>$-(b \times d \times i)$</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-6 p-4 bg-indigo-900 text-white rounded-lg text-center shadow-inner">
+                <p class="font-semibold text-indigo-200 mb-1">Rumus Akhir Sarrus:</p>
+                <div class="math-display text-lg sm:text-xl">
+                    $$ |B| = (aei + bfg + cdh) - (ceg + afh + bdi) $$
+                </div>
+            </div>
+        </div>
+
+        <h3 class="text-xl font-semibold text-slate-800 mt-10">Contoh Soal Determinan 3x3</h3>
+        
+        <div class="example-box">
+            <div class="flex items-center mb-3">
+                <span class="bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">Contoh 3</span>
+                <span class="ml-3 font-semibold text-amber-900">Penerapan Sarrus Langkah demi Langkah</span>
+            </div>
+            <p>Tentukan determinan dari matriks $ M = \mat{2 & 1 & -1 \\ 3 & -2 & 4 \\ 1 & 0 & 3} $</p>
+            
+            <div class="mt-4 pl-4 border-l-2 border-amber-300">
+                <p class="font-medium text-slate-700 mb-4">Penyelesaian menggunakan Aturan Sarrus:</p>
+                
+                <div class="step-box">
+                    <p class="font-semibold text-slate-800">Langkah 1 & 2: Buat format dan salin 2 kolom pertama</p>
+                    <div class="math-display overflow-x-auto">
+                        $$ 
+                        \detmat{
+                        2 & 1 & -1 \\
+                        3 & -2 & 4 \\
+                        1 & 0 & 3
+                        }
+                        \begin{array}{cc}
+                        | & \color{blue}{2} & \color{blue}{1} \\
+                        | & \color{blue}{3} & \color{blue}{-2} \\
+                        | & \color{blue}{1} & \color{blue}{0}
+                        \end{array}
+                        $$
+                    </div>
+                </div>
+                
+                <div class="step-box">
+                    <p class="font-semibold text-slate-800">Langkah 3 & 4: Hitung perkalian diagonal</p>
+                    
+                    <p class="mt-2 text-sm text-slate-600">Kelompok Positif (Kanan Bawah):</p>
+                    <ul class="list-disc ml-5 mb-3 text-sm">
+                        <li>Diagonal 1: $(2) \times (-2) \times (3) = -12$</li>
+                        <li>Diagonal 2: $(1) \times (4) \times (1) = 4$</li>
+                        <li>Diagonal 3: $(-1) \times (3) \times (0) = 0$</li>
+                        <li><strong>Jumlah Positif = $(-12) + 4 + 0 = -8$</strong></li>
+                    </ul>
+
+                    <p class="text-sm text-slate-600">Kelompok Negatif (Kiri Bawah):</p>
+                    <ul class="list-disc ml-5 mb-3 text-sm">
+                        <li>Diagonal 1: $(-1) \times (-2) \times (1) = 2$</li>
+                        <li>Diagonal 2: $(2) \times (4) \times (0) = 0$</li>
+                        <li>Diagonal 3: $(1) \times (3) \times (3) = 9$</li>
+                        <li><strong>Jumlah Negatif = $2 + 0 + 9 = 11$</strong></li>
+                    </ul>
+                </div>
+                
+                <div class="step-box bg-amber-50 border-amber-200">
+                    <p class="font-semibold text-slate-800">Langkah Akhir: Pengurangan</p>
+                    <div class="math-display text-left">
+                        \begin{align*} 
+                        |M| &= (\text{Jumlah Positif}) - (\text{Jumlah Negatif}) \\
+                        |M| &= (-8) - (11) \\
+                        |M| &= \mathbf{-19}
+                        \end{align*}
+                    </div>
+                </div>
+                <p class="mt-2 text-slate-700">Jadi, nilai determinan matriks $M$ adalah <strong>-19</strong>.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="resolution-box">
+        <h2 class="text-2xl font-bold mt-0 text-emerald-900 flex items-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Penyelesaian Misi: Membantu Ibu di Toko Roti
+        </h2>
+        
+        <p class="mb-4 text-emerald-800 text-lg">Mari kita terapkan ilmu baru kita untuk menyelesaikan masalah nota sobek di awal materi.</p>
+        
+        <div class="bg-white/60 p-4 rounded-lg mb-6 border border-emerald-200">
+            <p class="font-semibold mb-2">Sistem Persamaan dan Bentuk Matriksnya:</p>
+            <div class="math-display">
+                $$ \begin{pmatrix} 4 & 3 \\ 3 & 2 \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 850.000 \\ 600.000 \end{pmatrix} $$
+            </div>
+        </div>
+
+        <h3 class="text-lg font-bold text-emerald-800">Tahap 1: Mencari Nilai Rahasia (Determinan Utama / $D$)</h3>
+        <p class="mb-2 text-emerald-900">Langkah pertama dalam <strong>Aturan Cramer</strong> (metode penyelesaian SPLDV dengan matriks) adalah mencari determinan dari matriks koefisien di sebelah kiri.</p>
+        
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-emerald-100 mb-6 math-display">
+            \begin{align*} 
+            D &= \detmat{4 & 3 \\ 3 & 2} \\[1ex]
+            &= (4 \times 2) - (3 \times 3) \\
+            &= 8 - 9 \\
+            \mathbf{D} &= \mathbf{-1}
+            \end{align*}
+        </div>
+        <p class="text-emerald-800">Nilai $D = -1$ inilah yang menjadi kunci utama!</p>
+
+        <h3 class="text-lg font-bold text-emerald-800 mt-6">Tahap 2: Menentukan $x$ dan $y$ (Aturan Cramer sekilas)</h3>
+        <div class="grid md:grid-cols-2 gap-6 mt-4">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-emerald-100">
+                <h4 class="font-bold text-emerald-700 border-b pb-2 mb-3">Mencari Harga Tepung ($x$)</h4>
+                <p class="text-sm mb-2 text-slate-600">Ganti kolom pertama dengan harga total, cari determinannya ($D_x$), lalu bagi dengan $D$.</p>
+                <div class="math-display text-sm overflow-x-auto">
+                    \begin{align*}
+                    D_x &= \detmat{850.000 & 3 \\ 600.000 & 2} \\
+                    &= (850k \times 2) - (3 \times 600k) \\
+                    &= 1.700.000 - 1.800.000 \\
+                    D_x &= -100.000
+                    \end{align*}
+                </div>
+                <div class="mt-3 text-center font-bold text-lg text-emerald-800 bg-emerald-50 py-2 rounded">
+                    $ x = \frac{D_x}{D} = \frac{-100.000}{-1} = 100.000 $
+                </div>
+            </div>
+            
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-emerald-100">
+                <h4 class="font-bold text-emerald-700 border-b pb-2 mb-3">Mencari Harga Mentega ($y$)</h4>
+                <p class="text-sm mb-2 text-slate-600">Ganti kolom kedua dengan harga total, cari determinannya ($D_y$), lalu bagi dengan $D$.</p>
+                <div class="math-display text-sm overflow-x-auto">
+                    \begin{align*}
+                    D_y &= \detmat{4 & 850.000 \\ 3 & 600.000} \\
+                    &= (4 \times 600k) - (850k \times 3) \\
+                    &= 2.400.000 - 2.550.000 \\
+                    D_y &= -150.000
+                    \end{align*}
+                </div>
+                <div class="mt-3 text-center font-bold text-lg text-emerald-800 bg-emerald-50 py-2 rounded">
+                    $ y = \frac{D_y}{D} = \frac{-150.000}{-1} = 150.000 $
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center text-xl font-bold text-emerald-900 border-t-2 border-emerald-200 pt-6">
+            🎉 Kesimpulan Akhir: <br>
+            Harga 1 karung tepung adalah Rp 100.000 dan harga 1 dus mentega adalah Rp 150.000. Kamu berhasil membantu Ibumu berkat bantuan Determinan Matriks!
+        </div>
+    </div>
+
+    <footer class="text-center text-slate-500 text-sm mt-16 mb-8 pt-8 border-t border-slate-200">
+        <p>Modul Pembelajaran Interaktif: Determinan Matriks</p>
+        <p class="mt-1">Disusun untuk meningkatkan pemahaman siswa secara sistematis dan kontekstual.</p>
+    </footer>
+
+</div>
+
+</body>
+</html>

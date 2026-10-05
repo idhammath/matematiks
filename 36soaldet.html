@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>36 Paket Soal Determinan Matriks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .paket-card {
+            background: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            break-inside: avoid; /* Mencegah kartu terpotong saat di-print */
+        }
+        .jawaban-box {
+            display: none; /* Disembunyikan secara default */
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .jawaban-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Mode Cetak (Print) */
+        @media print {
+            body { background-color: white; }
+            .no-print { display: none !important; }
+            .paket-card { 
+                box-shadow: none; 
+                border: 1px solid #cbd5e1; 
+                margin-bottom: 1rem;
+            }
+            .grid { display: block; }
+            .paket-card { width: 48%; display: inline-block; vertical-align: top; margin: 1%; }
+        }
+    </style>
+
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        },
+        svg: { fontCache: 'global' },
+        startup: {
+            // Memberitahu MathJax untuk menunggu sampai kita merender soal secara dinamis
+            typeset: false 
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+</head>
+<body class="antialiased text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-10 no-print">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Bank Soal: Determinan Matriks 2x2 & 3x3</h1>
+            <p class="text-slate-600 max-w-2xl mx-auto mb-6">Berikut adalah 36 paket soal unik. Setiap paket berisi satu soal determinan matriks 2x2 dan satu soal determinan matriks 3x3. Cocok untuk latihan, tugas, atau ujian.</p>
+            
+            <div class="flex flex-wrap justify-center gap-4">
+                <button id="toggleAnswers" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    Tampilkan Kunci Jawaban
+                </button>
+                <button onclick="window.print()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-6 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2-2v4h10z" />
+                    </svg>
+                    Cetak Lembar Soal
+                </button>
+            </div>
+        </header>
+
+        <!-- Container untuk 36 Paket Soal -->
+        <div id="soal-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Soal akan di-generate oleh Javascript di sini -->
+        </div>
+
+        <footer class="mt-12 text-center text-slate-500 text-sm no-print">
+            <p>Dibuat secara otomatis • 36 Paket Soal Unik • Refresh halaman untuk menghasilkan set angka baru jika diperlukan.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Seeded Random Generator untuk memastikan angka tidak berubah setiap refresh (opsional, tapi kita buat pseudo-random)
+        // Di sini kita gunakan random murni dengan range agar soal bervariasi tapi tetap rasional.
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function generateMatrix2x2() {
+            // Hindari matriks dengan banyak angka 0 agar perhitungan tidak terlalu mudah
+            return [
+                [getRandomInt(-8, 9), getRandomInt(-7, 9)],
+                [getRandomInt(-9, 8), getRandomInt(-6, 9)]
+            ];
+        }
+
+        function generateMatrix3x3() {
+            return [
+                [getRandomInt(-5, 6), getRandomInt(-4, 7), getRandomInt(-6, 5)],
+                [getRandomInt(-7, 4), getRandomInt(-5, 6), getRandomInt(-4, 8)],
+                [getRandomInt(-5, 7), getRandomInt(-6, 4), getRandomInt(-5, 5)]
+            ];
+        }
+
+        function calculateDet2x2(m) {
+            return (m[0][0] * m[1][1]) - (m[0][1] * m[1][0]);
+        }
+
+        function calculateDet3x3(m) {
+            let positif = (m[0][0]*m[1][1]*m[2][2]) + (m[0][1]*m[1][2]*m[2][0]) + (m[0][2]*m[1][0]*m[2][1]);
+            let negatif = (m[0][2]*m[1][1]*m[2][0]) + (m[0][0]*m[1][2]*m[2][1]) + (m[0][1]*m[1][0]*m[2][2]);
+            return positif - negatif;
+        }
+
+        function formatLatexMatrix(matrix) {
+            let rows = matrix.map(row => row.join(' & ')).join(' \\\\ ');
+            return `\\begin{pmatrix} ${rows} \\end{pmatrix}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('soal-container');
+            const totalPaket = 36;
+            let htmlContent = '';
+
+            for (let i = 1; i <= totalPaket; i++) {
+                const m2 = generateMatrix2x2();
+                const m3 = generateMatrix3x3();
+                const det2 = calculateDet2x2(m2);
+                const det3 = calculateDet3x3(m3);
+
+                htmlContent += `
+                    <div class="paket-card">
+                        <div class="border-b-2 border-indigo-100 pb-2 mb-4">
+                            <h2 class="text-xl font-bold text-indigo-700">Paket ${i}</h2>
+                        </div>
+                        
+                        <div class="mb-5">
+                            <p class="font-medium text-slate-800 mb-2">1. Tentukan determinan dari matriks A berikut:</p>
+                            <div class="overflow-x-auto text-center py-2">
+                                $$ A = ${formatLatexMatrix(m2)} $$
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <p class="font-medium text-slate-800 mb-2">2. Tentukan determinan dari matriks B berikut:</p>
+                            <div class="overflow-x-auto text-center py-2">
+                                $$ B = ${formatLatexMatrix(m3)} $$
+                            </div>
+                        </div>
+
+                        <div class="jawaban-box text-sm">
+                            <span class="font-bold text-green-700 block mb-1">Kunci Jawaban:</span>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <span class="font-semibold text-slate-600">Nomor 1:</span><br>
+                                    $\\det(A) = (${m2[0][0]})(${m2[1][1]}) - (${m2[0][1]})(${m2[1][0]})$ <br>
+                                    $\\det(A) = \\mathbf{${det2}}$
+                                </div>
+                                <div>
+                                    <span class="font-semibold text-slate-600">Nomor 2:</span><br>
+                                    $\\det(B) = \\mathbf{${det3}}$
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = htmlContent;
+
+            // Memanggil MathJax untuk merender persamaan setelah dimasukkan ke HTML
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise().catch((err) => console.log('MathJax Error: ', err));
+            }
+        });
+
+        const toggleBtn = document.getElementById('toggleAnswers');
+        let answersVisible = false;
+
+        toggleBtn.addEventListener('click', () => {
+            answersVisible = !answersVisible;
+            const jawabanBoxes = document.querySelectorAll('.jawaban-box');
+            
+            jawabanBoxes.forEach(box => {
+                if (answersVisible) {
+                    box.classList.add('show');
+                } else {
+                    box.classList.remove('show');
+                }
+            });
+
+            if (answersVisible) {
+                toggleBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    </svg>
+                    Sembunyikan Kunci Jawaban
+                `;
+                toggleBtn.classList.replace('bg-indigo-600', 'bg-rose-600');
+                toggleBtn.classList.replace('hover:bg-indigo-700', 'hover:bg-rose-700');
+            } else {
+                toggleBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    Tampilkan Kunci Jawaban
+                `;
+                toggleBtn.classList.replace('bg-rose-600', 'bg-indigo-600');
+                toggleBtn.classList.replace('hover:bg-rose-700', 'hover:bg-indigo-700');
+            }
+        });
+    </script>
+</body>
+</html>
