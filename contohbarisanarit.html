@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Pembelajaran & Latihan: Barisan Aritmetika</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Smooth Transitions */
+        .solution-box {
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        .solution-box.open {
+            max-height: 1200px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
+        .math-var {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-700 text-white shadow-lg">
+        <div class="max-w-5xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <span class="inline-block px-3 py-1 bg-indigo-500/40 backdrop-blur-sm rounded-full text-xs font-semibold tracking-wider uppercase mb-2 border border-indigo-400/30">
+                        Matematika Terapan
+                    </span>
+                    <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+                        Contoh Soal & Pembahasan Barisan Aritmetika
+                    </h1>
+                    <p class="mt-2 text-indigo-100 text-sm sm:text-base max-w-2xl">
+                        Pelajari 6 variasi soal barisan aritmetika mulai dari barisan naik, barisan turun, suku tengah/acak, hingga aplikasinya dalam bidang keperawatan.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2 self-start md:self-center">
+                    <button onclick="toggleAllSolutions(true)" class="px-4 py-2 bg-white text-indigo-700 hover:bg-indigo-50 font-semibold text-xs sm:text-sm rounded-xl shadow-sm transition active:scale-95">
+                        Buka Semua Pembahasan
+                    </button>
+                    <button onclick="toggleAllSolutions(false)" class="px-4 py-2 bg-indigo-800/60 hover:bg-indigo-800 text-white font-medium text-xs sm:text-sm rounded-xl border border-indigo-400/30 transition active:scale-95">
+                        Tutup Semua
+                    </button>
+                </div>
+            </div>
+
+            <!-- Formula Banner -->
+            <div class="mt-6 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 sm:p-5 text-white">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-200">Rumus Dasar Suku ke-n (U<sub>n</sub>)</h2>
+                        <p class="text-xl sm:text-2xl font-mono font-bold mt-1 tracking-wide">
+                            U<sub>n</sub> = a + (n - 1)b
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2 text-xs sm:text-sm text-indigo-100 border-t sm:border-t-0 sm:border-l border-white/20 pt-3 sm:pt-0 sm:pl-6 w-full sm:w-auto">
+                        <div><span class="font-mono font-bold text-white">U<sub>n</sub></span> : Suku ke-n</div>
+                        <div><span class="font-mono font-bold text-white">a</span> : Suku pertama (U<sub>1</sub>)</div>
+                        <div><span class="font-mono font-bold text-white">b</span> : Beda (U<sub>2</sub> - U<sub>1</sub>)</div>
+                        <div class="col-span-2 sm:col-span-3 text-xs text-indigo-200 mt-1">
+                            *Barisan <strong>Naik</strong> memiliki beda positif (<span class="font-mono">b &gt; 0</span>), sedangkan Barisan <strong>Turun</strong> memiliki beda negatif (<span class="font-mono">b &lt; 0</span>).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        
+        <!-- Filter Tabs -->
+        <div class="flex flex-wrap items-center gap-2 mb-6 pb-2 border-b border-slate-200">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 mr-2">Filter Kategori:</span>
+            <button onclick="filterCards('all')" id="tab-all" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-sm transition">
+                Semua Soal (6)
+            </button>
+            <button onclick="filterCards('naik')" id="tab-naik" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition">
+                📈 Barisan Naik (2)
+            </button>
+            <button onclick="filterCards('turun')" id="tab-turun" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition">
+                📉 Barisan Turun (2)
+            </button>
+            <button onclick="filterCards('eliminasi')" id="tab-eliminasi" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition">
+                🧩 Dua Suku Diketahui (1)
+            </button>
+            <button onclick="filterCards('keperawatan')" id="tab-keperawatan" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition">
+                🏥 Kasus Keperawatan (1)
+            </button>
+        </div>
+
+        <!-- Questions Grid -->
+        <div class="space-y-6" id="questions-container">
+
+            <!-- SOAL 1 -->
+            <article data-category="naik" class="question-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden transition hover:shadow-md">
+                <div class="p-5 sm:p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-lg">Soal 1</span>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-700 font-medium text-xs rounded-lg">📈 Barisan Naik</span>
+                            <span class="px-2.5 py-1 bg-blue-50 text-blue-700 font-medium text-xs rounded-lg">a &gt; 0 (Positif)</span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Target: U<sub>12</sub></span>
+                    </div>
+
+                    <h3 class="text-base sm:text-lg font-semibold text-slate-800 leading-relaxed">
+                        Diketahui suatu barisan aritmetika naik: <span class="font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">4, 9, 14, 19, ...</span> <br>
+                        Tentukan nilai dari suku ke-12 (<span class="math-var">U<sub>12</sub></span>) barisan tersebut!
+                    </h3>
+
+                    <!-- Interactive Answer Check & Toggle Button -->
+                    <div class="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="ans-1" placeholder="Ketik jawabanmu..." class="w-44 px-3 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                            <button onclick="checkAnswer(1, 59)" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-medium rounded-xl transition">
+                                Cek Jawaban
+                            </button>
+                            <span id="feedback-1" class="text-xs sm:text-sm font-semibold"></span>
+                        </div>
+                        <button onclick="toggleSolution(1)" id="btn-sol-1" class="self-start sm:self-auto inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs sm:text-sm rounded-xl transition">
+                            <span>Lihat Pembahasan</span>
+                            <svg id="icon-sol-1" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Solution Box -->
+                    <div id="sol-1" class="solution-box bg-slate-50 rounded-xl border border-slate-200/70 p-4 sm:p-5">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-3">Langkah Pembahasan:</h4>
+                        <div class="space-y-3 text-sm text-slate-700">
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">1. Identifikasi unsur yang diketahui:</p>
+                                <ul class="list-disc list-inside space-y-1 font-mono text-xs sm:text-sm text-slate-600">
+                                    <li>Suku pertama (<span class="text-slate-900 font-bold">a</span>) = <span class="text-emerald-600 font-bold">4</span> (Bilangan positif)</li>
+                                    <li>Beda (<span class="text-slate-900 font-bold">b</span>) = U<sub>2</sub> - U<sub>1</sub> = 9 - 4 = <span class="text-emerald-600 font-bold">+5</span> (Barisan naik karena b &gt; 0)</li>
+                                    <li>Urutan suku yang ditanya (<span class="text-slate-900 font-bold">n</span>) = <span class="text-indigo-600 font-bold">12</span></li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">2. Substitusikan ke dalam rumus U<sub>n</sub>:</p>
+                                <div class="font-mono text-xs sm:text-sm space-y-1 text-slate-700">
+                                    <p>U<sub>n</sub> = a + (n - 1)b</p>
+                                    <p>U<sub>12</sub> = 4 + (12 - 1)(5)</p>
+                                    <p>U<sub>12</sub> = 4 + (11)(5)</p>
+                                    <p>U<sub>12</sub> = 4 + 55</p>
+                                    <p class="text-base font-bold text-indigo-700 pt-1">U<sub>12</sub> = 59</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 text-emerald-700 bg-emerald-50 px-3 py-2 rounded-lg font-medium text-xs sm:text-sm">
+                                <span>✅</span>
+                                <span><strong>Kesimpulan:</strong> Nilai suku ke-12 dari barisan aritmetika tersebut adalah <strong>59</strong>.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SOAL 2 -->
+            <article data-category="naik" class="question-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden transition hover:shadow-md">
+                <div class="p-5 sm:p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-lg">Soal 2</span>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-700 font-medium text-xs rounded-lg">📈 Barisan Naik</span>
+                            <span class="px-2.5 py-1 bg-rose-50 text-rose-700 font-medium text-xs rounded-lg">a &lt; 0 (Negatif)</span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Target: U<sub>13</sub></span>
+                    </div>
+
+                    <h3 class="text-base sm:text-lg font-semibold text-slate-800 leading-relaxed">
+                        Diketahui suatu barisan aritmetika naik: <span class="font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">-18, -14, -10, -6, ...</span> <br>
+                        Tentukan nilai dari suku ke-13 (<span class="math-var">U<sub>13</sub></span>) barisan tersebut!
+                    </h3>
+
+                    <!-- Interactive Answer Check & Toggle Button -->
+                    <div class="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="ans-2" placeholder="Ketik jawabanmu..." class="w-44 px-3 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                            <button onclick="checkAnswer(2, 30)" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-medium rounded-xl transition">
+                                Cek Jawaban
+                            </button>
+                            <span id="feedback-2" class="text-xs sm:text-sm font-semibold"></span>
+                        </div>
+                        <button onclick="toggleSolution(2)" id="btn-sol-2" class="self-start sm:self-auto inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs sm:text-sm rounded-xl transition">
+                            <span>Lihat Pembahasan</span>
+                            <svg id="icon-sol-2" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Solution Box -->
+                    <div id="sol-2" class="solution-box bg-slate-50 rounded-xl border border-slate-200/70 p-4 sm:p-5">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-3">Langkah Pembahasan:</h4>
+                        <div class="space-y-3 text-sm text-slate-700">
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">1. Identifikasi unsur yang diketahui:</p>
+                                <ul class="list-disc list-inside space-y-1 font-mono text-xs sm:text-sm text-slate-600">
+                                    <li>Suku pertama (<span class="text-slate-900 font-bold">a</span>) = <span class="text-rose-600 font-bold">-18</span> (Bilangan negatif)</li>
+                                    <li>Beda (<span class="text-slate-900 font-bold">b</span>) = U<sub>2</sub> - U<sub>1</sub> = -14 - (-18) = -14 + 18 = <span class="text-emerald-600 font-bold">+4</span> (Barisan naik karena b &gt; 0)</li>
+                                    <li>Urutan suku yang ditanya (<span class="text-slate-900 font-bold">n</span>) = <span class="text-indigo-600 font-bold">13</span></li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">2. Substitusikan ke dalam rumus U<sub>n</sub>:</p>
+                                <div class="font-mono text-xs sm:text-sm space-y-1 text-slate-700">
+                                    <p>U<sub>n</sub> = a + (n - 1)b</p>
+                                    <p>U<sub>13</sub> = -18 + (13 - 1)(4)</p>
+                                    <p>U<sub>13</sub> = -18 + (12)(4)</p>
+                                    <p>U<sub>13</sub> = -18 + 48</p>
+                                    <p class="text-base font-bold text-indigo-700 pt-1">U<sub>13</sub> = 30</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 text-emerald-700 bg-emerald-50 px-3 py-2 rounded-lg font-medium text-xs sm:text-sm">
+                                <span>✅</span>
+                                <span><strong>Kesimpulan:</strong> Nilai suku ke-13 dari barisan aritmetika tersebut adalah <strong>30</strong>.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SOAL 3 -->
+            <article data-category="turun" class="question-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden transition hover:shadow-md">
+                <div class="p-5 sm:p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 bg-amber-100 text-amber-800 font-bold text-xs rounded-lg">Soal 3</span>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-700 font-medium text-xs rounded-lg">📉 Barisan Turun</span>
+                            <span class="px-2.5 py-1 bg-blue-50 text-blue-700 font-medium text-xs rounded-lg">a &gt; 0 (Positif)</span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Target: U<sub>14</sub></span>
+                    </div>
+
+                    <h3 class="text-base sm:text-lg font-semibold text-slate-800 leading-relaxed">
+                        Diketahui suatu barisan aritmetika turun: <span class="font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">50, 46, 42, 38, ...</span> <br>
+                        Tentukan nilai dari suku ke-14 (<span class="math-var">U<sub>14</sub></span>) barisan tersebut!
+                    </h3>
+
+                    <!-- Interactive Answer Check & Toggle Button -->
+                    <div class="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="ans-3" placeholder="Ketik jawabanmu..." class="w-44 px-3 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                            <button onclick="checkAnswer(3, -2)" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-medium rounded-xl transition">
+                                Cek Jawaban
+                            </button>
+                            <span id="feedback-3" class="text-xs sm:text-sm font-semibold"></span>
+                        </div>
+                        <button onclick="toggleSolution(3)" id="btn-sol-3" class="self-start sm:self-auto inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs sm:text-sm rounded-xl transition">
+                            <span>Lihat Pembahasan</span>
+                            <svg id="icon-sol-3" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Solution Box -->
+                    <div id="sol-3" class="solution-box bg-slate-50 rounded-xl border border-slate-200/70 p-4 sm:p-5">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-3">Langkah Pembahasan:</h4>
+                        <div class="space-y-3 text-sm text-slate-700">
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">1. Identifikasi unsur yang diketahui:</p>
+                                <ul class="list-disc list-inside space-y-1 font-mono text-xs sm:text-sm text-slate-600">
+                                    <li>Suku pertama (<span class="text-slate-900 font-bold">a</span>) = <span class="text-emerald-600 font-bold">50</span> (Bilangan positif)</li>
+                                    <li>Beda (<span class="text-slate-900 font-bold">b</span>) = U<sub>2</sub> - U<sub>1</sub> = 46 - 50 = <span class="text-rose-600 font-bold">-4</span> (Barisan turun karena b &lt; 0)</li>
+                                    <li>Urutan suku yang ditanya (<span class="text-slate-900 font-bold">n</span>) = <span class="text-indigo-600 font-bold">14</span></li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">2. Substitusikan ke dalam rumus U<sub>n</sub>:</p>
+                                <div class="font-mono text-xs sm:text-sm space-y-1 text-slate-700">
+                                    <p>U<sub>n</sub> = a + (n - 1)b</p>
+                                    <p>U<sub>14</sub> = 50 + (14 - 1)(-4)</p>
+                                    <p>U<sub>14</sub> = 50 + (13)(-4)</p>
+                                    <p>U<sub>14</sub> = 50 - 52</p>
+                                    <p class="text-base font-bold text-indigo-700 pt-1">U<sub>14</sub> = -2</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 text-emerald-700 bg-emerald-50 px-3 py-2 rounded-lg font-medium text-xs sm:text-sm">
+                                <span>✅</span>
+                                <span><strong>Kesimpulan:</strong> Nilai suku ke-14 dari barisan aritmetika turun tersebut adalah <strong>-2</strong>.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SOAL 4 -->
+            <article data-category="turun" class="question-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden transition hover:shadow-md">
+                <div class="p-5 sm:p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 bg-amber-100 text-amber-800 font-bold text-xs rounded-lg">Soal 4</span>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-700 font-medium text-xs rounded-lg">📉 Barisan Turun</span>
+                            <span class="px-2.5 py-1 bg-rose-50 text-rose-700 font-medium text-xs rounded-lg">a &lt; 0 (Negatif)</span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Target: U<sub>15</sub></span>
+                    </div>
+
+                    <h3 class="text-base sm:text-lg font-semibold text-slate-800 leading-relaxed">
+                        Diketahui suatu barisan aritmetika turun: <span class="font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">-5, -8, -11, -14, ...</span> <br>
+                        Tentukan nilai dari suku ke-15 (<span class="math-var">U<sub>15</sub></span>) barisan tersebut!
+                    </h3>
+
+                    <!-- Interactive Answer Check & Toggle Button -->
+                    <div class="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="ans-4" placeholder="Ketik jawabanmu..." class="w-44 px-3 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                            <button onclick="checkAnswer(4, -47)" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-medium rounded-xl transition">
+                                Cek Jawaban
+                            </button>
+                            <span id="feedback-4" class="text-xs sm:text-sm font-semibold"></span>
+                        </div>
+                        <button onclick="toggleSolution(4)" id="btn-sol-4" class="self-start sm:self-auto inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs sm:text-sm rounded-xl transition">
+                            <span>Lihat Pembahasan</span>
+                            <svg id="icon-sol-4" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Solution Box -->
+                    <div id="sol-4" class="solution-box bg-slate-50 rounded-xl border border-slate-200/70 p-4 sm:p-5">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-3">Langkah Pembahasan:</h4>
+                        <div class="space-y-3 text-sm text-slate-700">
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">1. Identifikasi unsur yang diketahui:</p>
+                                <ul class="list-disc list-inside space-y-1 font-mono text-xs sm:text-sm text-slate-600">
+                                    <li>Suku pertama (<span class="text-slate-900 font-bold">a</span>) = <span class="text-rose-600 font-bold">-5</span> (Bilangan negatif)</li>
+                                    <li>Beda (<span class="text-slate-900 font-bold">b</span>) = U<sub>2</sub> - U<sub>1</sub> = -8 - (-5) = -8 + 5 = <span class="text-rose-600 font-bold">-3</span> (Barisan turun karena b &lt; 0)</li>
+                                    <li>Urutan suku yang ditanya (<span class="text-slate-900 font-bold">n</span>) = <span class="text-indigo-600 font-bold">15</span></li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">2. Substitusikan ke dalam rumus U<sub>n</sub>:</p>
+                                <div class="font-mono text-xs sm:text-sm space-y-1 text-slate-700">
+                                    <p>U<sub>n</sub> = a + (n - 1)b</p>
+                                    <p>U<sub>15</sub> = -5 + (15 - 1)(-3)</p>
+                                    <p>U<sub>15</sub> = -5 + (14)(-3)</p>
+                                    <p>U<sub>15</sub> = -5 + (-42)</p>
+                                    <p class="text-base font-bold text-indigo-700 pt-1">U<sub>15</sub> = -47</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 text-emerald-700 bg-emerald-50 px-3 py-2 rounded-lg font-medium text-xs sm:text-sm">
+                                <span>✅</span>
+                                <span><strong>Kesimpulan:</strong> Nilai suku ke-15 dari barisan aritmetika turun tersebut adalah <strong>-47</strong>.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SOAL 5 -->
+            <article data-category="eliminasi" class="question-card bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden transition hover:shadow-md">
+                <div class="p-5 sm:p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-800 font-bold text-xs rounded-lg">Soal 5</span>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-700 font-medium text-xs rounded-lg">🧩 Diketahui U<sub>4</sub> &amp; U<sub>8</sub></span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Target: U<sub>16</sub></span>
+                    </div>
+
+                    <h3 class="text-base sm:text-lg font-semibold text-slate-800 leading-relaxed">
+                        Dalam suatu barisan aritmetika, diketahui suku ke-4 (<span class="math-var">U<sub>4</sub></span>) adalah <span class="font-mono font-bold text-indigo-600">17</span> dan suku ke-8 (<span class="math-var">U<sub>8</sub></span>) adalah <span class="font-mono font-bold text-indigo-600">33</span>. <br>
+                        Tentukan nilai dari suku ke-16 (<span class="math-var">U<sub>16</sub></span>) barisan tersebut!
+                    </h3>
+
+                    <!-- Interactive Answer Check & Toggle Button -->
+                    <div class="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="ans-5" placeholder="Ketik jawabanmu..." class="w-44 px-3 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
+                            <button onclick="checkAnswer(5, 65)" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs sm:text-sm font-medium rounded-xl transition">
+                                Cek Jawaban
+                            </button>
+                            <span id="feedback-5" class="text-xs sm:text-sm font-semibold"></span>
+                        </div>
+                        <button onclick="toggleSolution(5)" id="btn-sol-5" class="self-start sm:self-auto inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs sm:text-sm rounded-xl transition">
+                            <span>Lihat Pembahasan</span>
+                            <svg id="icon-sol-5" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Solution Box -->
+                    <div id="sol-5" class="solution-box bg-slate-50 rounded-xl border border-slate-200/70 p-4 sm:p-5">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-3">Langkah Pembahasan:</h4>
+                        <div class="space-y-3 text-sm text-slate-700">
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">1. Buat persamaan dari suku yang diketahui:</p>
+                                <div class="font-mono text-xs sm:text-sm space-y-1 text-slate-600">
+                                    <p>U<sub>4</sub> = a + 3b = 17 &nbsp;&hellip; (Persamaan 1)</p>
+                                    <p>U<sub>8</sub> = a + 7b = 33 &nbsp;&hellip; (Persamaan 2)</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">2. Cari nilai beda (b) dengan metode eliminasi:</p>
+                                <div class="font-mono text-xs sm:text-sm space-y-1 text-slate-700">
+                                    <p>(a + 7b) - (a + 3b) = 33 - 17</p>
+                                    <p>4b = 16</p>
+                                    <p>b = 16 / 4 &rArr; <span class="text-emerald-600 font-bold">b = 4</span></p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">3. Substitusikan b = 4 ke Persamaan 1 untuk mencari suku pertama (a):</p>
+                                <div class="font-mono text-xs sm:text-sm space-y-1 text-slate-700">
+                                    <p>a + 3(4) = 17</p>
+                                    <p>a + 12 = 17</p>
+                                    <p>a = 17 - 12 &rArr; <span class="text-emerald-600 font-bold">a = 5</span></p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-semibold text-slate-800 mb-1">4. Hitung nilai suku ke-16 (U<sub>16</sub>):</p>
+                                <div class="font-mono text-xs sm:text-sm space-y-1 text-slate-700">
+                                    <p>U<sub>16</sub> = a + (16 - 1)b</p>
+                                    <p>U<sub>16</sub> = 5 + 15(4)</p>
+                                    <p>U<sub>16</sub> = 5 + 60</p>
+                                    <p class="text-base font-bold text-indigo-700 pt-1">U<sub>16</sub> = 65</p>
+                                    <p class="text-xs text-slate-500 mt-2 italic">💡 Cara Cepat: U<sub>16</sub> = U<sub>8</sub> + (16 - 8)b = 33 + 8(4) = 33 + 32 = 65.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 text-emerald-700 bg-emerald-50 px-3 py-2 rounded-lg font-medium text-xs sm:text-sm">
+                                <span>✅</span>
+                                <span><strong>Kesimpulan:</strong> Nilai suku ke-16 dari barisan aritmetika tersebut adalah <strong>65</strong>.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SOAL 6 -->
+            <article data-category="keperawatan" class="question-card bg-white rounded-2xl shadow-sm border border-teal-200 overflow-hidden transition hover:shadow-md">
+                <div class="bg-gradient-to-r from-teal-500/10 to-cyan-500/10 px-5 py-2.5 border-b border-teal-100 flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-teal-800 flex items-center gap-1.5">
+                        <span>🏥</span> Aplikasi Klinis &amp; Keperawatan (Tapering Off Dosis Obat)
+                    </span>
+                    <span class="text-xs font-mono text-teal-700 font-semibold">Konteks Medis</span>
+                </div>
+                <div class="p-5 sm:p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 bg-teal-100 text-teal-800 font-bold text-xs rounded-lg">Soal 6</span>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-700 font-medium text-xs rounded-lg">💊 Soal Cerita Keperawatan</span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400">Target: U<sub>10</sub> (Hari ke-10)</span>
+                    </div>
+
+                    <h3 class="text-base sm:text-lg font-semibold text-slate-800 leading-relaxed">
+                        Seorang perawat sedang mengelola jadwal penurunan dosis obat kortikosteroid (<em>tapering off</em>) secara bertahap untuk seorang pasien rawat inap guna mencegah efek putus obat. Pada hari pertama terapi penurunan, pasien diberikan dosis sebesar <span class="font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded">60 mg</span>. Setiap hari berikutnya, dosis obat tersebut diturunkan secara tetap sebesar <span class="font-mono font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded">5 mg</span> dari dosis hari sebelumnya.<br class="mb-2">
+                        Berapakah dosis obat yang harus disiapkan dan diberikan oleh perawat kepada pasien tersebut pada <strong>hari ke-10</strong> (<span class="math-var">U<sub>10</sub></span>)?
+                    </h3>
+
+                    <!-- Interactive Answer Check & Toggle Button -->
+                    <div class="mt-5 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <div class="relative">
+                                <input type="number" id="ans-6" placeholder="Ketik dosis..." class="w-44 pl-3 pr-10 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 font-mono">
+                                <span class="absolute right-3 top-2 text-xs font-mono text-slate-400">mg</span>
+                            </div>
+                            <button onclick="checkAnswer(6, 15)" class="px-3.5 py-2 bg-teal-700 hover:bg-teal-600 text-white text-xs sm:text-sm font-medium rounded-xl transition">
+                                Cek Jawaban
+                            </button>
+                            <span id="feedback-6" class="text-xs sm:text-sm font-semibold"></span>
+                        </div>
+                        <button onclick="toggleSolution(6)" id="btn-sol-6" class="self-start sm:self-auto inline-flex items-center gap-1.5 px-4 py-2 bg-teal-50 hover:bg-teal-100 text-teal-800 font-semibold text-xs sm:text-sm rounded-xl transition">
+                            <span>Lihat Pembahasan</span>
+                            <svg id="icon-sol-6" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Solution Box -->
+                    <div id="sol-6" class="solution-box bg-teal-50/40 rounded-xl border border-teal-200/80 p-4 sm:p-5">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-teal-700 mb-3">Langkah Pembahasan Klinis &amp; Matematis:</h4>
+                        <div class="space-y-3 text-sm text-slate-700">
+                            <div class="bg-white p-3 rounded-lg border border-teal-100">
+                                <p class="font-semibold text-slate-800 mb-1">1. Terjemahkan kasus keperawatan ke dalam model Barisan Aritmetika:</p>
+                                <p class="text-xs text-slate-500 mb-2">Urutan dosis harian membentuk barisan aritmetika turun: <span class="font-mono font-semibold text-slate-700">60, 55, 50, 45, ...</span></p>
+                                <ul class="list-disc list-inside space-y-1 font-mono text-xs sm:text-sm text-slate-600">
+                                    <li>Dosis hari ke-1 (<span class="text-slate-900 font-bold">a</span>) = <span class="text-teal-700 font-bold">60 mg</span></li>
+                                    <li>Penurunan dosis harian (<span class="text-slate-900 font-bold">b</span>) = <span class="text-rose-600 font-bold">-5 mg</span> (Bernilai negatif karena dosis dikurangi setiap hari)</li>
+                                    <li>Hari yang ditanyakan (<span class="text-slate-900 font-bold">n</span>) = <span class="text-indigo-600 font-bold">10</span></li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-teal-100">
+                                <p class="font-semibold text-slate-800 mb-1">2. Hitung dosis pada hari ke-10 (U<sub>10</sub>):</p>
+                                <div class="font-mono text-xs sm:text-sm space-y-1 text-slate-700">
+                                    <p>U<sub>n</sub> = a + (n - 1)b</p>
+                                    <p>U<sub>10</sub> = 60 + (10 - 1)(-5)</p>
+                                    <p>U<sub>10</sub> = 60 + (9)(-5)</p>
+                                    <p>U<sub>10</sub> = 60 - 45</p>
+                                    <p class="text-base font-bold text-teal-700 pt-1">U<sub>10</sub> = 15 mg</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 text-teal-800 bg-teal-100/70 px-3 py-2 rounded-lg font-medium text-xs sm:text-sm">
+                                <span>🩺</span>
+                                <span><strong>Kesimpulan Keperawatan:</strong> Dosis obat kortikosteroid yang harus diberikan perawat kepada pasien pada hari ke-10 adalah <strong>15 mg</strong>.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12">
+        <div class="max-w-5xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+            <p>Modul Interaktif Barisan Aritmetika &bull; Dilengkapi fitur cek jawaban mandiri.</p>
+            <p class="font-mono">Rumus Utama: U<sub>n</sub> = a + (n - 1)b</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Toggle individual solution box
+        function toggleSolution(id) {
+            const solBox = document.getElementById(`sol-${id}`);
+            const btnText = document.querySelector(`#btn-sol-${id} span`);
+            const icon = document.getElementById(`icon-sol-${id}`);
+
+            const isOpen = solBox.classList.contains('open');
+            if (isOpen) {
+                solBox.classList.remove('open');
+                btnText.textContent = 'Lihat Pembahasan';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                solBox.classList.add('open');
+                btnText.textContent = 'Sembunyikan Pembahasan';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Toggle all solutions at once
+        function toggleAllSolutions(openState) {
+            for (let i = 1; i <= 6; i++) {
+                const solBox = document.getElementById(`sol-${i}`);
+                const btnText = document.querySelector(`#btn-sol-${i} span`);
+                const icon = document.getElementById(`icon-sol-${i}`);
+
+                if (openState) {
+                    solBox.classList.add('open');
+                    btnText.textContent = 'Sembunyikan Pembahasan';
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    solBox.classList.remove('open');
+                    btnText.textContent = 'Lihat Pembahasan';
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            }
+        }
+
+        // Check user's input answer
+        function checkAnswer(id, correctValue) {
+            const inputEl = document.getElementById(`ans-${id}`);
+            const feedbackEl = document.getElementById(`feedback-${id}`);
+            const userVal = parseFloat(inputEl.value);
+
+            if (inputEl.value.trim() === '' || isNaN(userVal)) {
+                feedbackEl.textContent = '⚠️ Masukkan angka terlebih dahulu!';
+                feedbackEl.className = 'text-xs sm:text-sm font-semibold text-amber-600';
+                return;
+            }
+
+            if (userVal === correctValue) {
+                feedbackEl.textContent = '🎉 Tepat sekali!';
+                feedbackEl.className = 'text-xs sm:text-sm font-semibold text-emerald-600';
+                inputEl.classList.remove('border-rose-400', 'border-slate-300');
+                inputEl.classList.add('border-emerald-500', 'bg-emerald-50/30');
+            } else {
+                feedbackEl.textContent = '❌ Kurang tepat, coba lagi!';
+                feedbackEl.className = 'text-xs sm:text-sm font-semibold text-rose-600';
+                inputEl.classList.remove('border-emerald-500', 'border-slate-300');
+                inputEl.classList.add('border-rose-400');
+            }
+        }
+
+        // Filter cards by category
+        function filterCards(category) {
+            const cards = document.querySelectorAll('.question-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            // Update active button style
+            buttons.forEach(btn => {
+                btn.className = 'filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition';
+            });
+            const activeBtn = document.getElementById(`tab-${category}`);
+            if (activeBtn) {
+                activeBtn.className = 'filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-sm transition';
+            }
+
+            // Show or hide cards
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
