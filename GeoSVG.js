@@ -175,6 +175,86 @@
             return el;
         }
 
+        // ===== GAMBAR LATAR (JPG/PNG) =====
+
+        // Membaca File/Blob menjadi data URL (teks base64)
+        _bacaSebagaiDataUrl(blob) {
+            return new Promise((resolve, reject) => {
+                const pembaca = new FileReader();
+                pembaca.onload = () => resolve(pembaca.result);
+                pembaca.onerror = () => reject(new Error("gagal membaca file gambar"));
+                pembaca.readAsDataURL(blob);
+            });
+        }
+
+        // Memuat gambar untuk mengetahui ukuran aslinya
+        _muatGambarUkuran(dataUrl) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error("browser tidak bisa membaca gambar ini. Pastikan file JPG, PNG, WebP, atau GIF yang valid"));
+                img.src = dataUrl;
+            });
+        }
+
+        // Mengubah sumber gambar apa pun menjadi { dataUrl, w, h }
+        async _siapkanGambar(sumber, options) {
+            const FORMAT = /^data:image\/(png|jpe?g|webp|gif)[;,]/i;
+            let dataUrl;
+
+            if (typeof Blob !== 'undefined' && sumber instanceof Blob) {            // File juga Blob
+                dataUrl = await this._bacaSebagaiDataUrl(sumber);
+            } else if (typeof sumber === 'string' && sumber.trim() !== '') {
+                const teks = sumber.trim();
+                if (/^data:/i.test(teks)) {
+                    dataUrl = teks;
+                } else {
+                    let respons = null;
+                    try { respons = await fetch(teks); } catch (e) { respons = null; }
+                    if (!respons || !respons.ok) {
+                        throw new Error("gagal mengambil gambar dari alamat itu. Kemungkinan server gambar tidak mengizinkan akses dari halaman ini (CORS). Pakai file dari komputer (input file) atau data URL.");
+                    }
+                    dataUrl = await this._bacaSebagaiDataUrl(await respons.blob());
+                }
+            } else {
+                throw new Error("sumber harus berupa File/Blob, alamat gambar (URL), atau data URL");
+            }
+
+            if (!FORMAT.test(dataUrl)) throw new Error("format gambar tidak didukung. Gunakan JPG, PNG, WebP, atau GIF.");
+
+            const img = await this._muatGambarUkuran(dataUrl);
+            let w = img.naturalWidth, h = img.naturalHeight;
+            if (!(w > 0 && h > 0)) throw new Error("ukuran gambar tidak terbaca");
+
+            // Opsional: kecilkan gambar supaya file SVG tidak terlalu besar
+            const maks = this._ada(options.maksSisi) ? Number(options.maksSisi) : 0;
+            if (maks > 0 && Math.max(w, h) > maks) {
+                const skala = maks / Math.max(w, h);
+                const kanvas = document.createElement('canvas');
+                kanvas.width = Math.max(1, Math.round(w * skala));
+                kanvas.height = Math.max(1, Math.round(h * skala));
+                const ctx = kanvas.getContext('2d');
+                if (!ctx) throw new Error("browser tidak bisa mengecilkan gambar");
+                ctx.drawImage(img, 0, 0, kanvas.width, kanvas.height);
+
+                const jpeg = /^data:image\/jpe?g/i.test(dataUrl);                  // JPEG tetap JPEG, lainnya jadi PNG
+                const kualitas = this._ada(options.kualitas) ? Number(options.kualitas) : 0.85;
+                dataUrl = kanvas.toDataURL(jpeg ? 'image/jpeg' : 'image/png', kualitas);
+                w = kanvas.width; h = kanvas.height;
+            }
+            return { dataUrl, w, h };
+        }
+
+        // Menerapkan opsi font ke elemen teks. Hanya menulis yang diisi (sisanya mewarisi font bawaan gambar).
+        // fontStyle: 'italic' (miring), 'oblique', atau 'normal'. fontWeight: 'bold', 'normal', atau 100 sampai 900.
+        _terapkanFont(text, o) {
+            if (!o) return;
+            if (o.fontSize) text.setAttribute('font-size', o.fontSize);
+            if (o.fontFamily) text.setAttribute('font-family', o.fontFamily);
+            if (o.fontWeight) text.setAttribute('font-weight', o.fontWeight);
+            if (o.fontStyle) text.setAttribute('font-style', o.fontStyle);
+        }
+
         // Memindahkan elemen yang sudah ada ke lapisan lain.
         // Catatan: kalau elemen berada di dalam grup, ia dikeluarkan dari grup itu.
         pindahKeLapisan(element, nama) {
@@ -254,6 +334,9 @@
             if (this._ada(options.defaultStrokeWidth)) {
                 this.svg.setAttribute("stroke-width", options.defaultStrokeWidth);
             }
+            // Font bawaan untuk SEMUA teks (diwarisi). Hanya ditulis kalau diisi.
+            if (options.fontFamily) this.svg.setAttribute('font-family', options.fontFamily);
+            if (options.fontSize) this.svg.setAttribute('font-size', options.fontSize);
             const numWidth = this._ukuranAngka(width);
             const numHeight = this._ukuranAngka(height);
 
@@ -597,8 +680,7 @@
                 stroke: 'none'
             });
             text.textContent = opsi.label;
-            if (opsi.fontSize) text.setAttribute("font-size", opsi.fontSize);
-            if (opsi.fontFamily) text.setAttribute("font-family", opsi.fontFamily);
+            this._terapkanFont(text, opsi);
             this._applyTextAlignment(text, opsi.labelPosition || 'middle-center');
             this._tegakkanTeks(text);
             group.appendChild(text);
@@ -633,7 +715,7 @@
         // Memotong garis tak hingga (yang melalui titik 1 dan titik 2) agar tepat memenuhi area gambar.
         // pad = jarak tambahan di luar area, supaya ujung garis tidak tampak di dalam gambar.
         // Mengembalikan { x1, y1, x2, y2 }, atau null jika garis tidak melewati area gambar.
-        _klipGaris(x1, y1, x2, y2, pad = 5) {
+        _klipGaris(x1, y1, x2, y2, pad = 5, tMulai = -Infinity) {
             const area = this._getAreaGambar();
             const xMin = area.minX - pad;
             const xMax = area.minX + area.w + pad;
@@ -651,7 +733,7 @@
                 [dy, yMax - y1]
             ];
 
-            let tAwal = -Infinity;    // tempat garis masuk ke area
+            let tAwal = tMulai;    // tempat garis masuk ke area
             let tAkhir = Infinity;    // tempat garis keluar dari area
 
             for (const [p, q] of batas) {
@@ -735,11 +817,12 @@
                     x: x + labelAlign.dx + (options.dx || 0),
                     y: y + (this._yUp ? -labelAlign.dy : labelAlign.dy) + (options.dy || 0),
                     fill: options.labelColor || color,
-                    'font-size': options.fontSize || "12px",
-                    'font-family': options.fontFamily || "sans-serif",
+                    'font-size': options.fontSize || this.svg.getAttribute('font-size') || "12px",
+                    'font-family': options.fontFamily || this.svg.getAttribute('font-family') || "sans-serif",
                     'font-weight': options.bold ? 'bold' : (options.fontWeight || 'normal'),
                     stroke: 'none'
                 });
+                this._terapkanFont(text, options);
                 this._applyTextAlignment(text, labelAlign.alignPos);
                 text.textContent = options.label;
                 this._tegakkanTeks(text);
@@ -766,8 +849,78 @@
             return this.buatTitik(t, options);
         }
 
+        // Menambahkan label pada garis. Dipakai oleh buatSegmen, buatGaris, buatSinar, dan buatVektor.
+        // Tanpa opsi label: mengembalikan garis apa adanya.
+        // Dengan opsi label: garis dan label dibungkus dalam <g>, dan <g> itulah yang dikembalikan.
+        // (x1,y1)-(x2,y2) = bagian garis yang terlihat; label diletakkan relatif terhadapnya.
+        _pasangLabelGaris(line, x1, y1, x2, y2, options) {
+            if (!options || !this._ada(options.label) || options.label === '') return line;
+            if (line.getAttribute('display') === 'none') return line;     // garis tidak terlihat: tanpa label
+
+            const dx = x2 - x1, dy = y2 - y1;
+            const panjang = Math.hypot(dx, dy);
+            if (panjang === 0) return line;
+
+            // Posisi di sepanjang garis
+            const KATA = { awal: 0, tengah: 0.5, akhir: 1 };
+            let t = this._ada(options.labelPosisi) ? options.labelPosisi : 0.5;
+            if (typeof t === 'string' && Object.prototype.hasOwnProperty.call(KATA, t)) t = KATA[t];
+            t = Number(t);
+            if (!Number.isFinite(t)) {
+                this._gagal("label: labelPosisi harus angka (0 sampai 1) atau 'awal', 'tengah', 'akhir'. Dipakai 'tengah'.");
+                t = 0.5;
+            }
+
+            // Sisi dan jarak
+            let sisi = this._ada(options.labelSisi) ? options.labelSisi : 'kiri';
+            if (sisi !== 'kiri' && sisi !== 'kanan') {
+                this._gagal(`label: labelSisi '${sisi}' tidak dikenal. Pilihan: kiri, kanan. Dipakai 'kiri'.`);
+                sisi = 'kiri';
+            }
+            let jarak = this._ada(options.labelJarak) ? Number(options.labelJarak) : 6;
+            if (!Number.isFinite(jarak)) {
+                this._gagal("label: labelJarak harus angka. Dipakai 6.");
+                jarak = 6;
+            }
+
+            // Arah ke sisi kiri (dilihat di layar): (dy, -dx) di layar biasa, (-dy, dx) di mode yUp
+            const s = (this._yUp ? -1 : 1) * (sisi === 'kiri' ? 1 : -1);
+            const nx = s * dy / panjang;
+            const ny = s * -dx / panjang;
+
+            const ax = x1 + t * dx + nx * jarak;
+            const ay = y1 + t * dy + ny * jarak;
+
+            // Perataan teks: teks ditaruh di sisi luar titik jangkar, menjauh dari garis
+            const vx = nx;
+            const vy = this._yUp ? -ny : ny;                 // arah vertikal seperti terlihat di layar
+            const h = vx > 0.5 ? 'right' : (vx < -0.5 ? 'left' : 'center');
+            const v = vy < -0.5 ? 'top' : (vy > 0.5 ? 'bottom' : 'middle');
+
+            const teks = this.buatTeks(ax, ay, String(options.label), {
+                position: `${v}-${h}`,
+                fill: options.labelColor || options.stroke || this.svg.getAttribute('stroke') || 'black',
+                fontSize: options.fontSize || this.svg.getAttribute('font-size') || '12px',
+                fontFamily: options.fontFamily,
+                fontWeight: options.fontWeight || (options.bold === true ? 'bold' : undefined),
+                fontStyle: options.fontStyle || (options.italic === true ? 'italic' : undefined)
+            });
+            if (!teks) return line;
+
+            // Bungkus garis dan label dalam satu grup, menggantikan posisi garis
+            const grup = this._el('g');
+            if (line.parentNode) line.parentNode.insertBefore(grup, line);
+            grup.appendChild(line);
+            grup.appendChild(teks);
+            return grup;
+        }
+
         // Garis (tak hingga): dipotong tepat di tepi area gambar
+        // Dua cara memanggil:
+        //   buatGaris(x1, y1, x2, y2, options)
+        //   buatGaris(p1, p2, options)      <- p1, p2 berbentuk [x, y] atau {x, y}
         // options.clipPad = jarak tambahan di luar area (bawaan 5)
+        // Label diletakkan relatif terhadap BAGIAN YANG TERLIHAT dari garis.
         buatGaris(a, b, c, d, e) {
             const arg = this._duaTitik(a, b, c, d, e);
             if (!arg) return this._gagal("buatGaris: titik harus [x, y] atau {x, y} berisi angka");
@@ -793,7 +946,42 @@
 
             this._applyOptions(line, options);
             this._tambah(line, 'shapes');
-            return line;
+
+            const u = klip || { x1, y1, x2, y2 };
+            return this._pasangLabelGaris(line, u.x1, u.y1, u.x2, u.y2, options);
+        }
+
+        // Sinar (ray): berpangkal di titik pertama, melewati titik kedua, memanjang tak hingga ke arah itu.
+        // Dipotong di tepi area gambar. Dua cara memanggil:
+        //   buatSinar(x1, y1, x2, y2, options)
+        //   buatSinar(pangkal, arah, options)      <- titik berbentuk [x, y] atau {x, y}
+        // options.clipPad = jarak tambahan di luar area pada ujung yang jauh (bawaan 5)
+        // Label diletakkan relatif terhadap BAGIAN YANG TERLIHAT dari sinar.
+        buatSinar(a, b, c, d, e) {
+            const arg = this._duaTitik(a, b, c, d, e);
+            if (!arg) return this._gagal("buatSinar: titik harus [x, y] atau {x, y} berisi angka");
+
+            let { x1, y1, x2, y2, options } = arg;
+            if (!this._semuaAngka(x1, y1, x2, y2)) return this._gagal("buatSinar: x1, y1, x2, y2 harus angka");
+            x1 = Number(x1); y1 = Number(y1); x2 = Number(x2); y2 = Number(y2);
+
+            if (x1 === x2 && y1 === y2) {
+                return this._gagal("buatSinar: titik pangkal dan titik arah sama, arah sinar tidak bisa ditentukan");
+            }
+
+            const pad = this._ada(options.clipPad) ? options.clipPad : 5;
+            const klip = this._klipGaris(x1, y1, x2, y2, pad, 0);    // 0 = mulai dari pangkal, bukan dari belakangnya
+
+            // Kalau sinar tidak melewati area gambar, tetap dibuat tapi disembunyikan (hasilnya selalu berupa elemen)
+            const line = this._el('line', klip
+                ? { x1: klip.x1, y1: klip.y1, x2: klip.x2, y2: klip.y2 }
+                : { x1, y1, x2, y2, display: 'none' });
+
+            this._applyOptions(line, options);
+            this._tambah(line, 'shapes');
+
+            const u = klip || { x1, y1, x2, y2 };
+            return this._pasangLabelGaris(line, u.x1, u.y1, u.x2, u.y2, options);
         }
 
         // Mengenali dua bentuk pemanggilan:
@@ -812,6 +1000,7 @@
         // Segmen garis. Dua cara memanggil:
         //   buatSegmen(x1, y1, x2, y2, options)
         //   buatSegmen(p1, p2, options)      <- p1, p2 berbentuk [x, y] atau {x, y}
+        // Opsi label: lihat _pasangLabelGaris        
         buatSegmen(a, b, c, d, e) {
             const arg = this._duaTitik(a, b, c, d, e);
             if (!arg) return this._gagal("buatSegmen: titik harus [x, y] atau {x, y} berisi angka");
@@ -822,7 +1011,7 @@
             const line = this._el('line', { x1, y1, x2, y2 });
             this._applyOptions(line, options);
             this._tambah(line, 'shapes');
-            return line;
+            return this._pasangLabelGaris(line, Number(x1), Number(y1), Number(x2), Number(y2), options);
         }
 
         // Garis Sejajar (Parallel Line)
@@ -1326,6 +1515,9 @@
         //   buatPersegiPanjang(x, y, width, height, options)
         //   buatPersegiPanjang(titik, width, height, options)      <- titik berbentuk [x, y] atau {x, y}
         // (x, y) adalah sudut kiri atas di layar biasa.
+        // Sudut membulat: options.radius (alias jariJari)
+        //   angka >= 0  : jari-jari sudut. Nilai di atas setengah sisi terpendek dibatasi ke batas itu.
+        //   'penuh'     : jari-jari terbesar (kapsul; pada persegi menjadi lingkaran)
         buatPersegiPanjang(...args) {
             const arg = this._bacaPusat(args, 2);
             if (!arg) return this._gagal("buatPersegiPanjang: titik harus [x, y] atau {x, y} berisi angka");
@@ -1339,7 +1531,24 @@
             }
             x = Number(x); y = Number(y); width = Number(width); height = Number(height);
 
-            const rect = this._el('rect', { x, y, width, height });
+            // Sudut membulat
+            let radius = 0;
+            const mentah = this._ada(options.radius) ? options.radius : options.jariJari;
+            if (this._ada(mentah)) {
+                const batas = Math.min(width, height) / 2;      // dua sudut pada satu sisi harus muat
+                if (typeof mentah === 'string' && mentah.trim().toLowerCase() === 'penuh') {
+                    radius = batas;
+                } else if (this._semuaAngka(mentah) && Number(mentah) >= 0) {
+                    radius = Math.min(Number(mentah), batas);
+                } else {
+                    this._gagal(`buatPersegiPanjang: radius harus angka >= 0 atau 'penuh', dapat: ${mentah}. Dipakai 0.`);
+                }
+            }
+
+            const atribut = { x, y, width, height };
+            if (radius > 0) { atribut.rx = radius; atribut.ry = radius; }   // rx = ry: sudut berbentuk busur lingkaran
+
+            const rect = this._el('rect', atribut);
             this._applyOptions(rect, options);
             this._tambah(rect, 'shapes');
             return rect;
@@ -1720,11 +1929,7 @@
             const text = this._el('text', { x, y, fill: options.fill || 'black' });
             text.textContent = textContent;
 
-            if (options.fontSize) text.setAttribute("font-size", options.fontSize);
-            if (options.fontFamily) text.setAttribute("font-family", options.fontFamily);
-            if (options.bold || options.fontWeight) {
-                text.setAttribute("font-weight", options.bold ? 'bold' : options.fontWeight);
-            }
+            this._terapkanFont(text, options);
             this._applyTextAlignment(text, options.position);
 
             // Teks tidak punya garis tepi, kecuali diminta
@@ -1862,12 +2067,16 @@
             if (!arg) return this._gagal("buatVektor: titik harus [x, y] atau {x, y} berisi angka");
 
             const { x1, y1, x2, y2, options } = arg;
-            const line = this.buatSegmen(x1, y1, x2, y2, options);
+
+            // Label ditambahkan SETELAH panah terpasang, jadi dikeluarkan dari opsi untuk buatSegmen
+            const opsiGaris = { ...options };
+            delete opsiGaris.label;
+            const line = this.buatSegmen(x1, y1, x2, y2, opsiGaris);
             if (!line) return null;
 
-            const color = options.stroke || 'black';
+            const color = options.stroke || this.svg.getAttribute('stroke') || 'black';
             line.setAttribute("marker-end", `url(#${this._getMarker(color)})`);
-            return line;
+            return this._pasangLabelGaris(line, Number(x1), Number(y1), Number(x2), Number(y2), options);
         }
 
         // ===== GRAFIK FUNGSI =====
@@ -2035,6 +2244,360 @@
             return path;
         }
 
+        // ===== GARIS SINGGUNG LINGKARAN =====
+
+        // Titik singgung dari sebuah titik ke lingkaran. Mengembalikan [[x, y], ...]:
+        //   titik di luar lingkaran   -> 2 titik, urutan [kiri, kanan] (dilihat di layar dari pusat menuju titik)
+        //   titik tepat di lingkaran  -> 1 titik (titik itu sendiri)
+        //   titik di dalam lingkaran  -> [] (tidak ada garis singgung)
+        // null jika input salah.
+        hitungTitikSinggung(lingkaran, titik) {
+            const L = this._objekGeo(lingkaran);
+            if (!L || L.tipe !== 'lingkaran') {
+                return this._gagal("hitungTitikSinggung: lingkaran harus { pusat: [x, y], r } atau { cx, cy, r }");
+            }
+            const P = this._pt(titik);
+            if (!P) return this._gagal("hitungTitikSinggung: titik harus [x, y] atau {x, y} berisi angka");
+
+            const dx = P.x - L.c.x, dy = P.y - L.c.y;
+            const d = Math.hypot(dx, dy);
+            const eps = 1e-9 * Math.max(1, L.r, d);
+
+            if (d < L.r - eps) return [];                      // titik di dalam lingkaran
+            if (d <= L.r + eps) return [[P.x, P.y]];           // titik tepat di lingkaran
+
+            // Titik singgung ada di "garis kutub": a dari pusat ke arah titik, lalu h ke samping
+            const a = L.r * L.r / d;
+            const h = L.r * Math.sqrt(d * d - L.r * L.r) / d;
+            const mx = L.c.x + a * dx / d, my = L.c.y + a * dy / d;
+
+            // Arah ke KIRI (dilihat di layar) dari pusat menuju titik
+            const s = this._yUp ? -1 : 1;
+            const kx = s * dy / d, ky = s * -dx / d;
+
+            return [[mx + h * kx, my + h * ky], [mx - h * kx, my - h * ky]];
+        }
+
+        // ===== GARIS SINGGUNG PERSEKUTUAN DUA LINGKARAN =====
+
+        // Menghitung garis singgung persekutuan. Mengembalikan daftar { jenis, t1, t2, arah, satu, lado }:
+        //   t1 / t2 = titik singgung di lingkaran 1 / 2,  arah = vektor satuan sepanjang garis,
+        //   satu = true kalau kedua titik singgung berimpit (lingkaran saling bersinggung).
+        // L1 dan L2 berasal dari _objekGeo. jenis: 'luar' | 'dalam' | 'semua'.
+        _singgungPersekutuan(L1, L2, jenis) {
+            const dx = L2.c.x - L1.c.x, dy = L2.c.y - L1.c.y;
+            const d = Math.hypot(dx, dy);
+            if (d === 0) return [];                               // sepusat: tidak ada garis singgung persekutuan
+
+            const ux = dx / d, uy = dy / d;                       // arah dari pusat 1 ke pusat 2
+            const wx = -uy, wy = ux;                              // tegak lurus u
+
+            // Arah ke KIRI (dilihat di layar) dari pusat 1 menuju pusat 2
+            const s = this._yUp ? -1 : 1;
+            const kiri = [s * dy / d, s * -dx / d];
+
+            const hasil = [];
+            for (const jns of (jenis === 'semua' ? ['luar', 'dalam'] : [jenis])) {
+                // Normal garis n memenuhi: n . (pusat2 - pusat1) = s2*r2 - r1
+                // (s2 = +1 untuk garis luar, -1 untuk garis dalam)
+                const s2 = jns === 'luar' ? 1 : -1;
+                const cosT = (s2 * L2.r - L1.r) / d;
+                if (Math.abs(cosT) > 1 + 1e-9) continue;          // jenis ini tidak ada untuk kedua lingkaran
+
+                const c = Math.max(-1, Math.min(1, cosT));
+                const sin2 = 1 - c * c;
+                const sin = sin2 > 1e-12 ? Math.sqrt(sin2) : 0;   // 0 = lingkaran bersinggung: hanya satu garis
+                const tanda = sin === 0 ? [1] : [1, -1];
+
+                const grup = tanda.map(sg => {
+                    const nx = c * ux + sg * sin * wx, ny = c * uy + sg * sin * wy;
+                    const t1 = [L1.c.x - L1.r * nx, L1.c.y - L1.r * ny];
+                    const t2 = [L2.c.x - s2 * L2.r * nx, L2.c.y - s2 * L2.r * ny];
+                    return {
+                        jenis: jns, t1, t2,
+                        arah: [-ny, nx],
+                        satu: sin === 0,
+                        lado: (t1[0] - L1.c.x) * kiri[0] + (t1[1] - L1.c.y) * kiri[1]
+                    };
+                });
+                grup.sort((p, q) => q.lado - p.lado);             // kiri dulu, lalu kanan
+                hasil.push(...grup);
+            }
+            return hasil;
+        }
+
+        // Menggambar garis singgung dari sebuah titik ke lingkaran. Mengembalikan DAFTAR elemen (0, 1, atau 2).
+        // Semua opsi buatGaris berlaku (stroke, strokeWidth, dashed, label, clipPad, dst). Opsi tambahan:
+        //   bentuk        : 'garis' (bawaan, tak hingga) | 'segmen' (titik -> titik singgung) | 'sinar'
+        //   pilih         : 'semua' (bawaan) | 'kiri' | 'kanan'  (dilihat di layar dari pusat lingkaran menghadap titik)
+        //   titikSinggung : true = gambar juga titik di titik singgung (hanya untuk garis yang tampil)
+        //   labelTitik    : daftar label titik singgung, mis. ['A', 'B']  (indeks 0 = kiri, 1 = kanan)
+        // options.label boleh teks (dipakai untuk semua garis yang tampil) atau daftar (indeks 0 = kiri, 1 = kanan).
+        buatGarisSinggung(lingkaran, titik, options = {}) {
+            options = options || {};
+            const T = this.hitungTitikSinggung(lingkaran, titik);
+            if (!T) return null;
+            if (T.length === 0) {
+                console.warn("GeoSVG: titik berada di dalam lingkaran, jadi tidak ada garis singgung.");
+                return [];
+            }
+
+            const P = this._pt(titik);
+            const L = this._objekGeo(lingkaran);
+
+            const BENTUK = ['garis', 'segmen', 'sinar'];
+            let bentuk = this._ada(options.bentuk) ? options.bentuk : 'garis';
+            if (!BENTUK.includes(bentuk)) {
+                this._gagal(`buatGarisSinggung: bentuk '${bentuk}' tidak dikenal. Pilihan: ${BENTUK.join(', ')}. Dipakai 'garis'.`);
+                bentuk = 'garis';
+            }
+
+            let pilih = this._ada(options.pilih) ? String(options.pilih).trim().toLowerCase() : 'semua';
+            if (!['semua', 'kiri', 'kanan'].includes(pilih)) {
+                this._gagal(`buatGarisSinggung: pilih '${options.pilih}' tidak dikenal. Pilihan: semua, kiri, kanan. Dipakai 'semua'.`);
+                pilih = 'semua';
+            }
+            // Nomor urut: 0 = kiri, 1 = kanan. Kalau hanya ada satu garis singgung, selalu ditampilkan.
+            const tampil = i => T.length === 1 || pilih === 'semua' || (pilih === 'kiri' ? i === 0 : i === 1);
+
+            const hasil = [];
+            T.forEach((t, i) => {
+                if (!tampil(i)) return;
+                const opsi = { ...options };
+                if (Array.isArray(options.label)) opsi.label = options.label[i];
+
+                let el;
+                if (T.length === 1) {
+                    // Titik tepat di lingkaran: garis singgung tegak lurus jari-jari, memanjang ke dua arah
+                    if (bentuk !== 'garis') {
+                        this._gagal(`buatGarisSinggung: titik tepat di lingkaran, jadi bentuk '${bentuk}' tidak bisa dipakai (garis singgung memanjang ke dua arah). Dipakai 'garis'.`);
+                    }
+                    const dx = P.x - L.c.x, dy = P.y - L.c.y;
+                    el = this.buatGaris(P.x, P.y, P.x - dy, P.y + dx, opsi);
+                } else {
+                    const metode = bentuk === 'segmen' ? 'buatSegmen' : (bentuk === 'sinar' ? 'buatSinar' : 'buatGaris');
+                    el = this[metode](P.x, P.y, t[0], t[1], opsi);
+                }
+                if (el) hasil.push(el);
+            });
+
+            if (options.titikSinggung === true) {
+                const warna = options.stroke || this.svg.getAttribute('stroke') || 'black';
+                T.forEach((t, i) => {
+                    if (!tampil(i)) return;
+                    this.buatTitik(t, {
+                        size: 3,
+                        color: warna,
+                        label: Array.isArray(options.labelTitik) ? options.labelTitik[i] : undefined
+                    });
+                });
+            }
+            return hasil;
+        }
+
+        // Titik singgung garis singgung persekutuan. Mengembalikan daftar pasangan
+        // [[x1, y1] (di lingkaran 1), [x2, y2] (di lingkaran 2)]. Daftar kosong = tidak ada garis.
+        // jenis: 'luar' (bawaan), 'dalam', atau 'semua'. null jika input salah.
+        hitungSinggungPersekutuan(lingkaran1, lingkaran2, jenis = 'luar') {
+            const L1 = this._objekGeo(lingkaran1), L2 = this._objekGeo(lingkaran2);
+            if (!L1 || L1.tipe !== 'lingkaran' || !L2 || L2.tipe !== 'lingkaran') {
+                return this._gagal("hitungSinggungPersekutuan: lingkaran harus { pusat: [x, y], r } atau { cx, cy, r }");
+            }
+            if (!['luar', 'dalam', 'semua'].includes(jenis)) {
+                return this._gagal(`hitungSinggungPersekutuan: jenis '${jenis}' tidak dikenal. Pilihan: luar, dalam, semua`);
+            }
+            return this._singgungPersekutuan(L1, L2, jenis).map(g => [g.t1, g.t2]);
+        }
+
+        // Menggambar garis singgung persekutuan dua lingkaran. Mengembalikan DAFTAR elemen.
+        // Semua opsi buatGaris berlaku (stroke, strokeWidth, dashed, label, clipPad, dst). Opsi tambahan:
+        //   jenis         : 'luar' (bawaan) | 'dalam' | 'semua' (keempat garis, satu gaya)
+        //   pilih         : 'semua' (bawaan) | 'kiri' | 'kanan'  -- hanya untuk jenis 'luar' atau 'dalam'.
+        //                   Dilihat di layar dari pusat lingkaran 1 menghadap pusat lingkaran 2 (mengikuti titik
+        //                   singgung di lingkaran 1). Untuk memilih dari kedua jenis: panggil dua kali.
+        //   bentuk        : 'garis' (bawaan, tak hingga) | 'segmen' (antara dua titik singgung) | 'sinar'
+        //   pangkal       : untuk 'sinar': 1 (bawaan) = berpangkal di titik singgung lingkaran 1, 2 = lingkaran 2
+        //   titikSinggung : true = gambar juga titik di titik singgung (hanya untuk garis yang tampil)
+        //   labelTitik    : daftar PASANGAN label titik, satu per garis, mis. [['A', 'B'], ['C', 'D']]
+        // options.label boleh teks (dipakai untuk semua garis yang tampil) atau daftar, satu per slot garis.
+        buatGarisSinggungPersekutuan(lingkaran1, lingkaran2, options = {}) {
+            options = options || {};
+            const L1 = this._objekGeo(lingkaran1), L2 = this._objekGeo(lingkaran2);
+            if (!L1 || L1.tipe !== 'lingkaran' || !L2 || L2.tipe !== 'lingkaran') {
+                return this._gagal("buatGarisSinggungPersekutuan: lingkaran harus { pusat: [x, y], r } atau { cx, cy, r }");
+            }
+
+            let jenis = this._ada(options.jenis) ? options.jenis : 'luar';
+            if (!['luar', 'dalam', 'semua'].includes(jenis)) {
+                this._gagal(`buatGarisSinggungPersekutuan: jenis '${jenis}' tidak dikenal. Pilihan: luar, dalam, semua. Dipakai 'luar'.`);
+                jenis = 'luar';
+            }
+            let bentuk = this._ada(options.bentuk) ? options.bentuk : 'garis';
+            if (!['garis', 'segmen', 'sinar'].includes(bentuk)) {
+                this._gagal(`buatGarisSinggungPersekutuan: bentuk '${bentuk}' tidak dikenal. Pilihan: garis, segmen, sinar. Dipakai 'garis'.`);
+                bentuk = 'garis';
+            }
+
+            let pilih = this._ada(options.pilih) ? String(options.pilih).trim().toLowerCase() : 'semua';
+            if (!['semua', 'kiri', 'kanan'].includes(pilih)) {
+                this._gagal(`buatGarisSinggungPersekutuan: pilih '${options.pilih}' tidak dikenal. Pilihan: semua, kiri, kanan. Dipakai 'semua'.`);
+                pilih = 'semua';
+            }
+            if (jenis === 'semua' && pilih !== 'semua') {
+                this._gagal("buatGarisSinggungPersekutuan: pilih hanya bisa dipakai bersama jenis 'luar' atau 'dalam'. " +
+                    "Untuk memilih sebagian garis dari kedua jenis, panggil method ini dua kali. 'pilih' diabaikan.");
+                pilih = 'semua';
+            }
+
+            const daftar = this._singgungPersekutuan(L1, L2, jenis);
+            if (daftar.length === 0) {
+                console.warn(`GeoSVG: tidak ada garis singgung persekutuan '${jenis}' untuk kedua lingkaran ini ` +
+                    `(satu lingkaran berada di dalam yang lain, atau kedua lingkaran berpotongan untuk jenis 'dalam').`);
+                return [];
+            }
+            // Nomor urut dalam satu jenis: 0 = kiri, 1 = kanan. Garis tunggal (lingkaran bersinggung) selalu ditampilkan.
+            const tampil = i => daftar.length === 1 || pilih === 'semua' || (pilih === 'kiri' ? i === 0 : i === 1);
+
+            const dariLingkaran2 = options.pangkal === 2;
+            const hasil = [];
+            daftar.forEach((g, i) => {
+                if (!tampil(i)) return;
+                const opsi = { ...options };
+                if (Array.isArray(options.label)) opsi.label = options.label[i];
+
+                let el;
+                if (g.satu) {
+                    // Kedua lingkaran bersinggung: satu garis lewat titik sentuh, tegak lurus garis hubung pusat
+                    if (bentuk !== 'garis') {
+                        this._gagal(`buatGarisSinggungPersekutuan: kedua lingkaran bersinggung di satu titik, jadi bentuk '${bentuk}' tidak bisa dipakai. Dipakai 'garis'.`);
+                    }
+                    el = this.buatGaris(g.t1[0], g.t1[1], g.t1[0] + g.arah[0], g.t1[1] + g.arah[1], opsi);
+                } else if (bentuk === 'segmen') {
+                    el = this.buatSegmen(g.t1, g.t2, opsi);
+                } else if (bentuk === 'sinar') {
+                    el = dariLingkaran2 ? this.buatSinar(g.t2, g.t1, opsi) : this.buatSinar(g.t1, g.t2, opsi);
+                } else {
+                    el = this.buatGaris(g.t1, g.t2, opsi);
+                }
+                if (el) hasil.push(el);
+            });
+
+            if (options.titikSinggung === true) {
+                const warna = options.stroke || this.svg.getAttribute('stroke') || 'black';
+                daftar.forEach((g, i) => {
+                    if (!tampil(i)) return;
+                    const lab = (Array.isArray(options.labelTitik) && Array.isArray(options.labelTitik[i])) ? options.labelTitik[i] : [];
+                    this.buatTitik(g.t1, { size: 3, color: warna, label: lab[0] });
+                    if (!g.satu) this.buatTitik(g.t2, { size: 3, color: warna, label: lab[1] });
+                });
+            }
+            return hasil;
+        }
+
+        // ===== REFLEKSI (PENCERMINAN) =====
+
+        // Membaca "terhadap": titik pusat -> { jenis: 'titik', p }, garis cermin -> { jenis: 'garis', a, b }.
+        // null jika bukan keduanya (atau garis dengan dua titik yang sama).
+        _bacaCermin(terhadap) {
+            const pusat = this._pt(terhadap);
+            if (pusat) return { jenis: 'titik', p: pusat };
+            const L = this._objekGeo(terhadap);
+            if (L && L.tipe === 'garis') return { jenis: 'garis', a: L.a, b: L.b };
+            return null;
+        }
+
+        // Memantulkan satu titik {x, y} terhadap cermin dari _bacaCermin
+        _pantulkan(p, cermin) {
+            if (cermin.jenis === 'titik') {
+                return { x: 2 * cermin.p.x - p.x, y: 2 * cermin.p.y - p.y };         // P' = 2M - P
+            }
+            const dx = cermin.b.x - cermin.a.x, dy = cermin.b.y - cermin.a.y;
+            const t = ((p.x - cermin.a.x) * dx + (p.y - cermin.a.y) * dy) / (dx * dx + dy * dy);
+            const fx = cermin.a.x + t * dx, fy = cermin.a.y + t * dy;               // kaki tegak lurus F
+            return { x: 2 * fx - p.x, y: 2 * fy - p.y };                            // P' = 2F - P
+        }
+
+        // Menghitung bayangan.
+        //   objek    : satu titik, atau daftar titik (dua titik = garis, tiga atau lebih = poligon)
+        //   terhadap : titik (refleksi titik) atau garis cermin [p1, p2]
+        // Mengembalikan [x, y] untuk satu titik, atau daftar [[x, y], ...]. null jika input salah.
+        hitungRefleksi(objek, terhadap) {
+            const cermin = this._bacaCermin(terhadap);
+            if (!cermin) {
+                return this._gagal("hitungRefleksi: 'terhadap' harus titik [x, y] / {x, y} atau garis [p1, p2] dengan dua titik yang berbeda");
+            }
+
+            const satu = this._pt(objek);
+            if (satu) {
+                const q = this._pantulkan(satu, cermin);
+                return [q.x, q.y];
+            }
+            if (Array.isArray(objek) && objek.length > 0) {
+                const daftar = objek.map(t => this._pt(t));
+                if (daftar.every(Boolean)) {
+                    return daftar.map(t => { const q = this._pantulkan(t, cermin); return [q.x, q.y]; });
+                }
+            }
+            return this._gagal("hitungRefleksi: objek harus titik [x, y] / {x, y} atau daftar titik");
+        }
+
+        // Menggambar bayangan hasil refleksi. Mengembalikan elemen bayangannya (titik, garis, atau poligon).
+        //   objek / terhadap : seperti hitungRefleksi
+        //   options          : opsi gaya untuk bentuk yang digambar (stroke, fill, dashed, label, dst) plus:
+        //     bentuk         : 2 titik -> 'garis' (bawaan) | 'segmen' | 'sinar';  3+ titik -> 'poligon' (bawaan) | 'polyline'
+        //     titik          : true = gambar juga titik di tiap titik bayangan
+        //     labelTitik     : daftar label titik bayangan, mis. ["A'", "B'", "C'"]
+        //     penghubung     : true = garis putus-putus dari tiap titik asal ke bayangannya
+        //     gayaPenghubung : gaya garis penghubung, mis. { stroke: 'orange' }
+        buatRefleksi(objek, terhadap, options = {}) {
+            options = options || {};
+            const hasil = this.hitungRefleksi(objek, terhadap);
+            if (!hasil) return null;
+
+            const tunggal = this._pt(objek) !== null;
+            const asal = tunggal ? [this._pt(objek)] : objek.map(t => this._pt(t));
+            const bayangan = tunggal ? [hasil] : hasil;                  // daftar [x, y]
+
+            // Garis penghubung (titik yang berada tepat di cermin tidak diberi penghubung)
+            if (options.penghubung === true) {
+                const gaya = { stroke: '#888', strokeWidth: 1, dashed: true, ...(options.gayaPenghubung || {}) };
+                asal.forEach((t, i) => {
+                    if (Math.hypot(bayangan[i][0] - t.x, bayangan[i][1] - t.y) > 1e-9) {
+                        this.buatSegmen([t.x, t.y], bayangan[i], gaya);
+                    }
+                });
+            }
+
+            // Satu titik (juga daftar berisi satu titik)
+            if (bayangan.length === 1) return this.buatTitik(bayangan[0], options);
+
+            const SAH = bayangan.length === 2 ? ['garis', 'segmen', 'sinar'] : ['poligon', 'polyline'];
+            let bentuk = this._ada(options.bentuk) ? options.bentuk : SAH[0];
+            if (!SAH.includes(bentuk)) {
+                this._gagal(`buatRefleksi: bentuk '${bentuk}' tidak cocok untuk ${bayangan.length} titik. Pilihan: ${SAH.join(', ')}. Dipakai '${SAH[0]}'.`);
+                bentuk = SAH[0];
+            }
+
+            let el;
+            if (bentuk === 'garis') el = this.buatGaris(bayangan[0], bayangan[1], options);
+            else if (bentuk === 'segmen') el = this.buatSegmen(bayangan[0], bayangan[1], options);
+            else if (bentuk === 'sinar') el = this.buatSinar(bayangan[0], bayangan[1], options);
+            else if (bentuk === 'poligon') el = this.buatPoligon(bayangan, options);
+            else el = this.buatPolyline(bayangan, options);
+
+            if (options.titik === true) {
+                const warna = options.stroke || this.svg.getAttribute('stroke') || 'black';
+                bayangan.forEach((q, i) => {
+                    this.buatTitik(q, {
+                        size: 3,
+                        color: warna,
+                        label: Array.isArray(options.labelTitik) ? options.labelTitik[i] : undefined
+                    });
+                });
+            }
+            return el;
+        }
+
         // Memastikan step adalah angka yang lebih besar dari 0
         _validasiStep(step, nama = 'step') {
             const n = Number(step);
@@ -2198,16 +2761,20 @@
         }
 
         // Garis Dimensi (Dimension Line)
+        // options: stroke, strokeWidth, dst (untuk garis), plus untuk label:
+        //   fontSize, fontFamily, fontWeight, fontStyle  (bawaan: mengikuti font bawaan gambar)
+        //   labelJarak : jarak label dari garis dimensi (bawaan 10)
         buatDimensi(p1, p2, offset, label, options = {}) {
             const pt1 = this._pt(p1);
             const pt2 = this._pt(p2);
             if (!pt1 || !pt2) return this._gagal("buatDimensi: p1 dan p2 harus [x, y] atau {x, y} berisi angka");
+            if (!this._semuaAngka(offset)) return this._gagal("buatDimensi: offset harus angka");
+            offset = Number(offset);
 
             const dx = pt2.x - pt1.x;
             const dy = pt2.y - pt1.y;
             const len = Math.hypot(dx, dy);
-
-            if (len === 0) return null;
+            if (len === 0) return this._gagal("buatDimensi: p1 dan p2 sama, garis dimensi tidak punya panjang");
 
             const nx = -dy / len;
             const ny = dx / len;
@@ -2218,29 +2785,105 @@
             const op2y = pt2.y + ny * offset;
 
             const group = this.buatGrup();
+            const masuk = el => { if (el) group.appendChild(el); return el; };   // elemen kosong dilewati
 
             // Garis penghubung ujung
             const strokeOpt = { stroke: options.stroke || '#888', strokeWidth: 1, ...options };
-            group.appendChild(this.buatSegmen(pt1.x, pt1.y, op1x, op1y, strokeOpt));
-            group.appendChild(this.buatSegmen(pt2.x, pt2.y, op2x, op2y, strokeOpt));
+            masuk(this.buatSegmen(pt1.x, pt1.y, op1x, op1y, strokeOpt));
+            masuk(this.buatSegmen(pt2.x, pt2.y, op2x, op2y, strokeOpt));
 
             // Garis dimensi (panah dua arah)
-            const dimLine = this.buatSegmen(op1x, op1y, op2x, op2y, strokeOpt);
-            dimLine.setAttribute("marker-start", `url(#${this._getMarker(strokeOpt.stroke, true)})`);
-            dimLine.setAttribute("marker-end", `url(#${this._getMarker(strokeOpt.stroke)})`);
-            group.appendChild(dimLine);
+            const dimLine = masuk(this.buatSegmen(op1x, op1y, op2x, op2y, strokeOpt));
+            if (dimLine) {
+                dimLine.setAttribute("marker-start", `url(#${this._getMarker(strokeOpt.stroke, true)})`);
+                dimLine.setAttribute("marker-end", `url(#${this._getMarker(strokeOpt.stroke)})`);
+            }
 
             // Label
-            if (label) {
-                const midX = (op1x + op2x) / 2;
-                const midY = (op1y + op2y) / 2;
-                // Shift label slightly away from line
-                const lx = midX + nx * 10;
-                const ly = midY + ny * 10;
-                group.appendChild(this.buatTeks(lx, ly, label, { position: 'middle-center', fill: strokeOpt.stroke, fontSize: options.fontSize || '12px' }));
+            if (this._ada(label) && label !== '') {
+                const arah = offset < 0 ? -1 : 1;      // label selalu di sisi luar garis dimensi
+                const jarak = this._ada(options.labelJarak) ? Number(options.labelJarak) : 10;
+                const lx = (op1x + op2x) / 2 + nx * jarak * arah;
+                const ly = (op1y + op2y) / 2 + ny * jarak * arah;
+
+                masuk(this.buatTeks(lx, ly, label, {
+                    position: 'middle-center',
+                    fill: strokeOpt.stroke,
+                    fontSize: options.fontSize || this.svg.getAttribute('font-size') || '12px',
+                    fontFamily: options.fontFamily,       // kalau kosong: mewarisi font bawaan gambar
+                    fontWeight: options.fontWeight,
+                    fontStyle: options.fontStyle
+                }));
             }
 
             return group;
+        }
+
+        // Memasang gambar latar. Mengembalikan Promise yang berisi elemen <image> (atau null jika gagal).
+        // Gambar disimpan sebagai data URL, jadi IKUT TERSIMPAN di dalam file SVG saat diunduh.
+        // Memanggilnya lagi akan MENGGANTI gambar latar yang lama.
+        async setGambarLatar(sumber, options = {}) {
+            if (this._destroyed) return this._gagal("setGambarLatar: instance ini sudah di-destroy()");
+            options = options || {};
+
+            const FIT = { contain: 'xMidYMid meet', cover: 'xMidYMid slice', stretch: 'none' };
+            const fit = this._ada(options.fit) ? options.fit : 'contain';
+            if (!FIT[fit]) return this._gagal(`setGambarLatar: fit '${fit}' tidak dikenal. Pilihan: contain, cover, stretch`);
+
+            let gambar;
+            try {
+                gambar = await this._siapkanGambar(sumber, options);
+            } catch (err) {
+                return this._gagal(`setGambarLatar: ${err.message}`);
+            }
+            if (this._destroyed) return null;
+
+            // Posisi dan ukuran (bawaan: memenuhi seluruh area gambar)
+            const area = this._areaTetap() || this._getAreaGambar();
+            const x = this._ada(options.x) ? Number(options.x) : area.minX;
+            const y = this._ada(options.y) ? Number(options.y) : area.minY;
+            let lebar = this._ada(options.lebar) ? Number(options.lebar) : null;
+            let tinggi = this._ada(options.tinggi) ? Number(options.tinggi) : null;
+
+            if (lebar === null && tinggi === null) { lebar = area.w; tinggi = area.h; }
+            else if (tinggi === null) tinggi = lebar * gambar.h / gambar.w;
+            else if (lebar === null) lebar = tinggi * gambar.w / gambar.h;
+
+            if (![x, y, lebar, tinggi].every(Number.isFinite) || lebar <= 0 || tinggi <= 0) {
+                return this._gagal("setGambarLatar: x, y, lebar, tinggi harus angka, dan lebar/tinggi harus lebih dari 0");
+            }
+            const transparan = this._ada(options.opacity) ? Number(options.opacity) : null;
+
+            const gambarEl = this._el('image', {
+                x, y, width: lebar, height: tinggi,
+                preserveAspectRatio: FIT[fit],
+                opacity: transparan,
+                // Mode yUp: lapisan dibalik, jadi gambar dibalik lagi terhadap garis tengahnya supaya tegak
+                transform: this._yUp ? `translate(0 ${2 * y + tinggi}) scale(1 -1)` : null
+            });
+            gambarEl.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", gambar.dataUrl);
+            // Deklarasikan xlink di <svg> supaya file hasil unduhan memakai awalan "xlink:" yang biasa
+            this.svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
+
+            // Lapisan latar ditaruh PALING BAWAH (di bawah grid)
+            let lapisan = this._layers.latar;
+            if (!lapisan) {
+                lapisan = this._buatLapisan('latar');
+                if (this._layers.grid) this.svg.insertBefore(lapisan, this._layers.grid);
+            }
+            lapisan.textContent = '';
+            lapisan.appendChild(gambarEl);
+
+            const mb = gambar.dataUrl.length / 1048576;
+            if (mb > 3) {
+                console.warn(`GeoSVG: gambar latar berukuran ${mb.toFixed(1)} MB di dalam file SVG. Pertimbangkan opsi { maksSisi: 1600 } agar file tidak terlalu besar.`);
+            }
+            return gambarEl;
+        }
+
+        // Menghapus gambar latar.
+        hapusGambarLatar() {
+            if (this._layers.latar) this._layers.latar.textContent = '';
         }
 
         // Manajemen DOM & Grup
@@ -2484,8 +3127,9 @@
             this._batchDepth = 0;
 
             [...this.svg.children].forEach(child => {
-                // Pertahankan defs, judul, dan deskripsi
-                if (child === this.defs || child.tagName === 'title' || child.tagName === 'desc') return;
+                // Pertahankan defs, judul, deskripsi, dan gambar latar
+                if (child === this.defs || child.tagName === 'title' || child.tagName === 'desc'
+                    || child === this._layers.latar) return;
 
                 if (Object.values(this._layers).includes(child)) {
                     child.textContent = '';              // lapisan dikosongkan, bukan dihapus
