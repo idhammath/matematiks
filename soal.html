@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor Post Instagram 1080x1920</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link id="fontLink" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #1e1f22;
+      color: #e8e8e8;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    #panel {
+      width: 400px;
+      padding: 16px;
+      overflow-y: auto;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      background: #2b2d31;
+    }
+
+    #panel h1 {
+      font-size: 16px;
+      margin: 0 0 12px;
+    }
+
+    #panel label {
+      display: block;
+      font-size: 12px;
+      margin: 12px 0 4px;
+      color: #b5b8bd;
+    }
+
+    #panel textarea {
+      width: 100%;
+      background: #1e1f22;
+      color: #f2f2f2;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 8px;
+      font: 13px/1.4 ui-monospace, Consolas, monospace;
+    }
+
+    #teks {
+      height: 220px;
+    }
+
+    #kode {
+      height: 260px;
+    }
+
+    .baris {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .baris input[type=range] {
+      flex: 1;
+    }
+
+    button {
+      background: #1b7a5a;
+      color: #fff;
+      border: 0;
+      border-radius: 6px;
+      padding: 9px 14px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button.abu {
+      background: #4a4d55;
+    }
+
+    #galat {
+      color: #ff8a80;
+      font-size: 12px;
+      min-height: 16px;
+      margin-top: 6px;
+      white-space: pre-wrap;
+    }
+
+    #area {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+      overflow: auto;
+    }
+
+    #bungkus {
+      transform-origin: top left;
+    }
+
+    /* ===== POST: ukuran asli 1080 x 1920 ===== */
+    #post {
+      position: relative;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      background: #1b7a5a;
+    }
+
+    #latar {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #isi {
+      position: absolute;
+      left: 90px;
+      right: 90px;
+      top: 250px;
+      height: 1300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 36px;
+      color: #fff;
+    }
+
+    #isi.terbalik {
+      flex-direction: column-reverse;
+    }
+
+    #post {
+      --f: 'Poppins';
+      --ts: none;
+      --fl: none;
+      --ct: #ffffff;
+      --cj: #ffffff;
+      --at: left;
+      --aj: left;
+    }
+
+    #teksPost {
+      color: var(--ct);
+      font-family: var(--f), Georgia, serif;
+      font-size: 44px;
+      line-height: 1.45;
+      text-align: var(--at);
+    }
+
+    #teksPost .p {
+      margin: 0 0 14px;
+      text-shadow: var(--ts);
+    }
+
+    #teksPost .katex {
+      text-shadow: none;
+      filter: var(--fl);
+    }
+
+    #teksPost .judul {
+      font-size: 1.35em;
+      font-weight: 700;
+      margin-bottom: 22px;
+      color: var(--cj);
+      text-align: var(--aj);
+    }
+
+    #teksPost .kosong {
+      height: 18px;
+    }
+
+    #teksPost .katex {
+      font-size: 1.08em;
+    }
+
+    #teksPost .katex-display {
+      margin: 14px 0;
+    }
+
+    #geo {
+      width: 900px;
+      flex: none;
+    }
+
+    #geo svg {
+      display: block;
+    }
+
+    #geo svg text {
+      font-family: var(--f), sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="panel">
+    <h1>Editor Post 1080 × 1920</h1>
+
+    <label>Gambar latar</label>
+    <div class="baris">
+      <input type="file" id="berkas" accept="image/*">
+    </div>
+    <div style="font-size:11px;color:#8d9096;margin-top:4px">Bawaan: file <b>KulikMath.png</b> di folder yang sama. Jika
+      ekspor PNG gagal, pilih gambarnya lewat tombol ini.</div>
+
+    <label>Teks. Rumus inline <code>$...$</code>, display <code>$$...$$</code>. Awali baris dengan <code># </code> untuk
+      judul.</label>
+    <textarea id="teks">
+# Teorema Pythagoras
+Pada segitiga siku-siku $ABC$ dengan siku-siku di $B$, berlaku:
+$$AC^2 = AB^2 + BC^2$$
+Jika $AB = 12$ dan $BC = 9$, maka
+$$AC = \sqrt{12^2 + 9^2} = \sqrt{225} = 15$$</textarea>
+
+    <label>Ukuran huruf: <span id="vFont">44</span> px</label>
+    <input type="range" id="font" min="26" max="70" value="44" style="width:100%">
+
+    <label>Warna</label>
+    <div class="baris">
+      <input type="color" id="warnaJudul" value="#ffffff"><span style="font-size:13px">Judul</span>
+      <input type="color" id="warnaTeks" value="#ffffff" style="margin-left:14px"><span style="font-size:13px">Teks dan
+        rumus</span>
+    </div>
+
+    <label>Perataan</label>
+    <div class="baris">
+      <span style="font-size:13px">Judul</span>
+      <select id="ratakanJudul"
+        style="padding:6px;background:#1e1f22;color:#f2f2f2;border:1px solid #444;border-radius:6px">
+        <option value="left">Kiri</option>
+        <option value="center">Tengah</option>
+      </select>
+      <span style="font-size:13px;margin-left:10px">Teks</span>
+      <select id="ratakanTeks"
+        style="padding:6px;background:#1e1f22;color:#f2f2f2;border:1px solid #444;border-radius:6px">
+        <option value="left">Kiri</option>
+        <option value="center">Tengah</option>
+        <option value="right">Kanan</option>
+        <option value="justify">Rata kiri-kanan</option>
+      </select>
+    </div>
+
+    <div class="baris" style="margin-top:8px">
+      <span style="font-size:13px">Geometri</span>
+      <select id="ratakanGeo"
+        style="padding:6px;background:#1e1f22;color:#f2f2f2;border:1px solid #444;border-radius:6px">
+        <option value="left">Kiri</option>
+        <option value="center">Tengah</option>
+        <option value="kode">Sesuai posisi di kode</option>
+      </select>
+    </div>
+
+    <label>Font teks dan label geometri (rumus tetap memakai font KaTeX)</label>
+    <select id="pilihFont"
+      style="width:100%;padding:7px;background:#1e1f22;color:#f2f2f2;border:1px solid #444;border-radius:6px">
+      <optgroup label="Sans-Serif (Modern & Bersih)">
+        <option>Poppins</option>
+        <option>Plus Jakarta Sans</option>
+        <option>Montserrat</option>
+        <option>Inter</option>
+        <option>Rubik</option>
+        <option>DM Sans</option>
+        <option>Outfit</option>
+        <option>Figtree</option>
+        <option>IBM Plex Sans</option>
+        <option>Space Grotesk</option>
+      </optgroup>
+      <optgroup label="Rounded (Ramah & Santai)">
+        <option>Nunito</option>
+        <option>Quicksand</option>
+        <option>Fredoka</option>
+      </optgroup>
+      <optgroup label="Serif & Akademik (Gaya Buku Matematika)">
+        <option>STIX Two Text</option>
+        <option>Lora</option>
+        <option>EB Garamond</option>
+        <option>Crimson Pro</option>
+        <option>Merriweather</option>
+        <option>Playfair Display</option>
+        <option>Roboto Slab</option>
+      </optgroup>
+      <optgroup label="Monospace & Tulisan Tangan">
+        <option>JetBrains Mono</option>
+        <option>Caveat</option>
+        <option>Kalam</option>
+        <option>Patrick Hand</option>
+      </optgroup>
+    </select>
+
+    <label>Bayangan (agar lebih kontras)</label>
+    <div class="baris"><input type="checkbox" id="shTeks" checked><span style="font-size:13px">Teks</span></div>
+    <div class="baris"><input type="checkbox" id="shLatex" checked><span style="font-size:13px">Rumus (LaTeX)</span>
+    </div>
+    <div class="baris"><input type="checkbox" id="shGeo" checked><span style="font-size:13px">Gambar geometri</span>
+    </div>
+    <label>Blur: <span id="vBlur">6</span> px</label>
+    <input type="range" id="shBlur" min="0" max="30" value="6" style="width:100%">
+    <label>Jarak: <span id="vOff">4</span> px</label>
+    <input type="range" id="shOff" min="0" max="20" value="4" style="width:100%">
+    <label>Kepekatan: <span id="vOp">65</span>%</label>
+    <input type="range" id="shOp" min="0" max="100" value="65" style="width:100%">
+    <div class="baris" style="margin-top:8px"><span style="font-size:13px">Warna</span><input type="color" id="shWarna"
+        value="#000000"></div>
+
+    <div class="baris" style="margin-top:12px">
+      <input type="checkbox" id="adaGeo" checked><span style="font-size:13px">Tampilkan gambar geometri</span>
+    </div>
+    <div class="baris">
+      <input type="checkbox" id="geoAtas"><span style="font-size:13px">Geometri di atas teks</span>
+    </div>
+
+    <label>Tinggi area geometri: <span id="vTinggi">460</span> px (lebar tetap 900)</label>
+    <input type="range" id="tinggi" min="200" max="900" value="460" style="width:100%">
+
+    <label>Kode geometri (JavaScript; objek <code>geo</code> sudah tersedia, sumbu Y mengarah ke atas)</label>
+    <textarea id="kode" spellcheck="false">const A = [100, 40], B = [580, 40], C = [580, 400];
+const putih = '#fff';
+
+geo.buatSegitiga(A, B, C, { stroke: putih, strokeWidth: 4, fill: 'rgba(255,255,255,0.12)' });
+geo.buatSiku(A, B, C, { stroke: putih, strokeWidth: 3, size: 28 });
+
+geo.buatTitik(A, { label: 'A', labelPosition: 'bottom-left', color: putih, fontSize: '36px', labelDistance: 14 });
+geo.buatTitik(B, { label: 'B', labelPosition: 'bottom-right', color: putih, fontSize: '36px', labelDistance: 14 });
+geo.buatTitik(C, { label: 'C', labelPosition: 'top-right', color: putih, fontSize: '36px', labelDistance: 14 });
+
+const pusat = [420, 160];
+geo.buatLabelSisi(A, B, '12', { pusat, color: '#ffe082', fontSize: '34px', jarak: 28 });
+geo.buatLabelSisi(B, C, '9',  { pusat, color: '#ffe082', fontSize: '34px', jarak: 28 });
+geo.buatLabelSisi(A, C, '15', { pusat, color: '#ffe082', fontSize: '34px', jarak: 28 });</textarea>
+
+    <div id="galat"></div>
+
+    <div class="baris" style="margin-top:14px; flex-wrap:wrap; gap:6px">
+      <button id="unduh">Unduh Post PNG</button>
+      <button id="unduhPostSvg" style="background:#2563eb">Unduh Post SVG</button>
+      <button id="unduhGeoPng" class="abu">PNG Geometri</button>
+      <button id="unduhSvg" class="abu">SVG Geometri</button>
+    </div>
+  </div>
+
+  <div id="area">
+    <div id="bungkus">
+      <div id="post">
+        <img id="latar" alt="" src="KulikMath.png" onerror="this.style.display='none'">
+        <div id="isi">
+          <div id="teksPost"></div>
+          <div id="geo"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="GeoSVG.js"></script>
+  <script>
+    (function () {
+      const $ = id => document.getElementById(id);
+      let geo = null;
+
+      // ---------- Pratinjau (skala layar) ----------
+      function atur() {
+        const area = $('area');
+        const skala = Math.min((window.innerWidth - 400 - 40) / 1080, (window.innerHeight - 40) / 1920, 1);
+        $('bungkus').style.transform = `scale(${skala})`;
+        $('bungkus').style.width = '1080px';
+        $('bungkus').style.height = '1920px';
+        area.style.width = (1080 * skala + 40) + 'px';
+        area.style.flex = 'none';
+        $('bungkus').style.marginBottom = (1920 * skala - 1920) + 'px';
+        $('bungkus').style.marginRight = (1080 * skala - 1080) + 'px';
+      }
+
+      // ---------- Teks + KaTeX ----------
+      function buatTeks() {
+        const wadah = $('teksPost');
+        wadah.textContent = '';
+        wadah.style.fontSize = $('font').value + 'px';
+        $('vFont').textContent = $('font').value;
+
+        $('teks').value.replace(/^\n/, '').split('\n').forEach(baris => {
+          const d = document.createElement('div');
+          if (baris.trim() === '') { d.className = 'kosong'; }
+          else if (/^#\s/.test(baris)) { d.className = 'p judul'; d.textContent = baris.replace(/^#\s+/, ''); }
+          else { d.className = 'p'; d.textContent = baris; }
+          wadah.appendChild(d);
+        });
+
+        if (window.renderMathInElement) {
+          renderMathInElement(wadah, {
+            delimiters: [
+              { left: '$$', right: '$$', display: true },
+              { left: '\\[', right: '\\]', display: true },
+              { left: '$', right: '$', display: false },
+              { left: '\\(', right: '\\)', display: false }
+            ],
+            throwOnError: false
+          });
+        }
+      }
+
+      // ---------- Geometri (GeoSVG) ----------
+      function buatGeometri() {
+        const kotak = $('geo');
+        $('galat').textContent = '';
+        kotak.style.display = $('adaGeo').checked ? '' : 'none';
+        $('isi').classList.toggle('terbalik', $('geoAtas').checked);
+        $('vTinggi').textContent = $('tinggi').value;
+        if (!$('adaGeo').checked) return;
+        if (!window.GeoSVG) { $('galat').textContent = 'GeoSVG.js tidak ditemukan. Taruh di folder yang sama dengan file ini.'; return; }
+
+        try {
+          if (geo) geo.destroy();
+          geo = new GeoSVG(kotak, 900, Number($('tinggi').value), {
+            yUp: true, defaultStroke: '#ffffff', defaultStrokeWidth: 3,
+            clearContainer: true, dekoratif: true, overflow: 'visible'
+          });
+          new Function('geo', $('kode').value)(geo);
+          ratakanGeo();
+        } catch (e) {
+          $('galat').textContent = 'Kode geometri error: ' + e.message;
+        }
+        bayanganGeo();
+      }
+
+      // Menggeser gambar (bentuk + label) ke kiri atau tengah area 900 px, berdasarkan lebar isinya
+      function ratakanGeo() {
+        const mode = $('ratakanGeo').value;
+        if (mode === 'kode' || !geo) return;
+        const lapisan = ['shapes', 'labels'].map(n => geo._layers[n]).filter(Boolean);
+        let minX = Infinity, maxX = -Infinity;
+        lapisan.forEach(g => {
+          if (!g.firstChild) return;
+          const b = g.getBBox();
+          if (b.width === 0 && b.height === 0) return;
+          minX = Math.min(minX, b.x); maxX = Math.max(maxX, b.x + b.width);
+        });
+        if (!Number.isFinite(minX)) return;
+        const lebar = 900;
+        const dx = (mode === 'center') ? (lebar - (maxX - minX)) / 2 - minX : -minX;
+        lapisan.forEach(g => {
+          const awal = g.getAttribute('transform');
+          g.setAttribute('transform', `translate(${dx} 0)` + (awal ? ' ' + awal : ''));
+        });
+      }
+
+      // ---------- Bayangan ----------
+      function nilaiBayangan() {
+        const hex = $('shWarna').value;
+        const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+        const a = Number($('shOp').value) / 100;
+        const blur = Number($('shBlur').value), off = Number($('shOff').value);
+        $('vBlur').textContent = blur; $('vOff').textContent = off; $('vOp').textContent = $('shOp').value;
+        return { hex, a, blur, off, css: `${off}px ${off}px ${blur}px rgba(${r}, ${g}, ${b}, ${a})` };
+      }
+
+      // Teks dan rumus: lewat variabel CSS
+      function bayanganTeks() {
+        const s = nilaiBayangan();
+        const post = $('post');
+        post.style.setProperty('--aj', $('ratakanJudul').value);
+        post.style.setProperty('--at', $('ratakanTeks').value);
+        post.style.setProperty('--cj', $('warnaJudul').value);
+        post.style.setProperty('--ct', $('warnaTeks').value);
+        post.style.setProperty('--ts', $('shTeks').checked ? s.css : 'none');
+        post.style.setProperty('--fl', $('shLatex').checked ? `drop-shadow(${s.css})` : 'none');
+      }
+
+      // Geometri: drop-shadow CSS pada elemen <svg> (didukung semua browser modern)
+      function bayanganGeo() {
+        if (!geo || !geo.svg) return;
+        const aktif = $('adaGeo').checked && $('shGeo').checked;
+        geo.svg.style.filter = aktif ? `drop-shadow(${nilaiBayangan().css})` : '';
+      }
+
+      // ---------- Font (Dukungan Embed Base64 agar tidak berubah saat diunduh) ----------
+      const bobotKhusus = {
+        'Merriweather': '400;700',
+        'Kalam': '400;700',
+        'Patrick Hand': '400'
+      };
+
+      let cacheFontCSS = {}; // Menyimpan CSS font yang sudah dijadikan base64
+
+      // Mengambil CSS (Google Fonts / KaTeX) dan mengubah semua url(...) di dalamnya menjadi base64
+      async function buatEmbedCSS(urlCss) {
+        if (cacheFontCSS[urlCss]) return cacheFontCSS[urlCss];
+        try {
+          const res = await fetch(urlCss);
+          let cssText = await res.text();
+          const urls = [...cssText.matchAll(/url\((['"]?)(.*?)\1\)/g)].map(m => m[2]);
+          const unikUrls = [...new Set(urls)];
+
+          await Promise.all(unikUrls.map(async (u) => {
+            try {
+              const urlPenuh = new URL(u, urlCss).href;
+              const fRes = await fetch(urlPenuh);
+              const blob = await fRes.blob();
+              const dataUrl = await new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+              });
+              cssText = cssText.split(u).join(dataUrl);
+            } catch (err) {
+              console.warn('Gagal memuat sub-aset font:', u);
+            }
+          }));
+
+          cacheFontCSS[urlCss] = cssText;
+          return cssText;
+        } catch (e) {
+          console.warn('Gagal menyiapkan embed CSS:', e);
+          return '';
+        }
+      }
+
+      async function gantiFont() {
+        const nama = $('pilihFont').value;
+        const bobot = bobotKhusus[nama] || '400;500;600;700';
+        const urlFont = 'https://fonts.googleapis.com/css2?family=' +
+          nama.replace(/ /g, '+') + ':wght@' + bobot + '&display=swap';
+
+        $('fontLink').href = urlFont;
+        $('post').style.setProperty('--f', `'${nama}'`);
+        try {
+          await Promise.all([
+            document.fonts.load(`400 40px "${nama}"`),
+            document.fonts.load(`700 40px "${nama}"`),
+            buatEmbedCSS(urlFont) // Siapkan base64 font sejak dipilih
+          ]);
+        } catch (e) { /* font gagal dimuat: browser memakai font cadangan */ }
+        segarkan();
+      }
+
+      function segarkan() { buatTeks(); bayanganTeks(); buatGeometri(); }
+
+      // ---------- Gambar latar ----------
+      $('berkas').addEventListener('change', e => {
+        const f = e.target.files[0];
+        if (!f) return;
+        const r = new FileReader();
+        r.onload = () => { $('latar').style.display = ''; $('latar').src = r.result; };
+        r.readAsDataURL(f);
+      });
+
+      // ---------- Ekspor ----------
+      function unduh(blob, nama) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = nama;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      }
+
+      // Menggabungkan CSS Google Font terpilih + CSS KaTeX dalam bentuk base64 murni
+      async function siapkanOpsiEkspor() {
+        if (document.fonts && document.fonts.ready) await document.fonts.ready;
+        const urlFont = $('fontLink').href;
+        const urlKatex = 'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css';
+        const [cssFont, cssKatex] = await Promise.all([
+          buatEmbedCSS(urlFont),
+          buatEmbedCSS(urlKatex)
+        ]);
+        return {
+          pixelRatio: 1,
+          width: 1080,
+          height: 1920,
+          fontEmbedCSS: cssFont + '\n' + cssKatex
+        };
+      }
+
+      // 1. Unduh Post Utuh sebagai PNG (1080x1920)
+      $('unduh').addEventListener('click', async () => {
+        $('galat').textContent = 'Sedang menyiapkan PNG...';
+        const bungkus = $('bungkus');
+        const lama = bungkus.style.transform;
+        try {
+          const opsi = await siapkanOpsiEkspor();
+          let blob = null;
+
+          if (window.htmlToImage) {
+            try {
+              blob = await htmlToImage.toBlob($('post'), opsi);
+            } catch (e1) {
+              console.warn('html-to-image gagal, memakai cadangan:', e1);
+            }
+          }
+
+          if (!blob) {
+            bungkus.style.transform = 'none';
+            window.scrollTo(0, 0);
+            const canvas = await html2canvas($('post'), {
+              scale: 1, width: 1080, height: 1920, useCORS: true,
+              backgroundColor: null, scrollX: 0, scrollY: 0
+            });
+            blob = await new Promise(ok => canvas.toBlob(ok, 'image/png'));
+          }
+          if (!blob) throw new Error('Browser gagal membuat PNG.');
+          $('galat').textContent = '';
+          unduh(blob, 'post-instagram.png');
+        } catch (e) {
+          $('galat').textContent = 'Gagal membuat PNG: ' + e.message +
+            '\nCoba pilih gambar latar lewat tombol "Choose file" di atas.';
+        } finally {
+          bungkus.style.transform = lama;
+        }
+      });
+
+      // 2. Unduh Post Utuh sebagai SVG (1080x1920)
+      $('unduhPostSvg').addEventListener('click', async () => {
+        $('galat').textContent = 'Sedang menyiapkan SVG...';
+        try {
+          const opsi = await siapkanOpsiEkspor();
+          const dataUrl = await htmlToImage.toSvg($('post'), opsi);
+          const res = await fetch(dataUrl);
+          const blob = await res.blob();
+          $('galat').textContent = '';
+          unduh(blob, 'post-instagram.svg');
+        } catch (e) {
+          $('galat').textContent = 'Gagal membuat SVG Post: ' + e.message;
+        }
+      });
+
+      // 3. Unduh Khusus Geometri sebagai PNG (memakai method downloadPNG dari GeoSVG.js)
+      // Disertai penyuntikan font otomatis ke dalam <defs> SVG agar label geometri tidak berubah font-nya
+      $('unduhGeoPng').addEventListener('click', async () => {
+        if (!geo) return;
+        const cssFont = await buatEmbedCSS($('fontLink').href);
+        let styleEl = geo.defs.querySelector('#embedFontGeo');
+        if (!styleEl) {
+          styleEl = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+          styleEl.id = 'embedFontGeo';
+          geo.defs.appendChild(styleEl);
+        }
+        styleEl.textContent = `${cssFont} svg, text { font-family: '${$('pilihFont').value}', sans-serif; }`;
+        await geo.downloadPNG('geometri.png', { scale: 2 });
+      });
+
+      // 4. Unduh Khusus Geometri sebagai SVG (memakai method downloadSVG dari GeoSVG.js)
+      $('unduhSvg').addEventListener('click', async () => {
+        if (!geo) return;
+        const cssFont = await buatEmbedCSS($('fontLink').href);
+        let styleEl = geo.defs.querySelector('#embedFontGeo');
+        if (!styleEl) {
+          styleEl = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+          styleEl.id = 'embedFontGeo';
+          geo.defs.appendChild(styleEl);
+        }
+        styleEl.textContent = `${cssFont} svg, text { font-family: '${$('pilihFont').value}', sans-serif; }`;
+        geo.downloadSVG('geometri.svg');
+      });
+
+      ['teks', 'font', 'adaGeo', 'geoAtas', 'tinggi', 'kode',
+        'warnaJudul', 'warnaTeks', 'shTeks', 'shLatex', 'shGeo', 'shBlur', 'shOff', 'shOp', 'shWarna'].forEach(id =>
+          $(id).addEventListener('input', segarkan));
+      $('adaGeo').addEventListener('change', segarkan);
+      $('geoAtas').addEventListener('change', segarkan);
+      $('pilihFont').addEventListener('change', gantiFont);
+      ['ratakanJudul', 'ratakanTeks', 'ratakanGeo'].forEach(id => $(id).addEventListener('change', segarkan));
+      window.addEventListener('resize', atur);
+
+      atur();
+      const mulai = () => { atur(); segarkan(); };
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(mulai); else mulai();
+      window.addEventListener('load', mulai);
+    })();
+  </script>
+</body>
+
+</html>
