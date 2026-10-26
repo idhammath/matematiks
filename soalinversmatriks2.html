@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>36 Paket Soal Invers Matriks Ordo 2x2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- KaTeX CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for math horizontal overflow on very small screens */
+        .math-scroll::-webkit-scrollbar {
+            height: 4px;
+        }
+        .math-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .paket-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Top Navigation / Sticky Header -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <!-- Title & Subtitle -->
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-extrabold text-xl shadow-md shadow-indigo-200 shrink-0">
+                        M⁻¹
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">
+                            36 Paket Soal Invers Matriks 2×2
+                        </h1>
+                        <p class="text-xs sm:text-sm text-slate-500">
+                            Soal 1: Determinan Positif ($\det > 0$) &bull; Soal 2: Determinan Negatif ($\det < 0$)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Controls: Filter & Global Solution Buttons -->
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <!-- Quick Jump Dropdown -->
+                    <div class="relative flex-grow sm:flex-grow-0">
+                        <select id="packageFilter" onchange="filterPackages(this.value)" class="w-full bg-slate-100 hover:bg-slate-200/70 text-slate-700 text-sm font-medium rounded-xl px-3.5 py-2.5 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer">
+                            <option value="all">Tampilkan Semua (36 Paket)</option>
+                        </select>
+                    </div>
+
+                    <!-- Global Show Solutions Button -->
+                    <button id="btnShowAll" onclick="handleGlobalUnlock()" class="flex-grow sm:flex-grow-0 inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm shadow-indigo-200 transition cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <span>LIHAT SEMUA PEMBAHASAN</span>
+                    </button>
+
+                    <!-- Global Hide Solutions Button (Hidden by default) -->
+                    <button id="btnHideAll" onclick="hideAllSolutions()" class="hidden flex-grow sm:flex-grow-0 inline-flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        </svg>
+                        <span>SEMBUNYIKAN SEMUA</span>
+                    </button>
+
+                    <!-- Print Button -->
+                    <button onclick="window.print()" title="Cetak Soal" class="inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 p-2.5 rounded-xl border border-slate-200 transition cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Formula Reference Banner -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-2xl p-4 sm:p-5 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+                <span class="inline-block bg-indigo-500/30 border border-indigo-400/40 text-indigo-100 text-xs font-semibold px-2.5 py-0.5 rounded-full mb-1.5">
+                    Rumus Dasar Invers Matriks 2×2
+                </span>
+                <p class="text-xs sm:text-sm text-indigo-100/90">
+                    Jika matriks memiliki determinan tidak sama dengan nol ($\det \neq 0$), maka inversnya dapat dihitung dengan rumus berikut:
+                </p>
+            </div>
+            <div id="formulaBannerMath" class="bg-white/10 backdrop-blur-sm border border-white/15 rounded-xl px-4 py-2.5 text-sm sm:text-base overflow-x-auto max-w-full shrink-0">
+                <!-- Rendered by KaTeX -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content: Grid of 36 Packages -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+        <div id="packagesGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- 36 Package Cards will be injected here via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-5 text-center text-xs sm:text-sm text-slate-500 no-print">
+        <div class="max-w-7xl mx-auto px-4">
+            Generator 36 Paket Soal Invers Matriks Ordo $2 \times 2$ &bull; Dilengkapi Pembahasan Langkah demi Langkah
+        </div>
+    </footer>
+
+    <!-- Password Modal Dialog (No native alert/confirm) -->
+    <div id="passwordModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 transition-opacity">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 transform transition-all">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="modalTitle" class="text-base font-bold text-slate-900">Akses Pembahasan Terkunci</h3>
+                        <p id="modalSubtitle" class="text-xs text-slate-500">Masukkan password guru untuk membuka pembahasan</p>
+                    </div>
+                </div>
+                <button onclick="closePasswordModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="passwordForm" onsubmit="submitPassword(event)" class="space-y-4">
+                <div>
+                    <label for="passwordInput" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Password Pembahasan
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="passwordInput" 
+                            placeholder="Masukkan password..." 
+                            autocomplete="off"
+                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"
+                        />
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-medium">
+                            Lihat
+                        </button>
+                    </div>
+                    <p id="passwordError" class="hidden text-xs font-medium text-rose-600 mt-2 flex items-center gap-1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Password yang Anda masukkan salah! Silakan coba lagi.</span>
+                    </p>
+                </div>
+
+                <div class="flex items-center justify-end gap-2.5 pt-2">
+                    <button type="button" onclick="closePasswordModal()" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-200 transition cursor-pointer">
+                        Buka Pembahasan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // DATA 36 PAKET SOAL MATRIKS 2x2
+        // Soal 1 (A): Determinan Positif (ad - bc > 0)
+        // Soal 2 (B): Determinan Negatif (ad - bc < 0)
+        // Setiap matriks adalah unik di seluruh 72 soal.
+        // =========================================================================
+        const packagesData = [
+            { id: 1,  q1: [4, 1, 5, 2],    q2: [2, 3, 3, 2] },     // det A = 3,  det B = -5
+            { id: 2,  q1: [5, 2, 6, 3],    q2: [3, 4, 4, 3] },     // det A = 3,  det B = -7
+            { id: 3,  q1: [3, 1, 4, 2],    q2: [1, 2, 3, 4] },     // det A = 2,  det B = -2
+            { id: 4,  q1: [6, 2, 7, 3],    q2: [2, 5, 3, 4] },     // det A = 4,  det B = -7
+            { id: 5,  q1: [5, 3, 4, 3],    q2: [4, 5, 3, 2] },     // det A = 3,  det B = -7
+            { id: 6,  q1: [7, 2, 5, 2],    q2: [1, 3, 2, 4] },     // det A = 4,  det B = -2
+            { id: 7,  q1: [4, 3, 3, 3],    q2: [2, 4, 3, 5] },     // det A = 3,  det B = -2
+            { id: 8,  q1: [8, 3, 5, 2],    q2: [3, 5, 2, 2] },     // det A = 1,  det B = -4
+            { id: 9,  q1: [6, 5, 4, 4],    q2: [3, 6, 4, 5] },     // det A = 4,  det B = -9
+            { id: 10, q1: [5, 1, 8, 2],    q2: [4, 7, 3, 4] },     // det A = 2,  det B = -5
+            { id: 11, q1: [7, 4, 5, 3],    q2: [2, 7, 1, 2] },     // det A = 1,  det B = -3
+            { id: 12, q1: [9, 2, 7, 2],    q2: [5, 6, 4, 4] },     // det A = 4,  det B = -4
+            { id: 13, q1: [3, -1, 2, 1],   q2: [2, 3, 4, 1] },     // det A = 5,  det B = -10
+            { id: 14, q1: [4, -2, 1, 1],   q2: [1, 4, 2, 3] },     // det A = 6,  det B = -5
+            { id: 15, q1: [2, -1, 3, 2],   q2: [3, 2, 5, 2] },     // det A = 7,  det B = -4
+            { id: 16, q1: [5, -2, 2, 1],   q2: [4, 3, 5, 2] },     // det A = 9,  det B = -7
+            { id: 17, q1: [3, -2, 2, 2],   q2: [2, 5, 4, 3] },     // det A = 10, det B = -14
+            { id: 18, q1: [4, -1, 3, 2],   q2: [1, 5, 2, 4] },     // det A = 11, det B = -6
+            { id: 19, q1: [2, -3, 1, 2],   q2: [3, 4, 6, 5] },     // det A = 7,  det B = -9
+            { id: 20, q1: [6, -1, 4, 1],   q2: [5, 4, 4, 2] },     // det A = 10, det B = -6
+            { id: 21, q1: [-2, 1, -5, 2],  q2: [-3, 2, 1, 2] },    // det A = 1,  det B = -8
+            { id: 22, q1: [-3, 2, -5, 3],  q2: [-2, 3, 2, 1] },    // det A = 1,  det B = -8
+            { id: 23, q1: [-4, 1, -7, 2],  q2: [-1, 4, 2, 3] },    // det A = -1 -> wait: (-4)(2) - (1)(-7) = -1, let's fix to positive!
+            { id: 24, q1: [5, 2, 3, 2],    q2: [-4, 1, 2, 2] },    // det A = 4,  det B = -10
+            { id: 25, q1: [6, 1, 4, 1],    q2: [2, -3, 4, -2] },   // det A = 2,  det B = 8 -> fix below!
+            { id: 26, q1: [7, 3, 4, 2],    q2: [1, 6, 2, 5] },     // det A = 2,  det B = -7
+            { id: 27, q1: [8, 5, 3, 2],    q2: [4, 6, 3, 3] },     // det A = 1,  det B = -6
+            { id: 28, q1: [5, 4, 3, 3],    q2: [2, 6, 3, 4] },     // det A = 3,  det B = -10
+            { id: 29, q1: [9, 4, 4, 2],    q2: [3, 7, 2, 3] },     // det A = 2,  det B = -5
+            { id: 30, q1: [6, 3, 5, 3],    q2: [5, 7, 3, 3] },     // det A = 3,  det B = -6
+            { id: 31, q1: [4, 2, 3, 2],    q2: [2, 8, 1, 2] },     // det A = 2,  det B = -4
+            { id: 32, q1: [7, 5, 4, 3],    q2: [6, 5, 4, 2] },     // det A = 1,  det B = -8
+            { id: 33, q1: [8, 2, 7, 2],    q2: [3, 8, 2, 4] },     // det A = 2,  det B = -4
+            { id: 34, q1: [5, -1, 3, 1],   q2: [-2, 1, 3, 2] },    // det A = 8,  det B = -7
+            { id: 35, q1: [4, -3, 2, 1],   q2: [-1, 3, 2, 4] },    // det A = 10, det B = -10
+            { id: 36, q1: [6, -2, 3, 1],   q2: [-3, 1, 4, 2] }     // det A = 12, det B = -10
+        ];
+
+        // Fix Paket 23 & 25 supaya 100% akurat memenuhi syarat det > 0 untuk q1 dan det < 0 untuk q2
+        packagesData[22].q1 = [4, -1, 1, 2];   // Paket 23 q1: 4*2 - (-1)*1 = 9 (> 0)
+        packagesData[22].q2 = [-1, 4, 2, 3];   // Paket 23 q2: (-1)*3 - 4*2 = -11 (< 0)
+        packagesData[24].q1 = [6, 1, 4, 1];    // Paket 25 q1: 6*1 - 1*4 = 2 (> 0)
+        packagesData[24].q2 = [-2, 3, 4, 2];   // Paket 25 q2: (-2)*2 - 3*4 = -16 (< 0)
+
+        const SECRET_PASSWORD = "asdfghjkl";
+        let currentModalTarget = null; // 'all' or solution element ID like 'sol-1-1'
+
+        // =========================================================================
+        // MATEMATIKA & LATEX HELPER FUNCTIONS
+        // =========================================================================
+
+        // Mencari Faktor Persekutuan Terbesar (FPB / GCD)
+        function gcd(x, y) {
+            x = Math.abs(x);
+            y = Math.abs(y);
+            while (y) {
+                let t = y;
+                y = x % y;
+                x = t;
+            }
+            return x || 1;
+        }
+
+        // Format angka di dalam kurung perkalian bila negatif, misal -3 menjadi (-3)
+        function fmtParen(n) {
+            return n < 0 ? `(${n})` : `${n}`;
+        }
+
+        // Format pecahan paling sederhana dalam LaTeX untuk elemen hasil akhir matriks
+        function formatSimplifiedEntry(num, den) {
+            if (num === 0) return "0";
+            let sign = (num * den < 0) ? "-" : "";
+            let absNum = Math.abs(num);
+            let absDen = Math.abs(den);
+            let g = gcd(absNum, absDen);
+            absNum /= g;
+            absDen /= g;
+
+            if (absDen === 1) {
+                return `${sign}${absNum}`;
+            }
+            return `${sign}\\frac{${absNum}}{${absDen}}`;
+        }
+
+        // Membuat kode LaTeX untuk soal matriks
+        function buildQuestionLatex(matrixName, arr) {
+            const [a, b, c, d] = arr;
+            return `${matrixName} = \\begin{pmatrix} ${a} & ${b} \\\\ ${c} & ${d} \\end{pmatrix}`;
+        }
+
+        // Membuat kode LaTeX untuk langkah-langkah pembahasan lengkap
+        function buildSolutionSteps(matrixName, arr) {
+            const [a, b, c, d] = arr;
+            const ad = a * d;
+            const bc = b * c;
+            const det = ad - bc;
+
+            // Adjoin matriks [d, -b; -c, a]
+            const adj = [d, -b, -c, a];
+
+            // Langkah 1: Determinan
+            const subTerm = bc < 0 ? `- (${bc})` : `- ${bc}`;
+            const step1Latex = `\\det(${matrixName}) = (${fmtParen(a)} \\cdot ${fmtParen(d)}) - (${fmtParen(b)} \\cdot ${fmtParen(c)}) = ${ad} ${subTerm} = ${det}`;
+
+            // Langkah 2: Adjoin
+            const step2Latex = `\\text{Adj}(${matrixName}) = \\begin{pmatrix} d & -b \\\\ -c & a \\end{pmatrix} = \\begin{pmatrix} ${adj[0]} & ${adj[1]} \\\\ ${adj[2]} & ${adj[3]} \\end{pmatrix}`;
+
+            // Langkah 3: Substitusi ke Rumus Invers & Hasil Akhir
+            const fracFront = det < 0 ? `-\\frac{1}{${Math.abs(det)}}` : `\\frac{1}{${det}}`;
+            const e0 = formatSimplifiedEntry(adj[0], det);
+            const e1 = formatSimplifiedEntry(adj[1], det);
+            const e2 = formatSimplifiedEntry(adj[2], det);
+            const e3 = formatSimplifiedEntry(adj[3], det);
+
+            const step3Latex = `${matrixName}^{-1} = \\frac{1}{\\det(${matrixName})} \\cdot \\text{Adj}(${matrixName}) = ${fracFront} \\begin{pmatrix} ${adj[0]} & ${adj[1]} \\\\ ${adj[2]} & ${adj[3]} \\end{pmatrix} = \\begin{pmatrix} ${e0} & ${e1} \\\\ ${e2} & ${e3} \\end{pmatrix}`;
+
+            return {
+                det,
+                step1Latex,
+                step2Latex,
+                step3Latex
+            };
+        }
+
+        // Render KaTeX string ke HTML string dengan aman
+        function renderMath(latexStr, displayMode = false) {
+            try {
+                return katex.renderToString(latexStr, {
+                    throwOnError: false,
+                    displayMode: displayMode
+                });
+            } catch (e) {
+                return `<code>${latexStr}</code>`;
+            }
+        }
+
+        // =========================================================================
+        // RENDER UI 36 PAKET SOAL
+        // =========================================================================
+        function initApp() {
+            // Render rumus di banner atas
+            const bannerEl = document.getElementById('formulaBannerMath');
+            const bannerLatex = `M = \\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix} \\implies M^{-1} = \\frac{1}{ad - bc} \\begin{pmatrix} d & -b \\\\ -c & a \\end{pmatrix}`;
+            bannerEl.innerHTML = renderMath(bannerLatex, false);
+
+            // Populate dropdown filter paket
+            const filterSelect = document.getElementById('packageFilter');
+            packagesData.forEach(pkg => {
+                const opt = document.createElement('option');
+                opt.value = pkg.id;
+                opt.textContent = `Paket ${pkg.id}`;
+                filterSelect.appendChild(opt);
+            });
+
+            // Render 36 kartu paket soal
+            const grid = document.getElementById('packagesGrid');
+            let htmlContent = '';
+
+            packagesData.forEach(pkg => {
+                htmlContent += createPackageCardHTML(pkg);
+            });
+
+            grid.innerHTML = htmlContent;
+        }
+
+        function createQuestionBlockHTML(pkgId, qNum, matrixName, arr, isPositiveDet) {
+            const solId = `sol-${pkgId}-${qNum}`;
+            const btnId = `btn-${pkgId}-${qNum}`;
+            const qLatex = buildQuestionLatex(matrixName, arr);
+            const invNameLatex = renderMath(`${matrixName}^{-1}`, false);
+            const matrixNameInline = renderMath(matrixName, false);
+            const steps = buildSolutionSteps(matrixName, arr);
+
+            const badgeClass = isPositiveDet
+                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                : "bg-amber-50 text-amber-700 border-amber-200";
+            const badgeLabel = isPositiveDet
+                ? "Determinan Positif"
+                : "Determinan Negatif";
+
+            return `
+                <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/80 flex flex-col justify-between">
+                    <div>
+                        <!-- Header Nomor Soal & Badge -->
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-700">
+                                <span class="w-5 h-5 rounded-md bg-slate-800 text-white inline-flex items-center justify-center text-[11px]">${qNum}</span>
+                                Soal ${qNum}
+                            </span>
+                            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${badgeClass}">
+                                ${badgeLabel}
+                            </span>
+                        </div>
+
+                        <!-- Teks Soal (Format seragam di setiap paket) -->
+                        <p class="text-sm text-slate-700 leading-relaxed mb-3">
+                            Diketahui matriks ${matrixNameInline} sebagai berikut:
+                        </p>
+
+                        <div class="bg-white rounded-xl py-3 px-4 border border-slate-200/90 shadow-2xs my-2 text-center overflow-x-auto math-scroll">
+                            ${renderMath(qLatex, true)}
+                        </div>
+
+                        <p class="text-sm text-slate-700 leading-relaxed mt-3">
+                            Tentukan invers dari matriks ${matrixNameInline} (yaitu ${invNameLatex})!
+                        </p>
+                    </div>
+
+                    <!-- Tombol Lihat Pembahasan per Soal -->
+                    <div class="mt-4 pt-3 border-t border-slate-200/70 flex items-center justify-between no-print">
+                        <button 
+                            id="${btnId}"
+                            onclick="handleSingleSolutionButton('${solId}')" 
+                            class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-indigo-50 text-indigo-600 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition cursor-pointer"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            <span class="btn-text">LIHAT PEMBAHASAN</span>
+                        </button>
+                    </div>
+
+                    <!-- Panel Pembahasan (Hidden by Default) -->
+                    <div id="${solId}" class="solution-panel hidden mt-4 pt-4 border-t border-indigo-100 bg-indigo-50/50 -mx-4 -mb-4 p-4 rounded-b-xl">
+                        <div class="flex items-center justify-between mb-2.5">
+                            <span class="text-xs font-bold text-indigo-900 uppercase tracking-wider flex items-center gap-1.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                </svg>
+                                Pembahasan Soal ${qNum} (Paket ${pkgId})
+                            </span>
+                        </div>
+
+                        <div class="space-y-2.5 text-xs sm:text-sm text-slate-700">
+                            <div class="bg-white p-3 rounded-lg border border-indigo-100 overflow-x-auto math-scroll">
+                                <div class="text-[11px] font-semibold text-slate-400 uppercase mb-1">1. Hitung Determinan Matriks ${matrixNameInline}:</div>
+                                ${renderMath(steps.step1Latex, false)}
+                            </div>
+
+                            <div class="bg-white p-3 rounded-lg border border-indigo-100 overflow-x-auto math-scroll">
+                                <div class="text-[11px] font-semibold text-slate-400 uppercase mb-1">2. Tentukan Adjoin Matriks ${matrixNameInline}:</div>
+                                ${renderMath(steps.step2Latex, false)}
+                            </div>
+
+                            <div class="bg-white p-3 rounded-lg border border-indigo-200 shadow-2xs overflow-x-auto math-scroll">
+                                <div class="text-[11px] font-bold text-indigo-600 uppercase mb-1">3. Hitung Invers Matriks (${invNameLatex}):</div>
+                                ${renderMath(steps.step3Latex, true)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createPackageCardHTML(pkg) {
+            const q1HTML = createQuestionBlockHTML(pkg.id, 1, "A", pkg.q1, true);
+            const q2HTML = createQuestionBlockHTML(pkg.id, 2, "B", pkg.q2, false);
+
+            return `
+                <article id="paket-card-${pkg.id}" class="paket-card bg-white rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md transition-shadow overflow-hidden flex flex-col">
+                    <!-- Card Header -->
+                    <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-lg bg-indigo-500 text-white font-bold text-xs flex items-center justify-center">
+                                #${pkg.id}
+                            </span>
+                            <h2 class="font-bold text-base tracking-tight">PAKET SOAL ${pkg.id}</h2>
+                        </div>
+                        <span class="text-xs text-slate-400 font-medium">Invers Matriks 2×2</span>
+                    </div>
+
+                    <!-- Card Body: 2 Questions -->
+                    <div class="p-5 space-y-4 flex-grow">
+                        ${q1HTML}
+                        ${q2HTML}
+                    </div>
+                </article>
+            `;
+        }
+
+        // =========================================================================
+        // PASSWORD MODAL & UNLOCK LOGIC
+        // =========================================================================
+
+        // Dipanggil saat tombol "LIHAT PEMBAHASAN" di salah satu soal diklik
+        function handleSingleSolutionButton(solId) {
+            const solEl = document.getElementById(solId);
+            if (!solEl) return;
+
+            // Jika pembahasan sedang terbuka, pengguna bisa langsung menyembunyikannya tanpa password
+            if (!solEl.classList.contains('hidden')) {
+                setSingleSolutionVisibility(solId, false);
+                updateGlobalButtonsState();
+                return;
+            }
+
+            // Jika pembahasan masih tertutup, wajib memasukkan password "asdfghjkl"
+            openPasswordModal(solId);
+        }
+
+        // Dipanggil saat tombol "LIHAT SEMUA PEMBAHASAN" diklik
+        function handleGlobalUnlock() {
+            openPasswordModal('all');
+        }
+
+        function openPasswordModal(target) {
+            currentModalTarget = target;
+            const modal = document.getElementById('passwordModal');
+            const input = document.getElementById('passwordInput');
+            const errorMsg = document.getElementById('passwordError');
+            const titleEl = document.getElementById('modalTitle');
+            const subtitleEl = document.getElementById('modalSubtitle');
+
+            if (target === 'all') {
+                titleEl.textContent = "Buka Semua Pembahasan (36 Paket)";
+                subtitleEl.textContent = "Masukkan password untuk menampilkan seluruh 72 pembahasan soal.";
+            } else {
+                const parts = target.split('-'); // sol-{pkgId}-{qNum}
+                titleEl.textContent = `Buka Pembahasan Paket ${parts[1]} - Soal ${parts[2]}`;
+                subtitleEl.textContent = "Masukkan password untuk menampilkan pembahasan soal ini.";
+            }
+
+            input.value = '';
+            input.type = 'password';
+            errorMsg.classList.add('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            setTimeout(() => {
+                input.focus();
+            }, 50);
+        }
+
+        function closePasswordModal() {
+            const modal = document.getElementById('passwordModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            currentModalTarget = null;
+        }
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('passwordInput');
+            input.type = input.type === 'password' ? 'text' : 'password';
+            input.focus();
+        }
+
+        function submitPassword(event) {
+            event.preventDefault();
+            const input = document.getElementById('passwordInput');
+            const errorMsg = document.getElementById('passwordError');
+
+            if (input.value === SECRET_PASSWORD) {
+                if (currentModalTarget === 'all') {
+                    packagesData.forEach(pkg => {
+                        setSingleSolutionVisibility(`sol-${pkg.id}-1`, true);
+                        setSingleSolutionVisibility(`sol-${pkg.id}-2`, true);
+                    });
+                } else if (currentModalTarget) {
+                    setSingleSolutionVisibility(currentModalTarget, true);
+                }
+                updateGlobalButtonsState();
+                closePasswordModal();
+            } else {
+                errorMsg.classList.remove('hidden');
+                input.select();
+            }
+        }
+
+        function setSingleSolutionVisibility(solId, show) {
+            const solEl = document.getElementById(solId);
+            const btnId = solId.replace('sol-', 'btn-');
+            const btnEl = document.getElementById(btnId);
+
+            if (!solEl || !btnEl) return;
+
+            if (show) {
+                solEl.classList.remove('hidden');
+                btnEl.className = "w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-200 hover:bg-slate-300 text-slate-700 border border-slate-300 transition cursor-pointer";
+                btnEl.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    </svg>
+                    <span>TUTUP PEMBAHASAN</span>
+                `;
+            } else {
+                solEl.classList.add('hidden');
+                btnEl.className = "w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-indigo-50 text-indigo-600 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition cursor-pointer";
+                btnEl.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>LIHAT PEMBAHASAN</span>
+                `;
+            }
+        }
+
+        function hideAllSolutions() {
+            packagesData.forEach(pkg => {
+                setSingleSolutionVisibility(`sol-${pkg.id}-1`, false);
+                setSingleSolutionVisibility(`sol-${pkg.id}-2`, false);
+            });
+            updateGlobalButtonsState();
+        }
+
+        function updateGlobalButtonsState() {
+            const allPanels = document.querySelectorAll('.solution-panel');
+            let anyOpen = false;
+            allPanels.forEach(p => {
+                if (!p.classList.contains('hidden')) anyOpen = true;
+            });
+
+            const btnHideAll = document.getElementById('btnHideAll');
+            if (anyOpen) {
+                btnHideAll.classList.remove('hidden');
+            } else {
+                btnHideAll.classList.add('hidden');
+            }
+        }
+
+        // Filter Paket Soal dari Dropdown
+        function filterPackages(val) {
+            packagesData.forEach(pkg => {
+                const card = document.getElementById(`paket-card-${pkg.id}`);
+                if (!card) return;
+                if (val === 'all' || String(pkg.id) === String(val)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Tutup modal bila menekan tombol Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePasswordModal();
+            }
+        });
+
+        // Jalankan aplikasi setelah seluruh halaman & KaTeX siap
+        window.onload = initApp;
+    </script>
+</body>
+</html>
