@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>36 Paket Soal Barisan Aritmetika</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .math-var {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            font-weight: 600;
+        }
+        .math-formula {
+            font-family: 'Times New Roman', Times, serif;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-break-inside {
+                break-inside: avoid;
+            }
+            body {
+                background-color: white;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header & Control Bar -->
+    <header class="bg-gradient-to-r from-indigo-700 via-blue-700 to-indigo-800 text-white shadow-lg sticky top-0 z-30 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2.5">
+                        <div class="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+                            <i class="fa-solid fa-calculator text-xl text-amber-300"></i>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">Bank Soal Barisan Aritmetika</h1>
+                    </div>
+                    <p class="text-indigo-100 text-xs sm:text-sm mt-1">
+                        36 Paket Soal Unik (4 Soal / Paket) &bull; Dilengkapi Pembahasan Terkunci
+                    </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <!-- Search / Filter Paket -->
+                    <div class="relative flex-grow sm:flex-grow-0">
+                        <select id="packageFilter" onchange="filterPackage(this.value)" class="w-full sm:w-44 bg-white/10 hover:bg-white/20 text-white border border-white/25 rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 transition cursor-pointer">
+                            <option value="all" class="text-slate-800">Semua Paket (1 - 36)</option>
+                        </select>
+                    </div>
+
+                    <!-- Button: Kustomisasi Tipe Soal -->
+                    <button onclick="openConfigModal()" class="bg-indigo-600/80 hover:bg-indigo-500 border border-indigo-400/40 text-white font-semibold px-3.5 py-2 rounded-xl text-sm transition flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span class="hidden sm:inline">Atur Tipe Soal</span>
+                    </button>
+
+                    <!-- Button: LIHAT SEMUA PEMBAHASAN -->
+                    <button id="btnAllSolutions" onclick="handleAllSolutionsButton()" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-lock" id="iconAllSolutions"></i>
+                        <span id="textAllSolutions">LIHAT SEMUA PEMBAHASAN</span>
+                    </button>
+
+                    <!-- Button: Cetak -->
+                    <button onclick="window.print()" class="bg-white/15 hover:bg-white/25 text-white font-semibold px-3.5 py-2 rounded-xl text-sm transition flex items-center gap-1.5" title="Cetak / Simpan PDF">
+                        <i class="fa-solid fa-print"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Subheader Info Banner -->
+    <div class="bg-indigo-50 border-b border-indigo-100 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm text-indigo-900">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-info text-indigo-600"></i>
+                <span>Setiap paket memiliki kombinasi suku awal (<span class="math-var">a</span>), beda (<span class="math-var">b</span>), dan suku ke-<span class="math-var">n</span> yang unik untuk 36 siswa.</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="bg-indigo-100 text-indigo-800 px-2.5 py-0.5 rounded-full font-semibold text-xs">
+                    Status Pembahasan: <span id="unlockedCountBadge">0 / 36 Terbuka</span>
+                </span>
+                <button onclick="regenerateNumbers()" class="text-indigo-700 hover:text-indigo-900 font-semibold underline flex items-center gap-1 ml-2">
+                    <i class="fa-solid fa-rotate"></i> Acak Ulang Angka
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content: Grid of 36 Packages -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div id="packagesGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Diisi secara dinamis oleh JavaScript -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-5 mt-12 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs sm:text-sm text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p class="font-medium text-slate-700">Generator 36 Paket Soal Barisan Aritmetika</p>
+            <p>Ref: <a href="https://idhammath.github.io/matematiks/contohbarisanarit.html" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:underline">idhammath.github.io/matematiks/contohbarisanarit.html</a></p>
+        </div>
+    </footer>
+
+    <!-- MODAL PASSWORD -->
+    <div id="passwordModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all">
+            <div class="bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-4 flex items-center justify-between text-white">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-key text-amber-300 text-lg"></i>
+                    <h3 id="modalTitle" class="font-bold text-lg">Akses Pembahasan</h3>
+                </div>
+                <button onclick="closePasswordModal()" class="text-white/80 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <form id="passwordForm" onsubmit="submitPassword(event)" class="p-6">
+                <p id="modalSubtitle" class="text-sm text-slate-600 mb-4">
+                    Masukkan password guru untuk membuka pembahasan soal.
+                </p>
+                <div class="mb-4">
+                    <label for="passwordInput" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Password</label>
+                    <div class="relative">
+                        <input
+                            type="password"
+                            id="passwordInput"
+                            placeholder="Masukkan password..."
+                            autocomplete="off"
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-200 outline-none text-slate-800 font-medium transition pr-10"
+                        >
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                            <i id="eyeIcon" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <p id="passwordError" class="text-xs text-red-600 font-semibold mt-2 hidden flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>Password yang Anda masukkan salah!</span>
+                    </p>
+                </div>
+                <div class="flex items-center justify-end gap-2.5 pt-2">
+                    <button type="button" onclick="closePasswordModal()" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-sm shadow-md transition flex items-center gap-2">
+                        <i class="fa-solid fa-unlock"></i>
+                        <span>Buka Pembahasan</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PENGATURAN TIPE SOAL (4 CONTOH SOAL) -->
+    <div id="configModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-100 overflow-hidden">
+            <div class="bg-slate-800 px-6 py-4 flex items-center justify-between text-white">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-sliders text-amber-400"></i>
+                    <h3 class="font-bold text-lg">Sesuaikan 4 Tipe Soal Barisan Aritmetika</h3>
+                </div>
+                <button onclick="closeConfigModal()" class="text-white/80 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 max-h-[80vh] overflow-y-auto space-y-4">
+                <p class="text-xs sm:text-sm text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    Pilih variasi untuk ke-4 nomor soal pada setiap paket agar sesuai persis dengan urutan 4 contoh soal pertama pada modul pembelajaran Anda:
+                </p>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Tipe Soal Nomor 1</label>
+                        <select id="typeSelect0" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Tipe Soal Nomor 2</label>
+                        <select id="typeSelect1" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Tipe Soal Nomor 3</label>
+                        <select id="typeSelect2" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Tipe Soal Nomor 4</label>
+                        <select id="typeSelect3" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none"></select>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
+                    <button onclick="resetDefaultTypes()" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
+                        Reset Default
+                    </button>
+                    <button onclick="saveConfigTypes()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2 rounded-xl text-sm shadow-md transition">
+                        Terapkan ke 36 Paket
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================================
+        // KONFIGURASI PASSWORD & STATE
+        // ============================================================================
+        const SECRET_PASSWORD = "asdfghjkl";
+        const TOTAL_PACKAGES = 36;
+
+        // Menyimpan status paket mana saja yang pembahasannya sudah terbuka
+        let unlockedPackages = new Set();
+        let allUnlocked = false;
+
+        // Target dari modal password ('ALL' atau nomor paket 1..36)
+        let pendingUnlockTarget = null;
+
+        // Daftar pilihan template soal Barisan Aritmetika yang umum pada contohbarisanarit.html
+        const QUESTION_TEMPLATES = [
+            {
+                id: "suku_ke_n_naik",
+                label: "Mencari Suku ke-n (Un) dari Barisan Aritmetika Naik (a, b, Un)",
+                generate: (pkgIndex, seedOffset) => {
+                    // Pastikan setiap paket punya angka unik
+                    const a = 2 + ((pkgIndex * 3 + seedOffset) % 25);
+                    const b = 2 + ((pkgIndex + seedOffset * 2) % 9);
+                    const n = 12 + (pkgIndex % 19); // antara 12 s.d. 30
+                    const u2 = a + b;
+                    const u3 = a + 2 * b;
+                    const u4 = a + 3 * b;
+                    const un = a + (n - 1) * b;
+
+                    return {
+                        question: `Diketahui barisan aritmetika: <b>${a}, ${u2}, ${u3}, ${u4}, &hellip;</b><br>Tentukan suku pertama (<span class="math-var">a</span>), beda (<span class="math-var">b</span>), rumus suku ke-<span class="math-var">n</span> (<span class="math-var">U<sub>n</sub></span>), dan nilai suku ke-${n} (<span class="math-var">U<sub>${n}</sub></span>)!`,
+                        solution: `
+                            <div class="space-y-1.5 text-xs sm:text-sm">
+                                <p>&bull; Suku pertama (<span class="math-var">a</span>) = <b>${a}</b></p>
+                                <p>&bull; Beda (<span class="math-var">b</span>) = <span class="math-var">U<sub>2</sub> &minus; U<sub>1</sub></span> = ${u2} &minus; ${a} = <b>${b}</b></p>
+                                <p>&bull; Rumus suku ke-<span class="math-var">n</span>:
+                                    <span class="math-formula"><i>U<sub>n</sub></i> = <i>a</i> + (<i>n</i> &minus; 1)<i>b</i> = ${a} + (<i>n</i> &minus; 1)(${b}) = ${a} + ${b}<i>n</i> &minus; ${b} = <b>${b}<i>n</i> ${a - b >= 0 ? '+ ' + (a - b) : '&minus; ' + Math.abs(a - b)}</b></span>
+                                </p>
+                                <p>&bull; Suku ke-${n} (<span class="math-var">U<sub>${n}</sub></span>):
+                                    <span class="math-formula"><i>U<sub>${n}</sub></i> = ${a} + (${n} &minus; 1) &times; ${b} = ${a} + ${n - 1} &times; ${b} = ${a} + ${(n - 1) * b} = <b class="text-indigo-700">${un}</b></span>
+                                </p>
+                            </div>
+                        `
+                    };
+                }
+            },
+            {
+                id: "suku_ke_n_turun",
+                label: "Mencari Suku ke-n (Un) dari Barisan Aritmetika Turun (Beda Negatif)",
+                generate: (pkgIndex, seedOffset) => {
+                    const a = 45 + ((pkgIndex * 4 + seedOffset) % 60);
+                    const bAbs = 2 + ((pkgIndex + 2) % 7); // b negatif
+                    const b = -bAbs;
+                    const n = 15 + ((pkgIndex * 2) % 16); // 15 s.d. 30
+                    const u2 = a + b;
+                    const u3 = a + 2 * b;
+                    const u4 = a + 3 * b;
+                    const un = a + (n - 1) * b;
+
+                    return {
+                        question: `Diketahui barisan aritmetika: <b>${a}, ${u2}, ${u3}, ${u4}, &hellip;</b><br>Tentukan nilai suku ke-${n} (<span class="math-var">U<sub>${n}</sub></span>) dari barisan tersebut!`,
+                        solution: `
+                            <div class="space-y-1.5 text-xs sm:text-sm">
+                                <p>&bull; Suku pertama (<span class="math-var">a</span>) = <b>${a}</b></p>
+                                <p>&bull; Beda (<span class="math-var">b</span>) = <span class="math-var">U<sub>2</sub> &minus; U<sub>1</sub></span> = ${u2} &minus; ${a} = <b>&minus;${bAbs}</b></p>
+                                <p>&bull; Rumus: <span class="math-formula"><i>U<sub>n</sub></i> = <i>a</i> + (<i>n</i> &minus; 1)<i>b</i></span></p>
+                                <p>&bull; <span class="math-formula"><i>U<sub>${n}</sub></i> = ${a} + (${n} &minus; 1) &times; (&minus;${bAbs}) = ${a} + ${n - 1} &times; (&minus;${bAbs}) = ${a} &minus; ${(n - 1) * bAbs} = <b class="text-indigo-700">${un}</b></span></p>
+                            </div>
+                        `
+                    };
+                }
+            },
+            {
+                id: "cari_banyak_suku_n",
+                label: "Mencari Banyaknya Suku (n) Jika Suku Terakhir (Un) Diketahui",
+                generate: (pkgIndex, seedOffset) => {
+                    const a = 3 + ((pkgIndex * 2 + seedOffset) % 20);
+                    const b = 3 + ((pkgIndex + 1) % 8);
+                    const n = 16 + ((pkgIndex * 3) % 25); // 16 s.d. 40
+                    const u2 = a + b;
+                    const u3 = a + 2 * b;
+                    const un = a + (n - 1) * b;
+
+                    return {
+                        question: `Diketahui barisan aritmetika: <b>${a}, ${u2}, ${u3}, &hellip;, ${un}</b>.<br>Tentukan banyaknya suku (<span class="math-var">n</span>) pada barisan aritmetika tersebut!`,
+                        solution: `
+                            <div class="space-y-1.5 text-xs sm:text-sm">
+                                <p>&bull; Diketahui: <span class="math-var">a</span> = ${a}, <span class="math-var">b</span> = ${u2} &minus; ${a} = ${b}, dan <span class="math-var">U<sub>n</sub></span> = ${un}</p>
+                                <p>&bull; <span class="math-formula"><i>U<sub>n</sub></i> = <i>a</i> + (<i>n</i> &minus; 1)<i>b</i></span></p>
+                                <p>&bull; <span class="math-formula">${un} = ${a} + (<i>n</i> &minus; 1) &times; ${b}</span></p>
+                                <p>&bull; <span class="math-formula">${un} &minus; ${a} = (<i>n</i> &minus; 1) &times; ${b} &rArr; ${un - a} = ${b}(<i>n</i> &minus; 1)</span></p>
+                                <p>&bull; <span class="math-formula"><i>n</i> &minus; 1 = ${un - a} &divide; ${b} = ${(un - a) / b} &rArr; <i>n</i> = ${(un - a) / b} + 1 = <b class="text-indigo-700">${n}</b></span></p>
+                            </div>
+                        `
+                    };
+                }
+            },
+            {
+                id: "diketahui_dua_suku",
+                label: "Mencari Suku ke-k Jika Diketahui Dua Suku Lainnya (Up dan Uq)",
+                generate: (pkgIndex, seedOffset) => {
+                    const a = 4 + ((pkgIndex * 5 + seedOffset) % 22);
+                    const b = 2 + ((pkgIndex + 3) % 7);
+                    const p = 3 + (pkgIndex % 4); // U3..U6
+                    const q = p + 4 + (pkgIndex % 5); // U7..U14
+                    const k = q + 5 + (pkgIndex % 8); // Suku yang ditanyakan
+                    const up = a + (p - 1) * b;
+                    const uq = a + (q - 1) * b;
+                    const uk = a + (k - 1) * b;
+
+                    return {
+                        question: `Suatu barisan aritmetika diketahui suku ke-${p} (<span class="math-var">U<sub>${p}</sub></span>) adalah <b>${up}</b> dan suku ke-${q} (<span class="math-var">U<sub>${q}</sub></span>) adalah <b>${uq}</b>.<br>Tentukan nilai suku ke-${k} (<span class="math-var">U<sub>${k}</sub></span>) dari barisan tersebut!`,
+                        solution: `
+                            <div class="space-y-1.5 text-xs sm:text-sm">
+                                <p>&bull; Eliminasi untuk mencari beda (<span class="math-var">b</span>):<br>
+                                    <span class="math-formula"><i>U<sub>${q}</sub></i> = <i>a</i> + ${q - 1}<i>b</i> = ${uq}</span><br>
+                                    <span class="math-formula"><i>U<sub>${p}</sub></i> = <i>a</i> + ${p - 1}<i>b</i> = ${up}</span><br>
+                                    Dikurangkan: <span class="math-formula">(${q - 1} &minus; ${p - 1})<i>b</i> = ${uq} &minus; ${up} &rArr; ${q - p}<i>b</i> = ${uq - up} &rArr; <b><i>b</i> = ${b}</b></span>
+                                </p>
+                                <p>&bull; Substitusi <span class="math-var">b</span> = ${b} ke <span class="math-var">U<sub>${p}</sub></span>:<br>
+                                    <span class="math-formula"><i>a</i> + ${p - 1}(${b}) = ${up} &rArr; <i>a</i> + ${(p - 1) * b} = ${up} &rArr; <b><i>a</i> = ${a}</b></span>
+                                </p>
+                                <p>&bull; Menentukan suku ke-${k} (<span class="math-var">U<sub>${k}</sub></span>):<br>
+                                    <span class="math-formula"><i>U<sub>${k}</sub></i> = <i>a</i> + (${k} &minus; 1)<i>b</i> = ${a} + ${k - 1}(${b}) = ${a} + ${(k - 1) * b} = <b class="text-indigo-700">${uk}</b></span>
+                                </p>
+                            </div>
+                        `
+                    };
+                }
+            },
+            {
+                id: "soal_cerita_kursi",
+                label: "Soal Cerita Kontekstual Barisan Aritmetika (Susunan Kursi Gedung)",
+                generate: (pkgIndex, seedOffset) => {
+                    const a = 12 + (pkgIndex % 15);
+                    const b = 2 + (pkgIndex % 5);
+                    const n = 10 + (pkgIndex % 11);
+                    const u2 = a + b;
+                    const u3 = a + 2 * b;
+                    const un = a + (n - 1) * b;
+
+                    return {
+                        question: `Di dalam sebuah aula pertunjukan, baris paling depan terdapat <b>${a} kursi</b>, baris kedua terdapat <b>${u2} kursi</b>, baris ketiga <b>${u3} kursi</b>, dan seterusnya selalu bertambah secara tetap.<br>Berapakah banyaknya kursi pada baris ke-<b>${n}</b>?`,
+                        solution: `
+                            <div class="space-y-1.5 text-xs sm:text-sm">
+                                <p>&bull; Barisan aritmetika: ${a}, ${u2}, ${u3}, &hellip; dengan <span class="math-var">a</span> = <b>${a}</b> dan <span class="math-var">b</span> = <b>${b}</b></p>
+                                <p>&bull; Banyak kursi pada baris ke-${n} (<span class="math-var">U<sub>${n}</sub></span>):<br>
+                                    <span class="math-formula"><i>U<sub>${n}</sub></i> = <i>a</i> + (${n} &minus; 1)<i>b</i> = ${a} + ${n - 1} &times; ${b} = ${a} + ${(n - 1) * b} = <b class="text-indigo-700">${un} kursi</b></span>
+                                </p>
+                            </div>
+                        `
+                    };
+                }
+            }
+        ];
+
+        // Urutan default 4 soal pertama (Contoh 1 s.d. Contoh 4)
+        let activeTemplateIndices = [0, 1, 2, 3];
+        let randomSeedShift = 0;
+        let packagesData = [];
+
+        // ============================================================================
+        // GENERATE 36 PAKET SOAL
+        // ============================================================================
+        function generateAllPackages() {
+            packagesData = [];
+            for (let i = 1; i <= TOTAL_PACKAGES; i++) {
+                const effectiveIndex = i + randomSeedShift;
+                const problems = activeTemplateIndices.map((tplIdx, qNum) => {
+                    const template = QUESTION_TEMPLATES[tplIdx];
+                    return template.generate(effectiveIndex, qNum + 1);
+                });
+
+                packagesData.push({
+                    packageNumber: i,
+                    problems: problems
+                });
+            }
+        }
+
+        // ============================================================================
+        // RENDER KE DOM
+        // ============================================================================
+        function populateFilterDropdown() {
+            const select = document.getElementById('packageFilter');
+            select.innerHTML = `<option value="all" class="text-slate-800">Semua Paket (1 - 36)</option>`;
+            for (let i = 1; i <= TOTAL_PACKAGES; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.className = "text-slate-800";
+                opt.textContent = `Paket Soal ${i}`;
+                select.appendChild(opt);
+            }
+        }
+
+        function renderPackages(filterValue = 'all') {
+            const grid = document.getElementById('packagesGrid');
+            grid.innerHTML = '';
+
+            const filtered = filterValue === 'all'
+                ? packagesData
+                : packagesData.filter(p => p.packageNumber === parseInt(filterValue, 10));
+
+            // Jika hanya menampilkan 1 paket, buat lebar penuh di tengah
+            if (filtered.length === 1) {
+                grid.className = "grid grid-cols-1 max-w-3xl mx-auto gap-6";
+            } else {
+                grid.className = "grid grid-cols-1 lg:grid-cols-2 gap-6";
+            }
+
+            filtered.forEach(pkg => {
+                const isUnlocked = allUnlocked || unlockedPackages.has(pkg.packageNumber);
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl shadow-sm hover:shadow-md border border-slate-200 overflow-hidden flex flex-col justify-between transition print-break-inside";
+
+                // Buat HTML untuk 4 soal
+                const questionsHtml = pkg.problems.map((prob, idx) => `
+                    <div class="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/80">
+                        <div class="flex items-start gap-3">
+                            <span class="flex-shrink-0 w-6 h-6 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center mt-0.5">
+                                ${idx + 1}
+                            </span>
+                            <div class="text-sm text-slate-800 leading-relaxed flex-grow">
+                                ${prob.question}
+                            </div>
+                        </div>
+
+                        <!-- Area Pembahasan per Soal -->
+                        <div class="${isUnlocked ? 'block' : 'hidden'} mt-3 pt-3 border-t border-indigo-100 bg-indigo-50/60 rounded-lg px-3.5 py-2.5 text-slate-800">
+                            <div class="text-[11px] font-extrabold uppercase tracking-wider text-indigo-600 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-check-double"></i> Pembahasan Soal ${idx + 1}
+                            </div>
+                            ${prob.solution}
+                        </div>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div>
+                        <!-- Card Header -->
+                        <div class="bg-slate-800 text-white px-5 py-3.5 flex items-center justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <span class="bg-amber-400 text-slate-900 font-extrabold text-xs px-2.5 py-1 rounded-lg uppercase tracking-wider">
+                                    PAKET ${pkg.packageNumber}
+                                </span>
+                                <h2 class="font-bold text-sm sm:text-base">Barisan Aritmetika</h2>
+                            </div>
+                            <span class="text-xs text-slate-300 font-medium">4 Soal</span>
+                        </div>
+
+                        <!-- Card Body: 4 Soal -->
+                        <div class="p-5 space-y-3.5">
+                            ${questionsHtml}
+                        </div>
+                    </div>
+
+                    <!-- Card Footer: Tombol PEMBAHASAN -->
+                    <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between no-print">
+                        <span class="text-xs font-medium ${isUnlocked ? 'text-emerald-600' : 'text-slate-500'} flex items-center gap-1.5">
+                            <i class="fa-solid ${isUnlocked ? 'fa-lock-open' : 'fa-lock'}"></i>
+                            ${isUnlocked ? 'Pembahasan Terbuka' : 'Terkunci Password'}
+                        </span>
+
+                        <button
+                            onclick="handleSinglePackageButton(${pkg.packageNumber})"
+                            class="${isUnlocked
+                                ? 'bg-slate-200 hover:bg-slate-300 text-slate-800'
+                                : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm'} font-bold text-xs sm:text-sm px-4 py-2 rounded-xl transition flex items-center gap-2"
+                        >
+                            <i class="fa-solid ${isUnlocked ? 'fa-eye-slash' : 'fa-key'}"></i>
+                            <span>${isUnlocked ? 'SEMBUNYIKAN PEMBAHASAN' : 'PEMBAHASAN'}</span>
+                        </button>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            updateHeaderStatus();
+        }
+
+        function updateHeaderStatus() {
+            const count = allUnlocked ? TOTAL_PACKAGES : unlockedPackages.size;
+            const badge = document.getElementById('unlockedCountBadge');
+            badge.textContent = `${count} / ${TOTAL_PACKAGES} Terbuka`;
+
+            const btnAll = document.getElementById('btnAllSolutions');
+            const iconAll = document.getElementById('iconAllSolutions');
+            const textAll = document.getElementById('textAllSolutions');
+
+            if (allUnlocked) {
+                btnAll.className = "bg-rose-500 hover:bg-rose-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 shadow-md";
+                iconAll.className = "fa-solid fa-eye-slash";
+                textAll.textContent = "TUTUP SEMUA PEMBAHASAN";
+            } else {
+                btnAll.className = "bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2 shadow-md";
+                iconAll.className = "fa-solid fa-lock";
+                textAll.textContent = "LIHAT SEMUA PEMBAHASAN";
+            }
+        }
+
+        function filterPackage(val) {
+            renderPackages(val);
+        }
+
+        function regenerateNumbers() {
+            randomSeedShift += 37;
+            generateAllPackages();
+            const currentFilter = document.getElementById('packageFilter').value;
+            renderPackages(currentFilter);
+        }
+
+        // ============================================================================
+        // LOGIKA PASSWORD & TOMBOL PEMBAHASAN
+        // ============================================================================
+        function handleSinglePackageButton(pkgNumber) {
+            const isCurrentlyUnlocked = allUnlocked || unlockedPackages.has(pkgNumber);
+
+            if (isCurrentlyUnlocked) {
+                // Jika sedang terbuka, sembunyikan kembali
+                if (allUnlocked) {
+                    allUnlocked = false;
+                    // Masukkan semua kecuali paket ini ke set unlockedPackages
+                    for (let i = 1; i <= TOTAL_PACKAGES; i++) {
+                        if (i !== pkgNumber) unlockedPackages.add(i);
+                    }
+                } else {
+                    unlockedPackages.delete(pkgNumber);
+                }
+                const currentFilter = document.getElementById('packageFilter').value;
+                renderPackages(currentFilter);
+            } else {
+                // Minta password terlebih dahulu
+                openPasswordModal(pkgNumber);
+            }
+        }
+
+        function handleAllSolutionsButton() {
+            if (allUnlocked) {
+                // Kunci kembali semua pembahasan
+                allUnlocked = false;
+                unlockedPackages.clear();
+                const currentFilter = document.getElementById('packageFilter').value;
+                renderPackages(currentFilter);
+            } else {
+                // Minta password untuk membuka semua pembahasan
+                openPasswordModal('ALL');
+            }
+        }
+
+        function openPasswordModal(target) {
+            pendingUnlockTarget = target;
+            const modal = document.getElementById('passwordModal');
+            const title = document.getElementById('modalTitle');
+            const subtitle = document.getElementById('modalSubtitle');
+            const input = document.getElementById('passwordInput');
+            const errorMsg = document.getElementById('passwordError');
+
+            if (target === 'ALL') {
+                title.textContent = "Lihat Semua Pembahasan (36 Paket)";
+                subtitle.textContent = "Masukkan password untuk membuka seluruh pembahasan dari Paket 1 sampai Paket 36 sekaligus.";
+            } else {
+                title.textContent = `Pembahasan Paket ${target}`;
+                subtitle.textContent = `Masukkan password untuk melihat langkah pembahasan pada Paket ${target}.`;
+            }
+
+            input.value = "";
+            errorMsg.classList.add('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => input.focus(), 80);
+        }
+
+        function closePasswordModal() {
+            const modal = document.getElementById('passwordModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            pendingUnlockTarget = null;
+        }
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('passwordInput');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye';
+            }
+        }
+
+        function submitPassword(event) {
+            event.preventDefault();
+            const input = document.getElementById('passwordInput');
+            const errorMsg = document.getElementById('passwordError');
+
+            if (input.value === SECRET_PASSWORD) {
+                if (pendingUnlockTarget === 'ALL') {
+                    allUnlocked = true;
+                    unlockedPackages.clear();
+                } else if (typeof pendingUnlockTarget === 'number') {
+                    unlockedPackages.add(pendingUnlockTarget);
+                    if (unlockedPackages.size === TOTAL_PACKAGES) {
+                        allUnlocked = true;
+                    }
+                }
+                closePasswordModal();
+                const currentFilter = document.getElementById('packageFilter').value;
+                renderPackages(currentFilter);
+            } else {
+                errorMsg.classList.remove('hidden');
+                input.select();
+            }
+        }
+
+        // ============================================================================
+        // MODAL KONFIGURASI TIPE SOAL
+        // ============================================================================
+        function initConfigDropdowns() {
+            for (let i = 0; i < 4; i++) {
+                const select = document.getElementById(`typeSelect${i}`);
+                select.innerHTML = '';
+                QUESTION_TEMPLATES.forEach((tpl, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.textContent = tpl.label;
+                    if (activeTemplateIndices[i] === idx) opt.selected = true;
+                    select.appendChild(opt);
+                });
+            }
+        }
+
+        function openConfigModal() {
+            initConfigDropdowns();
+            const modal = document.getElementById('configModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeConfigModal() {
+            const modal = document.getElementById('configModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function saveConfigTypes() {
+            for (let i = 0; i < 4; i++) {
+                const val = parseInt(document.getElementById(`typeSelect${i}`).value, 10);
+                activeTemplateIndices[i] = val;
+            }
+            generateAllPackages();
+            const currentFilter = document.getElementById('packageFilter').value;
+            renderPackages(currentFilter);
+            closeConfigModal();
+        }
+
+        function resetDefaultTypes() {
+            activeTemplateIndices = [0, 1, 2, 3];
+            initConfigDropdowns();
+        }
+
+        // Tutup modal dengan tombol Escape
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePasswordModal();
+                closeConfigModal();
+            }
+        });
+
+        // Inisialisasi saat halaman dimuat
+        window.onload = function () {
+            populateFilterDropdown();
+            generateAllPackages();
+            renderPackages('all');
+        };
+    </script>
+</body>
+</html>
